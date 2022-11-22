@@ -7,6 +7,10 @@ android {
     namespace 'com.example.calendar'
     compileSdk 32
 
+    viewBinding{
+        enabled = true
+    }
+
     defaultConfig {
 //        applicationId "com.example.calendar"
         minSdk 21

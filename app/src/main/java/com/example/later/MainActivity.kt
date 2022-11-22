@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.example.common.constants.RoutePathConstant
+import com.example.common.extents.hideSystemStatusBar
 import com.example.common.utils.FragmentStackUtil
 import com.example.home.HomeFragment
 import com.therouter.TheRouter
@@ -16,5 +17,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 //        val createFragment = TheRouter.build(RoutePathConstant.HomeFragment).createFragment<HomeFragment>()
 //        FragmentStackUtil.addToMainFragment(supportFragmentManager, createFragment!!, addToStack = true, tag = null, stackName = "")
+    }
+
+    override fun onResume() {
+        hideSystemStatusBar()
+        super.onResume()
     }
 }

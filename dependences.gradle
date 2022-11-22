@@ -1,0 +1,51 @@
+ext{
+    // base sdk setting of the project
+    androidMinSdkVersion = 21
+    androidTargetSdkVersion = 32
+    androidVersionCode = 1
+    androidVersionName = "1.0"
+
+    // Libraries version of the project
+    coreKtxVersion = "1.7.0"
+    appCompatVersion = "1.4.2"
+    materialVersion = "1.7.0"
+    hiltVersion = "1.0.0"
+    lifecycleVersion = "2.5.1"
+    roomVersion = "2.4.3"
+    recyclerviewVersion = "1.2.1"
+    constraintlayoutVersion = "2.1.4"
+    junitVersion = "4.13.2"
+    okHttpVersion = "4.10.0"
+    retrofitVersion = "2.9.0"
+    navigationVersion = "2.4.1"
+    pagingVersion = "3.1.1"
+
+
+    app = [
+            kapt: "androidx.room:room-compiler:$roomVersion",
+            coreKtx : "androidx.core:core-ktx:$coreKtxVersion",
+            appCompat : "androidx.appcompat:appcompat:$appCompatVersion",
+            material : "com.google.android.material:material:$materialVersion",
+            hilt : "androidx.hilt:hilt-navigation-compose:$hiltVersion",
+            lifecycle : "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion",
+            lifecycleViewModel : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion",
+            viewModed : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion",
+            lifecycleProcess : "androidx.lifecycle:lifecycle-process:$lifecycleVersion",
+            room : "androidx.room:room-runtime:$roomVersion",
+            room_ktx : "androidx.room:room-ktx:$roomVersion",
+            room_paging:"androidx.room:room-paging:$roomVersion",
+            roomAnnotationProcessor : "androidx.room:room-compiler:$roomVersion",
+            recyclerview : "androidx.recyclerview:recyclerview:$recyclerviewVersion",
+            constraintlayout : "androidx.constraintlayout:constraintlayout:$constraintlayoutVersion",
+            junit : "junit:junit:$junitVersion",
+            okHttp : "com.squareup.okhttp3:okhttp:$okHttpVersion",
+            // retrofit
+            retrofit: "com.squareup.retrofit2:retrofit:$retrofitVersion",
+            gson: "com.squareup.retrofit2:converter-gson:$retrofitVersion",
+
+            paging:"androidx.paging:paging-runtime:$pagingVersion",
+
+            navigation: "androidx.navigation:navigation-fragment-ktx:$navigationVersion",
+            navigationUi:"androidx.navigation:navigation-ui-ktx:$navigationVersion",
+    ]
+}

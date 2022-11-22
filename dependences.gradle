@@ -20,7 +20,6 @@ ext{
     navigationVersion = "2.4.1"
     pagingVersion = "3.1.1"
 
-
     app = [
             kapt: "androidx.room:room-compiler:$roomVersion",
             coreKtx : "androidx.core:core-ktx:$coreKtxVersion",

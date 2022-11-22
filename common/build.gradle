@@ -1,6 +1,7 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 def appDependence = rootProject.ext.app
@@ -10,7 +11,6 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.example.common"
         minSdk 21
         targetSdk 32
         versionCode 1
@@ -35,6 +35,9 @@ android {
 }
 
 dependencies {
+    kapt appDependence.kaptTheRouter
+    implementation appDependence.therouter
+
     implementation appDependence.coreKtx
     implementation appDependence.appCompat
     implementation appDependence.material

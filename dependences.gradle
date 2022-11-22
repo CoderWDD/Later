@@ -8,7 +8,7 @@ ext{
     // Libraries version of the project
     coreKtxVersion = "1.7.0"
     appCompatVersion = "1.4.2"
-    materialVersion = "1.7.0"
+    materialVersion = "1.5.0-alpha04"
     hiltVersion = "1.0.0"
     lifecycleVersion = "2.5.1"
     roomVersion = "2.4.3"
@@ -17,11 +17,12 @@ ext{
     junitVersion = "4.13.2"
     okHttpVersion = "4.10.0"
     retrofitVersion = "2.9.0"
-    navigationVersion = "2.4.1"
+    navigationVersion = "2.5.3"
     pagingVersion = "3.1.1"
+    theRouterVersion = "1.1.1"
 
     app = [
-            kapt: "androidx.room:room-compiler:$roomVersion",
+            kaptRoom: "androidx.room:room-compiler:$roomVersion",
             coreKtx : "androidx.core:core-ktx:$coreKtxVersion",
             appCompat : "androidx.appcompat:appcompat:$appCompatVersion",
             material : "com.google.android.material:material:$materialVersion",
@@ -46,5 +47,8 @@ ext{
 
             navigation: "androidx.navigation:navigation-fragment-ktx:$navigationVersion",
             navigationUi:"androidx.navigation:navigation-ui-ktx:$navigationVersion",
+
+            kaptTheRouter:"cn.therouter:apt:$theRouterVersion",
+            therouter:"cn.therouter:router:$theRouterVersion"
     ]
 }

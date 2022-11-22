@@ -51,8 +51,6 @@ dependencies {
     implementation appDependence.appCompat
     implementation appDependence.material
     testImplementation appDependence.junit
-    implementation appDependence.navigation
-    implementation appDependence.navigationUi
     implementation appDependence.constraintlayout
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

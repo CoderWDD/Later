@@ -1,4 +1,4 @@
-package com.example.later
+package com.example.common
 
 import android.app.Application
 import android.content.Context

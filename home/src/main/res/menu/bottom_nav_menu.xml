@@ -3,21 +3,21 @@
 
     <item
         android:id="@+id/bottom_nav_later"
-        android:icon="@drawable/later_list_active"
+        android:icon="@drawable/later_list_icon"
         android:title="@string/later_list_title"/>
 
     <item
         android:id="@+id/bottom_nav_calendar"
-        android:icon="@drawable/calendar_inactive"
+        android:icon="@drawable/calendar_icon"
         android:title="@string/calendar_title"/>
 
     <item
         android:id="@+id/bottom_nav_later_1"
-        android:icon="@drawable/later_list_active"
-        android:title="@string/later_list_title"/>
+        android:icon="@drawable/notification_icon"
+        android:title="@string/notification_title"/>
 
     <item
         android:id="@+id/bottom_nav_calendar_2"
-        android:icon="@drawable/calendar_inactive"
-        android:title="@string/calendar_title"/>
+        android:icon="@drawable/profile_icon"
+        android:title="@string/profile_title"/>
 </menu>

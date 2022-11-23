@@ -40,6 +40,10 @@ android {
 dependencies {
 
     implementation project(':common')
+    implementation project(':laterlist')
+    implementation project(':calendar')
+    implementation project(':notification')
+    implementation project(':profile')
     kapt appDependence.kaptTheRouter
     implementation appDependence.therouter
 

@@ -32,7 +32,7 @@ object FragmentStackUtil {
         fragmentManager: FragmentManager,
         fragment: Fragment,
         tag: String? = fragment.tag,
-        addToStack: Boolean = false,
+        addToStack: Boolean = true,
         stackName: String? = fragment.tag
     ) {
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -52,7 +52,7 @@ object FragmentStackUtil {
         fragmentManager: FragmentManager,
         fragment: Fragment,
         tag: String? = fragment.tag,
-        addToStack: Boolean = false,
+        addToStack: Boolean = true,
         stackName: String? = fragment.tag
     ) {
         val fragmentTransaction = fragmentManager.beginTransaction()

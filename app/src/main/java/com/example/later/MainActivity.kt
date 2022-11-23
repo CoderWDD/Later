@@ -5,22 +5,17 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.example.common.constants.RoutePathConstant
+import com.example.common.custom.BaseActivity
 import com.example.common.extents.hideSystemStatusBar
 import com.example.common.utils.FragmentStackUtil
+import com.example.common.utils.TheRouterUtil
 import com.example.home.HomeFragment
+import com.example.later.databinding.ActivityMainBinding
 import com.therouter.TheRouter
 
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-//        val createFragment = TheRouter.build(RoutePathConstant.HomeFragment).createFragment<HomeFragment>()
-//        FragmentStackUtil.addToMainFragment(supportFragmentManager, createFragment!!, addToStack = true, tag = null, stackName = "")
+class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
+    override fun onCreate() {
+        TheRouterUtil.navToFragmentAdd<HomeFragment>(RoutePathConstant.HomeFragment, supportFragmentManager)
     }
 
-    override fun onResume() {
-        hideSystemStatusBar()
-        super.onResume()
-    }
 }

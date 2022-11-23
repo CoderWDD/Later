@@ -10,6 +10,10 @@ android {
     namespace 'com.example.common'
     compileSdk 32
 
+    viewBinding{
+        enabled = true
+    }
+
     defaultConfig {
         minSdk 21
         targetSdk 32

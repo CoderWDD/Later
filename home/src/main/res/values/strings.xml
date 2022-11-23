@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Home</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="later_list_title">列表</string>
+    <string name="calendar_title">日程</string>
+    <string name="notification_title">通知</string>
+    <string name="profile_title">我的</string>
 </resources>

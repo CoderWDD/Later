@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <include layout="@layout/fragment_container" />
+    <include layout="@layout/fragment_container"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

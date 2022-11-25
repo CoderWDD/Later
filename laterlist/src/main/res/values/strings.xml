@@ -4,4 +4,7 @@
     <string name="later_list_tool_bar_unread">我的列表</string>
     <string name="later_list_tool_bar_done">存档</string>
 
+    <string name="tab_layout_all_list">全部</string>
+    <string name="tab_layout_collect_list">收藏</string>
+    <string name="tab_layout_tag_list">标签</string>
 </resources>

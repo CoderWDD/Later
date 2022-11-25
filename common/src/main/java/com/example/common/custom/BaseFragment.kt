@@ -30,7 +30,7 @@ abstract class BaseFragment<VB: ViewBinding>(private val bindingInflater: (infla
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        TheRouter.inject(this)
+//        TheRouter.inject(this)
     }
 
     override fun onDestroy() {

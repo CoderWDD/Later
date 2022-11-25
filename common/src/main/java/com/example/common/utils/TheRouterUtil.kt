@@ -12,7 +12,8 @@ object TheRouterUtil {
     }
 
     fun<T: Fragment> navToFragmentAdd(path: String, fragmentManager: FragmentManager, tag: String? = null, addToStack: Boolean = true, stackName: String? = null){
-        val fragment = getFragmentByPath<T>(path) as Fragment
+        val fragmentByPath = getFragmentByPath<T>(path)
+        val fragment = fragmentByPath as Fragment ?: return
         FragmentStackUtil.addToMainFragment(
             fragmentManager = fragmentManager,
             fragment = fragment,

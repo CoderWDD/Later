@@ -10,9 +10,13 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.view.children
 import androidx.transition.Visibility
+import com.example.common.adapter.ViewPagerAdapter
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
+import com.example.common.utils.TheRouterUtil
 import com.example.laterlist.databinding.FragmentLaterListBinding
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.therouter.router.Route
 import kotlin.math.log
 
@@ -21,11 +25,28 @@ import kotlin.math.log
     description = "The entrance fragment of laterList"
 )
 class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterListBinding::inflate) {
+    private lateinit var fragments : Array<Fragment>
+
+    private lateinit var titles: Array<String>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView() {
+        fragments= arrayOf(
+            // add fragments here
+            TheRouterUtil.getFragmentByPath<AllLaterListFragment>(RoutePathConstant.AllLaterListFragment) ?: AllLaterListFragment(),
+            TheRouterUtil.getFragmentByPath<CollectLaterListFragment>(RoutePathConstant.CollectLaterListFragment) ?: CollectLaterListFragment(),
+            TheRouterUtil.getFragmentByPath<TagListFragment>(RoutePathConstant.TagListFragment) ?: TagListFragment()
+        )
+
+        titles = arrayOf(
+            // add tabLayout title here
+            resources.getString(R.string.tab_layout_all_list),
+            resources.getString(R.string.tab_layout_collect_list),
+            resources.getString(R.string.tab_layout_tag_list)
+        )
         init()
     }
 
@@ -44,5 +65,12 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
                 }
             }
         }
+        viewBinding.laterListViewPager.isUserInputEnabled = true
+        // 配置页面下面的 viewPager 与 tabLayout
+        viewBinding.laterListViewPager.adapter = ViewPagerAdapter(fragments, requireActivity().supportFragmentManager, lifecycle)
+        TabLayoutMediator(viewBinding.laterListTabLayout, viewBinding.laterListViewPager
+        ) { tab: TabLayout.Tab, position: Int ->
+            tab.text = titles[position]
+        }.attach()
     }
 }

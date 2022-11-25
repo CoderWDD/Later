@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">LaterList</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="later_list_tool_bar_unread">我的列表</string>
+    <string name="later_list_tool_bar_done">存档</string>
+
 </resources>

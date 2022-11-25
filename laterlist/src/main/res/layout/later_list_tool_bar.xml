@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/later_list_toolbar_motion_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    app:layoutDescription="@xml/later_list_tool_bar_scene">
+
+        <include
+            android:id="@+id/later_list_toolbar_unread_button"
+            layout="@layout/later_list_unread_button"
+            app:layout_constraintEnd_toStartOf="@id/later_list_toolbar_done_button"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"/>
+
+        <include
+            android:id="@+id/later_list_toolbar_done_button"
+            layout="@layout/later_list_done_button"
+            app:layout_constraintStart_toEndOf="@id/later_list_toolbar_unread_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"/>
+
+
+</androidx.constraintlayout.motion.widget.MotionLayout>

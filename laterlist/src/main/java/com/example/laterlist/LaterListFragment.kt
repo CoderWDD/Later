@@ -1,18 +1,25 @@
 package com.example.laterlist
 
+import android.annotation.SuppressLint
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.view.children
+import androidx.core.view.setPadding
 import androidx.transition.Visibility
 import com.example.common.adapter.ViewPagerAdapter
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
+import com.example.common.extents.dp
 import com.example.common.utils.TheRouterUtil
 import com.example.laterlist.databinding.FragmentLaterListBinding
 import com.google.android.material.tabs.TabLayout
@@ -29,10 +36,13 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
 
     private lateinit var titles: Array<String>
 
+    private lateinit var icons: Array<Int?>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreateView() {
         fragments= arrayOf(
             // add fragments here
@@ -46,6 +56,12 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
             resources.getString(R.string.tab_layout_all_list),
             resources.getString(R.string.tab_layout_collect_list),
             resources.getString(R.string.tab_layout_tag_list)
+        )
+
+        icons = arrayOf(
+            null,
+            R.drawable.tag_icon,
+            R.drawable.favorite_icon,
         )
         init()
     }
@@ -68,9 +84,19 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
         viewBinding.laterListViewPager.isUserInputEnabled = true
         // 配置页面下面的 viewPager 与 tabLayout
         viewBinding.laterListViewPager.adapter = ViewPagerAdapter(fragments, requireActivity().supportFragmentManager, lifecycle)
-        TabLayoutMediator(viewBinding.laterListTabLayout, viewBinding.laterListViewPager
+        TabLayoutMediator(viewBinding.laterListTabLayout, viewBinding.laterListViewPager, true, true
         ) { tab: TabLayout.Tab, position: Int ->
-            tab.text = titles[position]
+            tab.customView = generateItemTab(position)
         }.attach()
+    }
+
+    private fun generateItemTab(position: Int): View{
+        val view =
+            LayoutInflater.from(requireContext()).inflate(R.layout.tablayout_item_tab, null)
+        val imageView = view.findViewById<ImageView>(R.id.item_icon)
+        val textView = view.findViewById<TextView>(R.id.item_text)
+        icons[position]?.let { imageView.setImageResource(it) }
+        textView.text = titles[position]
+        return view
     }
 }

@@ -30,10 +30,12 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+<!--            app:tabMode="scrollable"-->
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/later_list_tab_Layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:tabIndicatorAnimationMode="elastic"
                 app:tabIndicatorFullWidth="false">
 
             </com.google.android.material.tabs.TabLayout>

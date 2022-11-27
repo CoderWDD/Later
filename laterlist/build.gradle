@@ -42,6 +42,7 @@ dependencies {
 
     kapt appDependence.kaptTheRouter
     implementation appDependence.therouter
+    implementation appDependence.shimmer
 
     implementation appDependence.coreKtx
     implementation appDependence.appCompat

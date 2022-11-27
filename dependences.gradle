@@ -20,6 +20,7 @@ ext{
     navigationVersion = "2.5.3"
     pagingVersion = "3.1.1"
     theRouterVersion = "1.1.1"
+    shimmerVersion = "0.5.0"
 
     app = [
             kaptRoom: "androidx.room:room-compiler:$roomVersion",
@@ -49,6 +50,9 @@ ext{
             navigationUi:"androidx.navigation:navigation-ui-ktx:$navigationVersion",
 
             kaptTheRouter:"cn.therouter:apt:$theRouterVersion",
-            therouter:"cn.therouter:router:$theRouterVersion"
+            therouter:"cn.therouter:router:$theRouterVersion",
+
+            shimmer: "com.facebook.shimmer:shimmer:${shimmerVersion}"
+
     ]
 }

@@ -41,6 +41,10 @@ android {
 dependencies {
     kapt appDependence.kaptTheRouter
     implementation appDependence.therouter
+    implementation appDependence.retrofit
+    implementation appDependence.okHttp
+    implementation appDependence.gson
+
 
     implementation appDependence.coreKtx
     implementation appDependence.appCompat

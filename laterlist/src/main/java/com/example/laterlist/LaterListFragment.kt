@@ -72,15 +72,15 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
 
     private fun init(){
         // 设置顶部toolbar的点击事件
-        viewBinding.laterListToolbar.laterListToolbarMotionLayout.children.forEachIndexed { index, view ->
-            if (index != 0) (view as MotionLayout).transitionToEnd()
-            view.setOnClickListener {
-                viewBinding.laterListToolbar.laterListToolbarMotionLayout.children.forEachIndexed { _, temp ->
-                    if (temp.id != it.id) (temp as MotionLayout).transitionToEnd()
-                    else (temp as MotionLayout).transitionToStart()
-                }
-            }
-        }
+//        viewBinding.laterListToolbar.laterListToolbarMotionLayout.children.forEachIndexed { index, view ->
+//            if (index != 0) (view as MotionLayout).transitionToEnd()
+//            view.setOnClickListener {
+//                viewBinding.laterListToolbar.laterListToolbarMotionLayout.children.forEachIndexed { _, temp ->
+//                    if (temp.id != it.id) (temp as MotionLayout).transitionToEnd()
+//                    else (temp as MotionLayout).transitionToStart()
+//                }
+//            }
+//        }
         viewBinding.laterListViewPager.isUserInputEnabled = true
         // 配置页面下面的 viewPager 与 tabLayout
         viewBinding.laterListViewPager.adapter = ViewPagerAdapter(fragments, requireActivity().supportFragmentManager, lifecycle)

@@ -4,4 +4,6 @@
 
     <string name="category_default">category</string>
     <string name="category_cnt">12</string>
+
+    <string name="folder_header">Folder Header</string>
 </resources>

@@ -5,6 +5,18 @@
     android:layout_height="match_parent"
     tools:context=".AllLaterListFragment">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/later_list_all_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 </com.facebook.shimmer.ShimmerFrameLayout>

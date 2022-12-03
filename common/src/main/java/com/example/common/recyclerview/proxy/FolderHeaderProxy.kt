@@ -32,7 +32,7 @@ class FolderHeaderProxy : RVProxy<FolderHeaderData, FolderHeaderViewHolder>(){
 
 data class FolderHeaderData(
     val title: String,
-    val icon: Drawable?
+    val icon: Drawable? = null
 )
 
 class FolderHeaderViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){

@@ -34,7 +34,7 @@ class FolderCardProxy: RVProxy<FolderData, FolderViewHolder>() {
 data class FolderData(
     val title: String,
     val cnt: String,
-    val icon: Drawable?
+    val icon: Drawable? = null
 )
 
 class FolderViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){

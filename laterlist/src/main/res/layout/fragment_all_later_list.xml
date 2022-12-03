@@ -5,15 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".AllLaterListFragment">
+    tools:context=".alllater.AllLaterListFragment">
 
     <include
         android:id="@+id/category_plate"
         layout="@layout/category_plate" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/later_list_all_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    <include
+        android:id="@+id/category_list_favorite"
+        layout="@layout/category_list"/>
+
+    <include
+        android:id="@+id/category_list_more"
+        layout="@layout/category_list"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

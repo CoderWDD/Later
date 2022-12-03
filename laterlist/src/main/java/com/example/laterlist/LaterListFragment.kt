@@ -1,31 +1,22 @@
 package com.example.laterlist
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.Icon
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.core.view.children
-import androidx.core.view.setPadding
-import androidx.transition.Visibility
 import com.example.common.adapter.ViewPagerAdapter
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
-import com.example.common.extents.dp
 import com.example.common.utils.TheRouterUtil
+import com.example.laterlist.alllater.AllLaterListFragment
 import com.example.laterlist.databinding.FragmentLaterListBinding
+import com.example.laterlist.tags.TagListFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.therouter.router.Route
-import kotlin.math.log
 
 @Route(
     path = RoutePathConstant.LaterListFragment,
@@ -47,21 +38,18 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
         fragments= arrayOf(
             // add fragments here
             TheRouterUtil.getFragmentByPath<AllLaterListFragment>(RoutePathConstant.AllLaterListFragment) ?: AllLaterListFragment(),
-            TheRouterUtil.getFragmentByPath<CollectLaterListFragment>(RoutePathConstant.CollectLaterListFragment) ?: CollectLaterListFragment(),
             TheRouterUtil.getFragmentByPath<TagListFragment>(RoutePathConstant.TagListFragment) ?: TagListFragment()
         )
 
         titles = arrayOf(
             // add tabLayout title here
             resources.getString(R.string.tab_layout_all_list),
-            resources.getString(R.string.tab_layout_collect_list),
             resources.getString(R.string.tab_layout_tag_list)
         )
 
         icons = arrayOf(
             null,
             R.drawable.tag_icon,
-            R.drawable.favorite_icon,
         )
         init()
     }
@@ -91,8 +79,7 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
     }
 
     private fun generateItemTab(position: Int): View{
-        val view =
-            LayoutInflater.from(requireContext()).inflate(R.layout.tablayout_item_tab, null)
+        val view = LayoutInflater.from(requireContext()).inflate(R.layout.tablayout_item_tab, null)
         val imageView = view.findViewById<ImageView>(R.id.item_icon)
         val textView = view.findViewById<TextView>(R.id.item_text)
         icons[position]?.let { imageView.setImageResource(it) }

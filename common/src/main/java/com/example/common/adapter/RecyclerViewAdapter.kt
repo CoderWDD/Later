@@ -1,14 +1,13 @@
-package com.example.laterlist.favorite
+package com.example.common.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.common.recyclerview.RVProxy
 import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Proxy
 
 // 写法参考：https://juejin.cn/post/6876967151975006221
-class FavoriteRecyclerViewAdapter(
+class RecyclerViewAdapter(
     private var proxyList: MutableList<RVProxy<*, *>> = mutableListOf(),
     var dataList: MutableList<Any> = mutableListOf()
 ): RecyclerView.Adapter<ViewHolder>() {

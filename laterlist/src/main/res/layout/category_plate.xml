@@ -13,7 +13,7 @@
         android:orientation="horizontal">
 
         <include layout="@layout/category_card"
-            android:id="@+id/category_all"
+            android:id="@+id/category_today"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -29,27 +29,27 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+<!--    <androidx.appcompat.widget.LinearLayoutCompat-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal">-->
 
-        <include layout="@layout/category_card"
-            android:id="@+id/category_bin"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_margin="4dp"/>
+<!--        <include layout="@layout/category_card"-->
+<!--            android:id="@+id/category_bin"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_margin="4dp"/>-->
 
-        <include layout="@layout/category_card"
-            android:id="@+id/category_today"
-            app:layout_constraintStart_toEndOf="@id/category_all"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:layout_margin="4dp"/>
+<!--        <include layout="@layout/category_card"-->
+<!--            android:id="@+id/category_today"-->
+<!--            app:layout_constraintStart_toEndOf="@id/category_all"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="8dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_margin="4dp"/>-->
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+<!--    </androidx.appcompat.widget.LinearLayoutCompat>-->
 
 </androidx.appcompat.widget.LinearLayoutCompat>

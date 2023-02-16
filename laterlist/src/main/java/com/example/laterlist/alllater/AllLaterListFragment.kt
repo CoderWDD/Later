@@ -37,7 +37,7 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
     private fun initCategoryListFavorite(){
         val folderData = FolderData("folder_1", "12", icon = resources.getDrawable(com.example.common.R.drawable.folder_icon))
         val dateList = mutableListOf<Any>(folderData)
-        repeat(4){dateList.add(folderData)}
+        repeat(14){dateList.add(folderData)}
         val folderCardProxy = FolderCardProxy()
         val proxyList = mutableListOf<RVProxy<*, *>>(folderCardProxy)
         categoryListFavoriteAdapter = RecyclerViewAdapter(dataList = dateList, proxyList = proxyList)
@@ -49,7 +49,7 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
     private fun initCategoryListMore(){
         val folderData = FolderData("folder_1", "12", icon = resources.getDrawable(com.example.common.R.drawable.folder_icon))
         val dateList = mutableListOf<Any>(folderData)
-        repeat(5){dateList.add(folderData)}
+        repeat(15){dateList.add(folderData)}
         val folderCardProxy = FolderCardProxy()
         val proxyList = mutableListOf<RVProxy<*, *>>(folderCardProxy)
         categoryMoreFavoriteAdapter = RecyclerViewAdapter(dataList = dateList, proxyList = proxyList)

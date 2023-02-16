@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    // Add the Google services Gradle plugin
+//    id 'com.google.gms.google-services'
 }
 
 apply plugin: 'therouter'
@@ -43,6 +45,7 @@ android {
 dependencies {
     implementation project(':common')
     implementation project(':home')
+    implementation project(':collect')
     kapt appDependence.kaptTheRouter
     implementation appDependence.therouter
 
@@ -55,4 +58,7 @@ dependencies {
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+//    implementation platform('com.google.firebase:firebase-bom:31.2.0')
+
 }

@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
+import android.webkit.URLUtil
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.common.adapter.ViewPagerAdapter
@@ -85,5 +88,10 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
         icons[position]?.let { imageView.setImageResource(it) }
         textView.text = titles[position]
         return view
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(com.example.common.R.menu.add_menu, menu)
     }
 }

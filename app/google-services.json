@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "433534959398",
+    "project_id": "later-8a169",
+    "storage_bucket": "later-8a169.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:433534959398:android:29759f441bcbd952908be7",
+        "android_client_info": {
+          "package_name": "com.example.later"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "433534959398-lp2fg9q8vhgr6nv4q3dv1n8m8ub27nvi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFy4FQq_089hETmHaPaLgNF0Tfv-z_PS8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "433534959398-2624s8ivpnpo6qj7s7a4qscprar4lntp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

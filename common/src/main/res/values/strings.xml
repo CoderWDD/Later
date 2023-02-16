@@ -6,4 +6,11 @@
     <string name="category_cnt">12</string>
 
     <string name="folder_header">Folder Header</string>
+
+    <string name="create_folder">新建文件夹</string>
+    <string name="create_website">添加网站</string>
+    <string name="create_image">添加图片</string>
+    <string name="create_video">添加视频</string>
+
+
 </resources>

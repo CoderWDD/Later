@@ -15,6 +15,7 @@ import com.example.common.extents.dp
 import com.example.common.recyclerview.RVProxy
 import com.example.common.recyclerview.proxy.FolderCardProxy
 import com.example.common.recyclerview.proxy.FolderData
+import com.example.common.recyclerview.proxy.TagCardData
 import com.example.common.recyclerview.proxy.TagCardProxy
 import com.example.laterlist.databinding.FragmentTagListBinding
 import com.therouter.router.Route
@@ -32,16 +33,13 @@ class TagListFragment : BaseFragment<FragmentTagListBinding>(FragmentTagListBind
     }
 
     private fun initTagListRecyclerView(){
-        val folderData = FolderData("folder_1", "12", icon = resources.getDrawable(R.drawable.folder_icon))
-        val dateList = mutableListOf<Any>(folderData)
-        repeat(4){dateList.add(folderData)}
+        val tagData = TagCardData("tag",  icon = resources.getDrawable(com.example.laterlist.R.drawable.tag_icon), cnt = "12")
+        val dateList = mutableListOf<Any>(tagData)
+        repeat(4){dateList.add(tagData)}
         val tagCardProxy = TagCardProxy()
         val proxyList = mutableListOf<RVProxy<*, *>>(tagCardProxy)
         tagListRecyclerViewAdapter = RecyclerViewAdapter(dataList = dateList, proxyList = proxyList)
         viewBinding.tagRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        viewBinding.tagRecyclerView.addItemDecoration(
-            RecyclerViewItemDecoration(requireContext(), RecyclerViewItemDecoration.VERTICAL, 48.dp.toInt(), 0.dp.toInt())
-        )
         viewBinding.tagRecyclerView.adapter = tagListRecyclerViewAdapter
     }
 

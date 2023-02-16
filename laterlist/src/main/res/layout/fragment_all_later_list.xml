@@ -7,6 +7,8 @@
     android:orientation="vertical"
     tools:context=".alllater.AllLaterListFragment">
 
+    <include layout="@layout/search_edittext"/>
+
     <include
         android:id="@+id/category_plate"
         layout="@layout/category_plate" />

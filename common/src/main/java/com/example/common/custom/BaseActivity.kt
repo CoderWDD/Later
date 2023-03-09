@@ -11,7 +11,7 @@ import androidx.viewbinding.ViewBinding
 import com.example.common.extents.hideSystemStatusBar
 import com.therouter.TheRouter
 
-abstract class BaseActivity<VB: ViewBinding>(private val bindingInflate: (inflate: LayoutInflater) -> VB): AppCompatActivity() {
+    abstract class BaseActivity<VB: ViewBinding>(private val bindingInflate: (inflate: LayoutInflater) -> VB): AppCompatActivity() {
     private var _viewBinding: VB? = null
 
     val viewBinding: VB

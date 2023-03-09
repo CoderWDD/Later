@@ -11,6 +11,9 @@
     <string name="create_website">添加网站</string>
     <string name="create_image">添加图片</string>
     <string name="create_video">添加视频</string>
+    
+    
+    <string name="google_server_client_id">433534959398-lp2fg9q8vhgr6nv4q3dv1n8m8ub27nvi.apps.googleusercontent.com</string>
 
 
 </resources>

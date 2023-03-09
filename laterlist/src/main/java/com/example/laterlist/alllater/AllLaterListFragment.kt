@@ -29,7 +29,6 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
         initCategoryListFavorite()
         initCategoryListMore()
         setOnCategoryListFavoriteItemClick()
-        setOnCategoryListFavoriteItemClick()
         setCategoryHeadVisible()
     }
 

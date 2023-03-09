@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.common.custom.BaseFragment
 import com.example.common.databinding.FragmentContainerBinding
+import com.example.common.network.RetrofitClient
 
 class ContainerFragment : BaseFragment<FragmentContainerBinding>(FragmentContainerBinding::inflate) {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,5 +15,7 @@ class ContainerFragment : BaseFragment<FragmentContainerBinding>(FragmentContain
     }
 
     override fun onCreateView() {
+
     }
 }
+

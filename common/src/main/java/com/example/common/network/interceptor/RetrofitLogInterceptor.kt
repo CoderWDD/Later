@@ -3,6 +3,8 @@ package com.example.common.network.interceptor
 import android.os.SystemClock
 import android.text.TextUtils
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 import okhttp3.*
 import okio.Buffer
 import java.util.*

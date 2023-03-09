@@ -14,6 +14,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
 import com.example.collect.databinding.ActivityCollectBinding
+import com.example.common.log.LaterLog
+import com.example.common.utils.StringUtils
 
 class CollectActivity : AppCompatActivity() {
 
@@ -33,12 +35,6 @@ class CollectActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAnchorView(R.id.fab)
-                .setAction("Action", null).show()
-        }
-
         // Handle different actions separately
         when (intent?.action) {
             Intent.ACTION_SEND -> {
@@ -48,6 +44,10 @@ class CollectActivity : AppCompatActivity() {
                     handleSendImage(intent) // Handle single image being sent
                 } else if (intent.type?.startsWith("video/") == true) {
                     handleSendVideo(intent) // Handle single video being sent
+                } else if (intent.type?.startsWith("audio/") == true) {
+                    handleSendAudio(intent) // Handle single audio being sent
+                } else if (intent.type?.startsWith("application/") == true) {
+                    handleSendApplication(intent) // Handle single application being sent
                 }
             }
             Intent.ACTION_SEND_MULTIPLE -> {
@@ -55,12 +55,32 @@ class CollectActivity : AppCompatActivity() {
                     handleSendMultipleImages(intent) // Handle multiple images being sent
                 }else if (intent.type?.startsWith("video/") == true){
                     handleSendMultipleVideo(intent) // Handle multiple video being sent
+                }else if (intent.type?.startsWith("audio/") == true) {
+                    handleSendMultipleAudio(intent) // Handle multiple audio being sent
+                }else if (intent.type?.startsWith("application/") == true) {
+                    handleSendMultipleApplication(intent) // Handle multiple application being sent
                 }
             }
             else -> {
                 // Handle other intents, such as being started from the home screen
             }
         }
+    }
+
+    private fun handleSendMultipleApplication(intent: Intent) {
+
+    }
+
+    private fun handleSendMultipleAudio(intent: Intent) {
+
+    }
+
+    private fun handleSendApplication(intent: Intent) {
+
+    }
+
+    private fun handleSendAudio(intent: Intent) {
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -70,9 +90,6 @@ class CollectActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
@@ -86,9 +103,21 @@ class CollectActivity : AppCompatActivity() {
     }
 
     private fun handleSendText(intent: Intent) {
-        intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
-            // Update UI to reflect text being shared
+        var title:String
+        var url: String
+        intent.extras?.keySet()?.forEach { key ->
+            when (key){
+                Intent.EXTRA_SUBJECT -> {
+                    title = intent.getStringExtra(key) ?: ""
+                    LaterLog.d("title: $title")
+                }
+                Intent.EXTRA_TEXT -> {
+                    url = intent.getStringExtra(key) ?: ""
+                    LaterLog.d("url: $url")
+                }
+            }
         }
+
     }
 
     private fun handleSendImage(intent: Intent) {

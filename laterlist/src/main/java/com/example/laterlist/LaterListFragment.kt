@@ -2,14 +2,12 @@ package com.example.laterlist
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
 import android.webkit.URLUtil
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.MenuProvider
 import com.example.common.adapter.ViewPagerAdapter
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
@@ -59,19 +57,12 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewBinding.laterAllToolBarTitle.text = "列表"
+        viewBinding.laterAllToolBarTitle.gravity = Gravity.CENTER
     }
 
     private fun init(){
         // 设置顶部toolbar的点击事件
-//        viewBinding.laterListToolbar.laterListToolbarMotionLayout.children.forEachIndexed { index, view ->
-//            if (index != 0) (view as MotionLayout).transitionToEnd()
-//            view.setOnClickListener {
-//                viewBinding.laterListToolbar.laterListToolbarMotionLayout.children.forEachIndexed { _, temp ->
-//                    if (temp.id != it.id) (temp as MotionLayout).transitionToEnd()
-//                    else (temp as MotionLayout).transitionToStart()
-//                }
-//            }
-//        }
         viewBinding.laterListViewPager.isUserInputEnabled = true
         // 配置页面下面的 viewPager 与 tabLayout
         viewBinding.laterListViewPager.adapter = ViewPagerAdapter(fragments, requireActivity().supportFragmentManager, lifecycle)
@@ -90,8 +81,25 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
         return view
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(com.example.common.R.menu.add_menu, menu)
+    // 根据不同的item，显示不同的添加页面
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            com.example.common.R.id.create_website -> {
+
+            }
+            com.example.common.R.id.create_folder -> {
+
+            }
+            com.example.common.R.id.create_image -> {
+
+            }
+            com.example.common.R.id.create_video -> {
+
+            }
+            else -> {
+                return false;
+            }
+        }
+        return true
     }
 }

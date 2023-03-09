@@ -10,22 +10,24 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        app:liftOnScroll="true">
-
+        android:fitsSystemWindows="true"
+        android:gravity="center_horizontal">
 
         <androidx.appcompat.widget.Toolbar
-            android:layout_width="wrap_content"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="center_horizontal"
-            app:title="@string/later_all_tool_bar_title"/>
+            app:menu="@menu/add_menu">
 
-        <!--        <include-->
-        <!--            android:id="@+id/later_list_toolbar"-->
-        <!--            layout="@layout/later_list_tool_bar"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="?attr/actionBarSize"-->
-        <!--            android:layout_gravity="center" />-->
+            <TextView
+                android:id="@+id/later_all_tool_bar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                app:title="@string/later_all_tool_bar_title"/>
+
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 

@@ -38,5 +38,5 @@ abstract class BaseFragment<VB: ViewBinding>(private val bindingInflater: (infla
         _viewBinding = null
     }
 
-    abstract fun onCreateView();
+    abstract fun onCreateView()
 }

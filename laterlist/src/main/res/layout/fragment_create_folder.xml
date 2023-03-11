@@ -1,16 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".CreateFolderFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".CreateFolderFragment"
+    android:layout_margin="16dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="12dp">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/create_folder_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:flow_verticalAlign="center"
+                android:textSize="16sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="新建文件夹"/>
+
+            <ImageView
+                android:id="@+id/create_folder_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/folder_name_edittext"
+                app:layout_constraintBottom_toBottomOf="@id/folder_name_edittext"
+                android:src="@drawable/share_icon"/>
+
+            <EditText
+                android:id="@+id/folder_name_edittext"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@id/create_folder_title"
+                app:layout_constraintStart_toEndOf="@id/create_folder_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/create_folder_icon"/>
 
 
+            <Button
+                android:id="@+id/create_folder_button_confirm"
+                app:layout_constraintHorizontal_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="确定"
+                android:layout_marginLeft="4dp"
+                app:layout_constraintStart_toEndOf="@id/create_folder_button_cancel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/folder_name_edittext"/>
 
-    </androidx.cardview.widget.CardView>
 
-</FrameLayout>
+            <Button
+                android:id="@+id/create_folder_button_cancel"
+                android:layout_marginRight="4dp"
+                app:layout_constraintHorizontal_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="取消"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/create_folder_button_confirm"
+                app:layout_constraintTop_toBottomOf="@id/folder_name_edittext"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

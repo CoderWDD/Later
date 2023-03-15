@@ -45,8 +45,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         val googleSignInClient = GoogleSignIn.getClient(requireActivity(), googleSignInOptions)
 
         viewBinding.avatar.setOnClickListener {
-            val signInIntent: Intent = googleSignInClient.signInIntent
-            startActivityForResult(signInIntent, 1111)
+//            val signInIntent: Intent = googleSignInClient.signInIntent
+//            startActivityForResult(signInIntent, 1111)
+
+            LoginFragment().show(requireActivity().supportFragmentManager, "login")
         }
 
     }

@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="subtitle">#55121212</color>
+
+    <color name="input_background">#22727272</color>
+    <color name="hint_text_color">#44727272</color>
+    <color name="forget_password_text_color">#FF727272</color>
+
 </resources>

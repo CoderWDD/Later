@@ -20,7 +20,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginEnd="16dp"
-            tools:srcCompat="@tools:sample/avatars" />
+            android:src="@drawable/user_man_placeholder" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -32,6 +32,7 @@
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/username"
                 android:textAppearance="?attr/textAppearanceHeadline6"
                 tools:text="John Doe" />
 
@@ -39,6 +40,7 @@
                 android:id="@+id/email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/email"
                 android:textAppearance="?attr/textAppearanceBody2"
                 tools:text="john.doe@example.com" />
         </LinearLayout>

@@ -11,7 +11,6 @@ object RetrofitClient {
     private const val BASE_URL = ""
 
     private val okHttpClient: OkHttpClient by lazy {
-        val eventListener = EventListener
         OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)

@@ -23,6 +23,10 @@ import com.example.laterlist.tags.TagListFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.therouter.router.Route
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 @Route(
     path = RoutePathConstant.LaterListFragment,
@@ -49,7 +53,6 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
             resources.getString(R.string.tab_layout_all_list),
             resources.getString(R.string.tab_layout_tag_list)
         )
-
         icons = arrayOf(
             null,
             R.drawable.tag_icon,

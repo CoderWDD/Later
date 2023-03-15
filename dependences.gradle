@@ -22,6 +22,7 @@ ext{
     theRouterVersion = "1.1.1"
     shimmerVersion = "0.5.0"
     navigationFragment= "2.4.1"
+    glideVersion = "4.14.2"
 
     app = [
             kaptRoom: "androidx.room:room-compiler:$roomVersion",
@@ -56,7 +57,9 @@ ext{
             shimmer: "com.facebook.shimmer:shimmer:${shimmerVersion}",
 
             navigation_fragment: "androidx.navigation:navigation-fragment-ktx:$navigationFragment",
-            navigation_ui_ktx: "androidx.navigation:navigation-ui-ktx:$navigationFragment"
+            navigation_ui_ktx: "androidx.navigation:navigation-ui-ktx:$navigationFragment",
+
+            glide: "com.github.bumptech.glide:glide:$glideVersion",
 
     ]
 }

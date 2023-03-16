@@ -28,54 +28,29 @@ import kotlinx.coroutines.launch
 )
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate) {
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var activityLauncher: ActivityResultLauncher<Intent>
     private lateinit var viewModel: ProfileViewModel
     private var currentUser: FirebaseUser? = null
-    private var isLogin = false
+    private var mIsLogin = false
 
-    private enum class LoginType(val num: Int) {
-        GOOGLE(1),
-        FACEBOOK(2),
-        TWITTER(3),
-        GITHUB(4),
-        EMAIL(5),
-        PHONE(6)
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 获取 viewModel
-        viewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[ProfileViewModel::class.java]
         firebaseAuth = FirebaseAuth.getInstance()
         // 判断是否已经登录
         currentUser = firebaseAuth.currentUser
-        currentUser?.let { isLogin = true }
-
-        activityLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ){ result ->
-            // todo handle result
-            when (result.resultCode) {
-                LoginType.GOOGLE.num -> {
-                    val accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                }
-                LoginType.FACEBOOK.num -> {}
-                LoginType.TWITTER.num -> {}
-                LoginType.GITHUB.num -> {}
-                LoginType.EMAIL.num -> {}
-                LoginType.PHONE.num -> {}
-            }
+        currentUser?.let {
+            viewModel.setLoginState(true)
         }
+
+
     }
 
     override fun onCreateView() {
 
-        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(com.example.common.R.string.google_server_client_id))
-            .requestEmail()
-            .build()
 
-        val googleSignInClient = GoogleSignIn.getClient(requireActivity(), googleSignInOptions)
 
         viewBinding.avatar.setOnClickListener {
 //            val signInIntent: Intent = googleSignInClient.signInIntent
@@ -86,18 +61,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
         // 在 lifecycle 的生命周期中，监听 viewModel 的 loginState，避免内存泄漏
         viewLifecycleOwner.lifecycleScope.launch{
-            viewModel.loginState.collect {isLogin ->
-
+            viewModel.loginState.collect { isLogin ->
+                mIsLogin = isLogin
             }
         }
     }
 
-    fun handleGoogleSignInResult(task: Task<GoogleSignInAccount>) {
-        task.addOnSuccessListener { viewModel.setLoginState(true) }
-            .addOnFailureListener { viewModel.setLoginState(false) }
-            .addOnCanceledListener {  }
-            .addOnCompleteListener {  }
-    }
+
 
 
 

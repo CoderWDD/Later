@@ -23,6 +23,8 @@ ext{
     shimmerVersion = "0.5.0"
     navigationFragment= "2.4.1"
     glideVersion = "4.14.2"
+    playServicesAuthVersion = "20.4.1"
+    firebaseBomVersion = "31.2.0"
 
     app = [
             kaptRoom: "androidx.room:room-compiler:$roomVersion",
@@ -60,6 +62,12 @@ ext{
             navigation_ui_ktx: "androidx.navigation:navigation-ui-ktx:$navigationFragment",
 
             glide: "com.github.bumptech.glide:glide:$glideVersion",
+
+            firebase_database: "com.google.firebase:firebase-database-ktx",
+            playServicesAuth: "com.google.android.gms:play-services-auth: $playServicesAuthVersion",
+            firebaseFirestoreKtx:"com.google.firebase:firebase-firestore-ktx",
+            firebaseAuthKtx: "com.google.firebase:firebase-auth-ktx",
+            firebaseBom: "com.google.firebase:firebase-bom: $firebaseBomVersion"
 
     ]
 }

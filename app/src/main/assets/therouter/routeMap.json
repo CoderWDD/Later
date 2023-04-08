@@ -1,0 +1,58 @@
+[
+  {
+    "path": "path:/Profile/ProfileFragment",
+    "className": "com.example.profile.ProfileFragment",
+    "action": "",
+    "description": "The entrance fragment of profile",
+    "params": {}
+  },
+  {
+    "path": "path:/Notification/NotificationFragment",
+    "className": "com.example.notification.NotificationFragment",
+    "action": "",
+    "description": "The entrance fragment of notification",
+    "params": {}
+  },
+  {
+    "path": "path:/Later/TagListFragment",
+    "className": "com.example.laterlist.tags.TagListFragment",
+    "action": "",
+    "description": "The sub fragment of later-list fragment",
+    "params": {}
+  },
+  {
+    "path": "path:/Later/AllLaterListFragment",
+    "className": "com.example.laterlist.alllater.AllLaterListFragment",
+    "action": "",
+    "description": "The sub fragment of later-list fragment",
+    "params": {}
+  },
+  {
+    "path": "path:/Later/LaterListFragment",
+    "className": "com.example.laterlist.LaterListFragment",
+    "action": "",
+    "description": "The entrance fragment of laterList",
+    "params": {}
+  },
+  {
+    "path": "path:/Later/CollectLaterListFragment",
+    "className": "com.example.laterlist.CollectLaterListFragment",
+    "action": "",
+    "description": "The sub fragment of later-list fragment",
+    "params": {}
+  },
+  {
+    "path": "path:/Later/HomeFragment",
+    "className": "com.example.home.HomeFragment",
+    "action": "",
+    "description": "The fragment used to display home view",
+    "params": {}
+  },
+  {
+    "path": "path:/Calendar/CalenderFragment",
+    "className": "com.example.calendar.CalenderFragment",
+    "action": "",
+    "description": "The entrance fragment of calendar",
+    "params": {}
+  }
+]

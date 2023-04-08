@@ -14,7 +14,7 @@ class FolderCardProxy: RVProxy<FolderData, FolderViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.folder_card, parent, false)
-        return FolderViewHolder(view);
+        return FolderViewHolder(view)
     }
 
     override fun onBindViewHolder(

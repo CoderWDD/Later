@@ -8,7 +8,7 @@ def appDependence = rootProject.ext.app
 
 android {
     namespace 'com.example.collect'
-    compileSdk 32
+    compileSdk 33
 
     viewBinding{
         enabled = true
@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 

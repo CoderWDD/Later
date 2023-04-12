@@ -11,15 +11,18 @@ import android.widget.TextView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import com.example.common.adapter.ViewPagerAdapter
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
+import com.example.common.entity.LaterFolderEntity
 import com.example.common.log.LaterLog
 import com.example.common.utils.TheRouterUtil
 import com.example.laterlist.alllater.AllLaterListFragment
 import com.example.laterlist.callback.MenuItemDialogClickCallBack
 import com.example.laterlist.databinding.FragmentLaterListBinding
 import com.example.laterlist.tags.TagListFragment
+import com.example.laterlist.viewmodel.LaterListViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.therouter.router.Route
@@ -32,8 +35,10 @@ import kotlinx.coroutines.withContext
     path = RoutePathConstant.LaterListFragment,
     description = "The entrance fragment of laterList"
 )
-class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterListBinding::inflate) {
-    private lateinit var fragments : Array<Fragment>
+class LaterListFragment :
+    BaseFragment<FragmentLaterListBinding>(FragmentLaterListBinding::inflate) {
+    private lateinit var viewModel: LaterListViewModel
+    private lateinit var fragments: Array<Fragment>
 
     private lateinit var titles: Array<String>
 
@@ -42,10 +47,13 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
     private lateinit var createFolderDialog: CreateFolderFragment
 
     override fun onCreateView() {
+        viewModel = ViewModelProvider(this)[LaterListViewModel::class.java]
         fragments = arrayOf(
             // add fragments here
-            TheRouterUtil.getFragmentByPath<AllLaterListFragment>(RoutePathConstant.AllLaterListFragment) ?: AllLaterListFragment(),
-            TheRouterUtil.getFragmentByPath<TagListFragment>(RoutePathConstant.TagListFragment) ?: TagListFragment()
+            TheRouterUtil.getFragmentByPath<AllLaterListFragment>(RoutePathConstant.AllLaterListFragment)
+                ?: AllLaterListFragment(),
+            TheRouterUtil.getFragmentByPath<TagListFragment>(RoutePathConstant.TagListFragment)
+                ?: TagListFragment()
         )
 
         titles = arrayOf(
@@ -68,7 +76,7 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
 
     }
 
-    private fun init(){
+    private fun init() {
         // 初始化 toolbar
         initToolbar()
         // 初始化 viewPager
@@ -80,7 +88,7 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
     }
 
 
-    private fun generateItemTab(position: Int): View{
+    private fun generateItemTab(position: Int): View {
         val view = LayoutInflater.from(requireContext()).inflate(R.layout.tablayout_item_tab, null)
         val imageView = view.findViewById<ImageView>(R.id.item_icon)
         val textView = view.findViewById<TextView>(R.id.item_text)
@@ -89,29 +97,34 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
         return view
     }
 
-    private fun initToolbar(){
+    private fun initToolbar() {
         // 设置顶部toolbar的点击事件
         viewBinding.laterListViewPager.isUserInputEnabled = true
     }
 
-    private fun initViewPager(){
+    private fun initViewPager() {
         // 配置页面下面的 viewPager 与 tabLayout
-        viewBinding.laterListViewPager.adapter = ViewPagerAdapter(fragments, requireActivity().supportFragmentManager, lifecycle)
-        TabLayoutMediator(viewBinding.laterListTabLayout, viewBinding.laterListViewPager, true, true
+        viewBinding.laterListViewPager.adapter =
+            ViewPagerAdapter(fragments, requireActivity().supportFragmentManager, lifecycle)
+        TabLayoutMediator(
+            viewBinding.laterListTabLayout, viewBinding.laterListViewPager, true, true
         ) { tab: TabLayout.Tab, position: Int ->
             tab.customView = generateItemTab(position)
         }.attach()
     }
 
     // 根据不同的item，显示不同的添加页面
-    private fun initMenuItemClick(){
+    private fun initMenuItemClick() {
         viewBinding.toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 com.example.common.R.id.create_website -> {
 
                 }
                 com.example.common.R.id.create_folder -> {
-                    createFolderDialog.show(requireActivity().supportFragmentManager, "create_folder")
+                    createFolderDialog.show(
+                        requireActivity().supportFragmentManager,
+                        "create_folder"
+                    )
                 }
                 com.example.common.R.id.create_image -> {
 
@@ -124,16 +137,20 @@ class LaterListFragment : BaseFragment<FragmentLaterListBinding>(FragmentLaterLi
         }
     }
 
-    private fun initMenuItemDialog(){
+    private fun initMenuItemDialog() {
         createFolderDialog = CreateFolderFragment.newInstance(object : MenuItemDialogClickCallBack {
             override fun onConfirmClickListener(tile: String) {
                 // 执行创建文件夹的逻辑
+                val folder = LaterFolderEntity(
+                    title = tile,
+                    cnt = 0
+                )
+                viewModel.createFolder(folder)
             }
 
             override fun onCancelClickListener() {
                 // 待加
             }
-
         })
     }
 

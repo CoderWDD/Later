@@ -7,7 +7,7 @@ def appDependence = rootProject.ext.app
 
 android {
     namespace 'com.example.laterlist'
-    compileSdk 32
+    compileSdk 33
 
     viewBinding{
         enabled = true
@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         minSdk 21
-        targetSdk 32
+        targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -56,4 +56,9 @@ dependencies {
     implementation appDependence.firebaseAuthKtx
     implementation appDependence.firebaseFirestoreKtx
     implementation appDependence.playServicesAuth
+    implementation appDependence.room
+    implementation appDependence.room_ktx
+    implementation appDependence.liveData
+    implementation appDependence.lifecycleViewModel
+    implementation appDependence.viewModel
 }

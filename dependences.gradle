@@ -1,7 +1,7 @@
 ext{
     // base sdk setting of the project
     androidMinSdkVersion = 21
-    androidTargetSdkVersion = 32
+    androidTargetSdkVersion = 33
     androidVersionCode = 1
     androidVersionName = "1.0"
 
@@ -33,8 +33,9 @@ ext{
             material : "com.google.android.material:material:$materialVersion",
             hilt : "androidx.hilt:hilt-navigation-compose:$hiltVersion",
             lifecycle : "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion",
+            liveData : "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion",
             lifecycleViewModel : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion",
-            viewModed : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion",
+            viewModel : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion",
             lifecycleProcess : "androidx.lifecycle:lifecycle-process:$lifecycleVersion",
             room : "androidx.room:room-runtime:$roomVersion",
             room_ktx : "androidx.room:room-ktx:$roomVersion",

@@ -23,7 +23,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:text="新建文件夹"/>
+                android:text="@string/create_folder_title"/>
 
             <ImageView
                 android:id="@+id/create_folder_icon"
@@ -50,7 +50,7 @@
                 app:layout_constraintHorizontal_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="确定"
+                android:text="@string/create_folder_button_confirm"
                 android:layout_marginLeft="4dp"
                 app:layout_constraintStart_toEndOf="@id/create_folder_button_cancel"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -64,7 +64,7 @@
                 app:layout_constraintHorizontal_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="取消"
+                android:text="@string/create_folder_button_cancel"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/create_folder_button_confirm"

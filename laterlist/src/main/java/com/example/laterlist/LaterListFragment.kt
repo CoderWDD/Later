@@ -117,14 +117,14 @@ class LaterListFragment :
     private fun initMenuItemClick() {
         viewBinding.toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                com.example.common.R.id.create_website -> {
-
-                }
                 com.example.common.R.id.create_folder -> {
                     createFolderDialog.show(
                         requireActivity().supportFragmentManager,
                         "create_folder"
                     )
+                }
+                com.example.common.R.id.create_website -> {
+
                 }
                 com.example.common.R.id.create_image -> {
 

@@ -11,4 +11,15 @@
     <string name="category_header_title">收藏夹</string>
 
     <string name="later_all_tool_bar_title">列表</string>
+
+    <string name="create_folder_title">新建文件夹</string>
+    <string name="create_folder_button_confirm">确定</string>
+    <string name="create_folder_button_cancel">取消</string>
+
+    <string name="create_website_center_text">新建网址</string>
+    <string name="create_website_url">链接: </string>
+    <string name="create_website_title">标题: </string>
+    <string name="create_website_content">内容/描述: </string>
+    <string name="create_website_button_confirm">确定</string>
+    <string name="create_website_button_cancel">取消</string>
 </resources>

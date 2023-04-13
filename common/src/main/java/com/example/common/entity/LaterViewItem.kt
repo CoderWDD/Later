@@ -16,13 +16,13 @@ data class LaterViewItem(
     var thumbnailUrl: String,
     var description: String,
     val tag: String,
-    val createTime: String,
-    val updateTime: String,
-    val lastReadTime: String,
+    val createTime: Long = System.currentTimeMillis(),
+    val updateTime: Long = System.currentTimeMillis(),
+    val lastReadTime: Long = System.currentTimeMillis(),
     val isRead: Boolean,
     val isDelete: Boolean,
     val isTop: Boolean,
-    val isStar: Boolean,
+    val isStar: Boolean = false,
     val folder: String,
     val itemType: ItemType
 )

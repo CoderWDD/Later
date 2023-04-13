@@ -20,7 +20,7 @@ class LaterListViewModel: ViewModel() {
 
     fun createFolder(folderEntity: LaterFolderEntity){
         viewModelScope.launch{
-            laterListRepository.createFolder<String>(folderEntity).collect{
+            laterListRepository.createFolder(folderEntity).collect{
                 when (it) {
                     is Resource.Success -> {
                         println("createFolder success")

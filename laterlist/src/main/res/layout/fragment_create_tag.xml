@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="12dp"
+    tools:context=".CreateTagFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/create_tag_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:flow_verticalAlign="center"
+            android:textSize="16sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/create_tag_center_text"/>
+
+        <ImageView
+            android:id="@+id/create_tag_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tag_name_edittext"
+            app:layout_constraintBottom_toBottomOf="@id/tag_name_edittext"
+            android:src="@drawable/tag_icon"/>
+
+        <EditText
+            android:id="@+id/tag_name_edittext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            app:layout_constraintTop_toBottomOf="@id/create_tag_title"
+            app:layout_constraintStart_toEndOf="@id/create_tag_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/create_tag_icon"/>
+
+
+        <Button
+            android:id="@+id/create_tag_button_confirm"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/create_folder_button_confirm"
+            android:layout_marginLeft="4dp"
+            app:layout_constraintStart_toEndOf="@id/create_tag_button_cancel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tag_name_edittext"/>
+
+
+        <Button
+            android:id="@+id/create_tag_button_cancel"
+            android:layout_marginRight="4dp"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/create_folder_button_cancel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/create_tag_button_confirm"
+            app:layout_constraintTop_toBottomOf="@id/tag_name_edittext" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

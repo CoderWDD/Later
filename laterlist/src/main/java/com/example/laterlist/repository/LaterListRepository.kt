@@ -22,6 +22,7 @@ class LaterListRepository : LaterListService {
     private val userId by lazy { user?.uid ?: "" }
     private val favoriteFolderRef by lazy { getFavoriteFolderReference() }
     private val recycleFolderRef by lazy { getRecycleFolderReference() }
+    private val tagRef by lazy { getTagReference() }
 
     override fun createFolder(laterFolderEntity: LaterFolderEntity): Flow<Resource<String>> {
         return object : NetworkBoundResource<String>() {
@@ -316,8 +317,89 @@ class LaterListRepository : LaterListService {
     }
 
     override fun createLaterTag(tag: String): Flow<Resource<String>> {
-        TODO("Not yet implemented")
+        return object : NetworkBoundResource<String>() {
+            override fun saveToCache(item: Resource<String>) {}
+
+            override fun shouldFetch(data: String?) = true
+
+            override fun loadFromCache(): Flow<String> {
+                return flow { emit("") }
+            }
+
+            override suspend fun fetchFromNetwork(): Flow<Resource<String>> =
+                flow<Resource<String>> {
+                    val result = suspendCoroutine<Resource<String>> { continuation ->
+                        tagRef.push().setValue(tag)
+                            .addOnSuccessListener { continuation.resume(Resource.success(data = "Success")) }
+                            .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
+                            .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
+                    }
+                    emit(result)
+                }
+        }.asFlow()
     }
+
+    override fun getTagsList(): Flow<Resource<List<String>>> {
+        return object : NetworkBoundResource<List<String>>() {
+            override fun saveToCache(item: Resource<List<String>>) {}
+
+            override fun shouldFetch(data: List<String>?) = true
+
+            override fun loadFromCache(): Flow<List<String>> {
+                return flow { emit(emptyList()) }
+            }
+
+            override suspend fun fetchFromNetwork(): Flow<Resource<List<String>>> =
+                flow<Resource<List<String>>> {
+                    val result = suspendCoroutine<Resource<List<String>>> { continuation ->
+                        tagRef.get()
+                            .addOnSuccessListener {tagListSnapshot ->
+                                val list = mutableListOf<String>()
+                                tagListSnapshot.children.forEach { tagSnapshot ->
+                                    tagSnapshot.getValue(String::class.java)?.let { tag ->
+                                        list.add(tag)
+                                    }
+                                }
+                                continuation.resume(Resource.success(data = list))
+                            }
+                            .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
+                            .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
+                    }
+                    emit(result)
+                }
+        }.asFlow()
+    }
+
+    override fun deleteTag(tag: String): Flow<Resource<String>> {
+        return object : NetworkBoundResource<String>() {
+            override fun saveToCache(item: Resource<String>) {}
+
+            override fun shouldFetch(data: String?) = true
+
+            override fun loadFromCache(): Flow<String> {
+                return flow { emit("") }
+            }
+
+            override suspend fun fetchFromNetwork(): Flow<Resource<String>> =
+                flow<Resource<String>> {
+                    val result = suspendCoroutine<Resource<String>> { continuation ->
+                        tagRef.orderByValue().equalTo(tag).get()
+                            .addOnSuccessListener {tagListSnapshot ->
+                                tagListSnapshot.children.forEach { tagSnapshot ->
+                                    tagSnapshot.ref.removeValue()
+                                        .addOnSuccessListener { continuation.resume(Resource.success(data = "Success")) }
+                                        .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
+                                        .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
+                                }
+                            }
+                            .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
+                            .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
+                    }
+                    emit(result)
+                }
+        }.asFlow()
+    }
+
 
     private fun getFavoriteFolderReference() =
         database.getReference(FirebaseFieldsConstants.USER_ID).child(userId).child(FirebaseFieldsConstants.FAVORITE_FOLDER)
@@ -327,6 +409,9 @@ class LaterListRepository : LaterListService {
 
     private fun getFavoriteLaterViewItemReference(favoriteFolderPath: String) =
         favoriteFolderRef.child(favoriteFolderPath).child(FirebaseFieldsConstants.LATER_VIEW_ITEM)
+
+    private fun getTagReference() =
+        database.getReference(FirebaseFieldsConstants.USER_ID).child(userId).child(FirebaseFieldsConstants.TAG)
 
     override fun onClear() {
     }

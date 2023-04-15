@@ -16,6 +16,7 @@ import com.example.common.adapter.ViewPagerAdapter
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
 import com.example.common.entity.LaterFolderEntity
+import com.example.common.entity.LaterViewItem
 import com.example.common.log.LaterLog
 import com.example.common.utils.TheRouterUtil
 import com.example.laterlist.alllater.AllLaterListFragment
@@ -45,6 +46,10 @@ class LaterListFragment :
     private lateinit var icons: Array<Int?>
 
     private lateinit var createFolderDialog: CreateFolderFragment
+
+    private lateinit var createWebsiteDialog: CreateWebsiteFragment
+
+    private lateinit var createTagDialog: CreateTagFragment
 
     override fun onCreateView() {
         viewModel = ViewModelProvider(this)[LaterListViewModel::class.java]
@@ -124,7 +129,16 @@ class LaterListFragment :
                     )
                 }
                 com.example.common.R.id.create_website -> {
-
+                    createWebsiteDialog.show(
+                        requireActivity().supportFragmentManager,
+                        "create_website"
+                    )
+                }
+                com.example.common.R.id.create_tag -> {
+                    createTagDialog.show(
+                        requireActivity().supportFragmentManager,
+                        "create_tag"
+                    )
                 }
                 com.example.common.R.id.create_image -> {
 
@@ -138,11 +152,11 @@ class LaterListFragment :
     }
 
     private fun initMenuItemDialog() {
-        createFolderDialog = CreateFolderFragment.newInstance(object : MenuItemDialogClickCallBack {
-            override fun onConfirmClickListener(tile: String) {
+        createFolderDialog = CreateFolderFragment.newInstance(object : MenuItemDialogClickCallBack<String> {
+            override fun onConfirmClickListener(content: String) {
                 // 执行创建文件夹的逻辑
                 val folder = LaterFolderEntity(
-                    title = tile,
+                    title = content,
                     cnt = 0
                 )
                 viewModel.createFolder(folder)
@@ -152,7 +166,37 @@ class LaterListFragment :
                 // 待加
             }
         })
+
+        createWebsiteDialog = CreateWebsiteFragment.newInstance(object : MenuItemDialogClickCallBack<LaterViewItem> {
+            override fun onConfirmClickListener(content: LaterViewItem) {
+                // 执行创建文件夹的逻辑
+                if (URLUtil.isValidUrl(content.contentUrl)) {
+                    viewModel.createWebsite(content)
+                } else {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("提示")
+                        .setMessage("请输入正确的网址")
+                        .setPositiveButton("确定") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .show()
+                }
+            }
+
+            override fun onCancelClickListener() {
+                // 待加
+            }
+        })
+
+        createTagDialog = CreateTagFragment.newInstance(object : MenuItemDialogClickCallBack<String> {
+            override fun onConfirmClickListener(content: String) {
+                // 执行创建文件夹的逻辑
+                viewModel.createTag(content)
+            }
+
+            override fun onCancelClickListener() {
+                // 待加
+            }
+        })
     }
-
-
 }

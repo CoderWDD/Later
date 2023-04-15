@@ -19,7 +19,14 @@
     <string name="create_website_center_text">新建网址</string>
     <string name="create_website_url">链接: </string>
     <string name="create_website_title">标题: </string>
+    <string name="folder_title">文件夹: </string>
+    <string name="tag_title">标签: </string>
     <string name="create_website_content">内容/描述: </string>
     <string name="create_website_button_confirm">确定</string>
     <string name="create_website_button_cancel">取消</string>
+
+    <string name="create_image_center_text">新建图片</string>
+
+    <string name="create_tag_center_text">新建标签</string>
+
 </resources>

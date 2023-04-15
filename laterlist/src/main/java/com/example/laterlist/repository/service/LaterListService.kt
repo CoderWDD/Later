@@ -26,6 +26,9 @@ interface LaterListService {
 
     fun createLaterTag(tag: String): Flow<Resource<String>>
 
+    fun getTagsList(): Flow<Resource<List<String>>>
+
+    fun deleteTag(tag: String): Flow<Resource<String>>
 
     fun onClear()
 }

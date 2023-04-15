@@ -6,10 +6,10 @@ import com.example.laterlist.callback.MenuItemDialogClickCallBack
 import com.example.laterlist.databinding.FragmentCreateFolderBinding
 
 class CreateFolderFragment : BaseDialogFragment<FragmentCreateFolderBinding>(FragmentCreateFolderBinding::inflate) {
-    private var customDialogCallback: MenuItemDialogClickCallBack? = null
+    private var customDialogCallback: MenuItemDialogClickCallBack<String>? = null
 
     companion object{
-        fun newInstance(customDialogCallback: MenuItemDialogClickCallBack): CreateFolderFragment {
+        fun newInstance(customDialogCallback: MenuItemDialogClickCallBack<String>): CreateFolderFragment {
             val fragment = CreateFolderFragment()
             fragment.customDialogCallback = customDialogCallback
             return fragment

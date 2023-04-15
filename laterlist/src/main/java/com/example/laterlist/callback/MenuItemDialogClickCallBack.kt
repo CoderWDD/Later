@@ -1,6 +1,6 @@
 package com.example.laterlist.callback
 
-interface MenuItemDialogClickCallBack {
-    fun onConfirmClickListener(tile: String)
+interface MenuItemDialogClickCallBack<T> {
+    fun onConfirmClickListener(content: T)
     fun onCancelClickListener()
 }

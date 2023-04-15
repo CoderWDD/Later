@@ -63,7 +63,14 @@
             app:layout_constraintStart_toEndOf="@id/create_folder_title_tv"
             app:layout_constraintTop_toBottomOf="@id/create_website_url_ev" />
 
-<!--     TODO add the fragment that allows user to select folder and tags here   -->
+        <!-- add the fragment that allows user to select folder and tags here -->
+
+        <include
+            android:id="@+id/fragment_folder_tag_selector"
+            layout="@layout/fragment_folder_tag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/create_website_title_ev" />
 
         <TextView
             android:id="@+id/create_website_content_tv"
@@ -73,7 +80,7 @@
             android:text="@string/create_website_content"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/create_website_title_ev" />
+            app:layout_constraintTop_toBottomOf="@id/fragment_folder_tag_selector" />
 
         <EditText
             android:id="@+id/create_website_content_ev"
@@ -84,6 +91,31 @@
             android:layout_height="160dp"
             android:textSize="16sp"
             app:layout_constraintTop_toBottomOf="@id/create_website_content_tv" />
+
+        <Button
+            android:id="@+id/create_website_button_confirm"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/create_folder_button_confirm"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toEndOf="@id/create_website_button_cancel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/create_website_content_ev"/>
+
+        <Button
+            android:id="@+id/create_website_button_cancel"
+            android:layout_marginRight="4dp"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/create_folder_button_cancel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/create_website_button_confirm"
+            app:layout_constraintTop_toTopOf="@id/create_website_button_confirm"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

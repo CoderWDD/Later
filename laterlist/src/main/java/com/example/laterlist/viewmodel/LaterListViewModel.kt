@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.common.constants.FirebaseFieldsConstants
 import com.example.common.entity.LaterFolderEntity
+import com.example.common.entity.LaterViewItem
 import com.example.common.log.LaterLog
 import com.example.common.reporesource.Resource
 import com.example.common.unify.ResBody
@@ -40,11 +41,29 @@ class LaterListViewModel: ViewModel() {
         }
     }
 
-    fun createTag(){
+    fun createTag(tag: String){
+        viewModelScope.launch {
+            laterListRepository.createLaterTag(tag).collect {
+                when (it) {
+                    is Resource.Success -> {
+                        println("createTag success")
+                    }
+                    is Resource.Error -> {
+                        println("createTag error")
+                    }
+                    is Resource.Loading -> {
+                        println("createTag loading")
+                    }
+                    is Resource.Cached -> {
 
+                    }
+                    else -> {}
+                }
+            }
+        }
     }
 
-    fun createWebsite(){
+    fun createWebsite(website: LaterViewItem){
 
     }
 
@@ -62,7 +81,25 @@ class LaterListViewModel: ViewModel() {
     }
 
     fun getTagList(){
+        viewModelScope.launch {
+            laterListRepository.getTagsList().collect {
+                when (it) {
+                    is Resource.Success -> {
+                        println("getTagList success")
+                    }
+                    is Resource.Error -> {
+                        println("getTagList error")
+                    }
+                    is Resource.Loading -> {
+                        println("getTagList loading")
+                    }
+                    is Resource.Cached -> {
 
+                    }
+                    else -> {}
+                }
+            }
+        }
     }
 
     fun saveToFavorite(){
@@ -112,6 +149,5 @@ class LaterListViewModel: ViewModel() {
     // clear the reference of instance which is not used
     override fun onCleared() {
         super.onCleared()
-
     }
 }

@@ -5,18 +5,23 @@ import com.example.common.constants.FirebaseFieldsConstants
 import com.example.common.entity.LaterFolderEntity
 import com.example.common.entity.LaterViewItem
 import com.example.common.extents.isToday
+import com.example.common.log.LaterLog
 import com.example.common.reporesource.NetworkBoundResource
 import com.example.common.reporesource.Resource
 import com.example.laterlist.repository.service.LaterListService
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class LaterListRepository : LaterListService {
+class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterListService {
     private val database by lazy { Firebase.database(BaseUrl.FirebaseRealTimeDatabaseUrl) }
     private val user by lazy { FirebaseAuth.getInstance().currentUser }
     private val userId by lazy { user?.uid ?: "" }
@@ -24,14 +29,14 @@ class LaterListRepository : LaterListService {
     private val recycleFolderRef by lazy { getRecycleFolderReference() }
     private val tagRef by lazy { getTagReference() }
 
-    override fun createFolder(laterFolderEntity: LaterFolderEntity): Flow<Resource<String>> {
-        return object : NetworkBoundResource<String>() {
-            override fun saveToCache(item: Resource<String>) {}
+    override fun createFolder(laterFolderEntity: LaterFolderEntity): SharedFlow<Resource<String>> {
+        return object : NetworkBoundResource<String> (){
+            override fun saveToCache(item: Resource<String>) { }
 
-            override fun shouldFetch(data: String?) = true
+            override fun shouldFetch(data: String?): Boolean = true
 
             override fun loadFromCache(): Flow<String> {
-                return flow { emit("" as String) }
+                return flowOf("")
             }
 
             override suspend fun fetchFromNetwork(): Flow<Resource<String>> =
@@ -44,11 +49,13 @@ class LaterListRepository : LaterListService {
                     }
                     emit(result)
                 }
-        }.asFlow()
+        }.asSharedFlow(coroutineScope = viewModelScope)
     }
 
-    override fun getFavoriteFolderList(): Flow<Resource<List<LaterFolderEntity>>> {
-        return object : NetworkBoundResource<List<LaterFolderEntity>>() {
+    override fun getFavoriteFolderList(): MutableSharedFlow<Resource<List<LaterFolderEntity>>> {
+        val favoriteFolderList = mutableListOf<LaterFolderEntity>()
+
+        val mutableSharedFlow = object : NetworkBoundResource<List<LaterFolderEntity>>() {
             override fun saveToCache(item: Resource<List<LaterFolderEntity>>) {}
 
             override fun shouldFetch(data: List<LaterFolderEntity>?) = true
@@ -59,27 +66,51 @@ class LaterListRepository : LaterListService {
 
             override suspend fun fetchFromNetwork(): Flow<Resource<List<LaterFolderEntity>>> =
                 flow<Resource<List<LaterFolderEntity>>> {
-                    val result = suspendCoroutine<Resource<List<LaterFolderEntity>>> { continuation ->
-                        favoriteFolderRef.get()
-                            .addOnSuccessListener {
-                                val list = mutableListOf<LaterFolderEntity>()
-                                it.children.forEach { child ->
-                                    child.getValue(LaterFolderEntity::class.java)?.let { folder ->
-                                        list.add(folder)
-                                    }
-                                }
-                                continuation.resume(Resource.success(data = list))
-                            }
-                            .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
-                            .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
-                    }
-                    emit(result)
+                    emit(Resource.success(data = emptyList()))
                 }
-        }.asFlow()
+        }.asMutableSharedFlow(coroutineScope = viewModelScope)
+
+        val childEventListener = object : ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                favoriteFolderList.add(snapshot.getValue(LaterFolderEntity::class.java)!!)
+                viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = favoriteFolderList)) }
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+
+                val folder = snapshot.getValue(LaterFolderEntity::class.java)
+                folder?.let {
+                    val index = favoriteFolderList.indexOfFirst { folder -> folder.id == it.id }
+                    if (index != -1) {
+                        favoriteFolderList[index] = it
+                        viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = favoriteFolderList)) }
+                    }
+                }
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                val folder = snapshot.getValue(LaterFolderEntity::class.java)
+                folder?.let {
+                    val index = favoriteFolderList.indexOfFirst { folder -> folder.id == it.id }
+                    if (index != -1) {
+                        favoriteFolderList.removeAt(index)
+                        viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = favoriteFolderList)) }
+                    }
+                }
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+
+            override fun onCancelled(error: DatabaseError) {}
+        }
+        // add child event listener
+        favoriteFolderRef.addChildEventListener(childEventListener)
+        return mutableSharedFlow
     }
 
-    override fun getRecycleBinFolderList(): Flow<Resource<List<LaterFolderEntity>>> {
-        return object : NetworkBoundResource<List<LaterFolderEntity>>() {
+    override fun getRecycleBinFolderList(): MutableSharedFlow<Resource<List<LaterFolderEntity>>> {
+        val recycleFolderList = mutableListOf<LaterFolderEntity>()
+        val mutableSharedFlow =  object : NetworkBoundResource<List<LaterFolderEntity>>() {
             override fun saveToCache(item: Resource<List<LaterFolderEntity>>) {}
 
             override fun shouldFetch(data: List<LaterFolderEntity>?) = true
@@ -90,23 +121,45 @@ class LaterListRepository : LaterListService {
 
             override suspend fun fetchFromNetwork(): Flow<Resource<List<LaterFolderEntity>>> =
                 flow<Resource<List<LaterFolderEntity>>> {
-                    val result = suspendCoroutine<Resource<List<LaterFolderEntity>>> { continuation ->
-                        recycleFolderRef.get()
-                            .addOnSuccessListener {
-                                val list = mutableListOf<LaterFolderEntity>()
-                                it.children.forEach { child ->
-                                    child.getValue(LaterFolderEntity::class.java)?.let { folder ->
-                                        list.add(folder)
-                                    }
-                                }
-                                continuation.resume(Resource.success(data = list))
-                            }
-                            .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
-                            .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
-                    }
-                    emit(result)
+                    emit(Resource.success(data = emptyList()))
                 }
-        }.asFlow()
+        }.asMutableSharedFlow(coroutineScope = viewModelScope)
+
+        val childEventListener = object : ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                recycleFolderList.add(snapshot.getValue(LaterFolderEntity::class.java)!!)
+                viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = recycleFolderList)) }
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                val folder = snapshot.getValue(LaterFolderEntity::class.java)
+                folder?.let {
+                    val index = recycleFolderList.indexOfFirst { folder -> folder.id == it.id }
+                    if (index != -1) {
+                        recycleFolderList[index] = it
+                        viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = recycleFolderList)) }
+                    }
+                }
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                val folder = snapshot.getValue(LaterFolderEntity::class.java)
+                folder?.let {
+                    val index = recycleFolderList.indexOfFirst { folder -> folder.id == it.id }
+                    if (index != -1) {
+                        recycleFolderList.removeAt(index)
+                        viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = recycleFolderList)) }
+                    }
+                }
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+
+            override fun onCancelled(error: DatabaseError) {}
+        }
+        // add child event listener
+        recycleFolderRef.addChildEventListener(childEventListener)
+        return mutableSharedFlow
     }
 
     override fun deleteFavoriteFolder(folderPath: String): Flow<Resource<String>> {
@@ -129,7 +182,7 @@ class LaterListRepository : LaterListService {
                     }
                     emit(result)
                 }
-        }.asFlow()
+        }.asSharedFlow(coroutineScope = viewModelScope).catch { emit(Resource.error(message = it.message ?: "Unknown error")) }
     }
 
     override fun deleteRecycleBinFolder(folderPath: String): Flow<Resource<String>> {
@@ -152,7 +205,7 @@ class LaterListRepository : LaterListService {
                     }
                     emit(result)
                 }
-        }.asFlow()
+        }.asSharedFlow(coroutineScope = viewModelScope).catch { emit(Resource.error(message = it.message ?: "Unknown error")) }
     }
 
     override fun moveFolderToRecycleBin(folderPath: String): Flow<Resource<String>> {
@@ -190,17 +243,18 @@ class LaterListRepository : LaterListService {
                     }
                     emit(result)
                 }
-        }.asFlow()
+        }.asSharedFlow(coroutineScope = viewModelScope).catch { emit(Resource.error(message = it.message ?: "Unknown error")) }
     }
 
-    override fun getTodayLaterViewItemList(): Flow<Resource<List<LaterViewItem>>> {
-        return object : NetworkBoundResource<List<LaterViewItem>>() {
+    override fun getTodayLaterViewItemList(): MutableSharedFlow<Resource<List<LaterViewItem>>> {
+        val laterViewItemList = mutableListOf<LaterViewItem>()
+        val mutableSharedFlow =  object : NetworkBoundResource<List<LaterViewItem>>() {
             override fun saveToCache(item: Resource<List<LaterViewItem>>) {}
 
             override fun shouldFetch(data: List<LaterViewItem>?) = true
 
             override fun loadFromCache(): Flow<List<LaterViewItem>> {
-                return flow { emit(emptyList()) }
+                return flowOf(emptyList())
             }
 
             override suspend fun fetchFromNetwork(): Flow<Resource<List<LaterViewItem>>> =
@@ -218,7 +272,6 @@ class LaterListRepository : LaterListService {
                                 list.forEach {folder ->
                                     getFavoriteLaterViewItemReference(folder.id).get()
                                         .addOnSuccessListener {laterListSnapshot ->
-                                            val laterList = mutableListOf<LaterViewItem>()
                                             laterListSnapshot.children
                                                 .filter {laterItem ->
                                                     val later = laterItem.getValue(LaterViewItem::class.java)
@@ -226,31 +279,82 @@ class LaterListRepository : LaterListService {
                                                 }
                                                 .forEach { laterSnapshot ->
                                                     laterSnapshot.getValue(LaterViewItem::class.java)?.let { later ->
-                                                    laterList.add(later)
+                                                    laterViewItemList.add(later)
                                                 }
                                             }
-                                            continuation.resume(Resource.success(data = laterList))
                                         }
                                         .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
                                         .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
                                 }
+                                continuation.resume(Resource.success(data = laterViewItemList))
                             }
                             .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
                             .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
                     }
                     emit(result)
                 }
-        }.asFlow()
+        }.asMutableSharedFlow(coroutineScope = viewModelScope)
+
+        val childEventListener = object: ChildEventListener{
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                snapshot.getValue(LaterViewItem::class.java)?.let {
+                    if (it.createTime.isToday() || it.updateTime.isToday()) {
+                        laterViewItemList.add(it)
+                        mutableSharedFlow.tryEmit(Resource.success(data = laterViewItemList))
+                    }
+                }
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                snapshot.getValue(LaterViewItem::class.java)?.let {
+                    if (it.createTime.isToday() || it.updateTime.isToday()) {
+                        laterViewItemList.indexOfFirst { laterViewItem -> laterViewItem.id == it.id }.let { index ->
+                            if (index != -1) {
+                                laterViewItemList[index] = it
+                                mutableSharedFlow.tryEmit(Resource.success(data = laterViewItemList))
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                snapshot.getValue(LaterViewItem::class.java)?.let {
+                    if (it.createTime.isToday() || it.updateTime.isToday()) {
+                        laterViewItemList.indexOfFirst { laterViewItem -> laterViewItem.id == it.id }.let { index ->
+                            if (index != -1) {
+                                laterViewItemList.removeAt(index)
+                                mutableSharedFlow.tryEmit(Resource.success(data = laterViewItemList))
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+
+            override fun onCancelled(error: DatabaseError) {}
+        }
+        // add child event listener
+        favoriteFolderRef.get().addOnSuccessListener {
+            it.children.forEach { folderSnapshot ->
+                folderSnapshot.children.forEach { folder ->
+                    folder.ref.addChildEventListener(childEventListener)
+                }
+            }
+        }
+        return mutableSharedFlow
     }
 
-    override fun getFavoriteLaterViewItemList(): Flow<Resource<List<LaterViewItem>>> {
-        return object : NetworkBoundResource<List<LaterViewItem>>() {
+    override fun getFavoriteLaterViewItemList(): MutableSharedFlow<Resource<List<LaterViewItem>>> {
+        val favoriteLaterViewItemList = mutableListOf<LaterViewItem>()
+        val mutableSharedFlow =  object : NetworkBoundResource<List<LaterViewItem>>() {
             override fun saveToCache(item: Resource<List<LaterViewItem>>) {}
 
             override fun shouldFetch(data: List<LaterViewItem>?) = true
 
             override fun loadFromCache(): Flow<List<LaterViewItem>> {
-                return flow { emit(emptyList()) }
+                return flowOf(emptyList())
             }
 
             override suspend fun fetchFromNetwork(): Flow<Resource<List<LaterViewItem>>> =
@@ -268,29 +372,69 @@ class LaterListRepository : LaterListService {
                                 list.forEach {folder ->
                                     getFavoriteLaterViewItemReference(folder.id).get()
                                         .addOnSuccessListener {laterListSnapshot ->
-                                            val laterList = mutableListOf<LaterViewItem>()
                                             laterListSnapshot.children
-                                                .filter {laterItem ->
-                                                    val later = laterItem.getValue(LaterViewItem::class.java)
-                                                    later?.isStar == true
-                                                }
                                                 .forEach { laterSnapshot ->
                                                     laterSnapshot.getValue(LaterViewItem::class.java)?.let { later ->
-                                                        laterList.add(later)
+                                                        favoriteLaterViewItemList.add(later)
                                                     }
                                                 }
-                                            continuation.resume(Resource.success(data = laterList))
                                         }
                                         .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
                                         .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
                                 }
+                                continuation.resume(Resource.success(data = favoriteLaterViewItemList))
                             }
                             .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
                             .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
                     }
                     emit(result)
                 }
-        }.asFlow()
+        }.asMutableSharedFlow(coroutineScope = viewModelScope)
+
+        val childEventListener = object: ChildEventListener{
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                snapshot.getValue(LaterViewItem::class.java)?.let {
+                    favoriteLaterViewItemList.add(it)
+                    mutableSharedFlow.tryEmit(Resource.success(data = favoriteLaterViewItemList))
+                }
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                snapshot.getValue(LaterViewItem::class.java)?.let {
+                    favoriteLaterViewItemList.indexOfFirst { laterViewItem -> laterViewItem.id == it.id }.let { index ->
+                        if (index != -1) {
+                            favoriteLaterViewItemList[index] = it
+                            mutableSharedFlow.tryEmit(Resource.success(data = favoriteLaterViewItemList))
+                        }
+                    }
+                }
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                snapshot.getValue(LaterViewItem::class.java)?.let {
+                    favoriteLaterViewItemList.indexOfFirst { laterViewItem -> laterViewItem.id == it.id }.let { index ->
+                        if (index != -1) {
+                            favoriteLaterViewItemList.removeAt(index)
+                            mutableSharedFlow.tryEmit(Resource.success(data = favoriteLaterViewItemList))
+                        }
+                    }
+                }
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+
+            override fun onCancelled(error: DatabaseError) {}
+        }
+        // add child event listener
+        favoriteFolderRef.get().addOnSuccessListener {
+            it.children.forEach { folderSnapshot ->
+                folderSnapshot.children.forEach {folder ->
+                    folder.ref.addChildEventListener(childEventListener)
+                }
+            }
+        }
+
+        return mutableSharedFlow
     }
 
     override fun createLaterViewItem(folderPath: String, laterViewItem: LaterViewItem): Flow<Resource<String>> {
@@ -313,7 +457,7 @@ class LaterListRepository : LaterListService {
                     }
                     emit(result)
                 }
-        }.asFlow()
+        }.asSharedFlow(coroutineScope = viewModelScope).catch { emit(Resource.error(message = it.message ?: "Unknown error")) }
     }
 
     override fun createLaterTag(tag: String): Flow<Resource<String>> {
@@ -336,11 +480,12 @@ class LaterListRepository : LaterListService {
                     }
                     emit(result)
                 }
-        }.asFlow()
+        }.asSharedFlow(coroutineScope = viewModelScope).catch { emit(Resource.error(message = it.message ?: "Unknown error")) }
     }
 
-    override fun getTagsList(): Flow<Resource<List<String>>> {
-        return object : NetworkBoundResource<List<String>>() {
+    override fun getTagsList(): MutableSharedFlow<Resource<List<String>>> {
+        val tagsList = mutableListOf<String>()
+        val mutableSharedFlow = object : NetworkBoundResource<List<String>>() {
             override fun saveToCache(item: Resource<List<String>>) {}
 
             override fun shouldFetch(data: List<String>?) = true
@@ -354,20 +499,55 @@ class LaterListRepository : LaterListService {
                     val result = suspendCoroutine<Resource<List<String>>> { continuation ->
                         tagRef.get()
                             .addOnSuccessListener {tagListSnapshot ->
-                                val list = mutableListOf<String>()
                                 tagListSnapshot.children.forEach { tagSnapshot ->
                                     tagSnapshot.getValue(String::class.java)?.let { tag ->
-                                        list.add(tag)
+                                        tagsList.add(tag)
                                     }
                                 }
-                                continuation.resume(Resource.success(data = list))
+                                continuation.resume(Resource.success(data = tagsList))
                             }
                             .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
                             .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
                     }
                     emit(result)
                 }
-        }.asFlow()
+        }.asMutableSharedFlow(coroutineScope = viewModelScope)
+        val childEventListener = object : ChildEventListener{
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                snapshot.getValue(String::class.java)?.let {
+                    tagsList.add(it)
+                    mutableSharedFlow.tryEmit(Resource.success(data = tagsList))
+                }
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                snapshot.getValue(String::class.java)?.let {
+                    tagsList.indexOfFirst { tag -> tag == it }.let { index ->
+                        if (index != -1) {
+                            tagsList[index] = it
+                            mutableSharedFlow.tryEmit(Resource.success(data = tagsList))
+                        }
+                    }
+                }
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                snapshot.getValue(String::class.java)?.let {
+                    tagsList.indexOfFirst { tag -> tag == it }.let { index ->
+                        if (index != -1) {
+                            tagsList.removeAt(index)
+                            mutableSharedFlow.tryEmit(Resource.success(data = tagsList))
+                        }
+                    }
+                }
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+
+            override fun onCancelled(error: DatabaseError) {}
+        }
+        tagRef.addChildEventListener(childEventListener)
+        return mutableSharedFlow
     }
 
     override fun deleteTag(tag: String): Flow<Resource<String>> {
@@ -397,9 +577,8 @@ class LaterListRepository : LaterListService {
                     }
                     emit(result)
                 }
-        }.asFlow()
+        }.asSharedFlow(coroutineScope = viewModelScope).catch { emit(Resource.error(message = it.message ?: "Unknown error")) }
     }
-
 
     private fun getFavoriteFolderReference() =
         database.getReference(FirebaseFieldsConstants.USER_ID).child(userId).child(FirebaseFieldsConstants.FAVORITE_FOLDER)

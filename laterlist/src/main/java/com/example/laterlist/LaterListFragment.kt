@@ -12,12 +12,15 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.common.adapter.ViewPagerAdapter
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
 import com.example.common.entity.LaterFolderEntity
 import com.example.common.entity.LaterViewItem
 import com.example.common.log.LaterLog
+import com.example.common.reporesource.Resource
 import com.example.common.utils.TheRouterUtil
 import com.example.laterlist.alllater.AllLaterListFragment
 import com.example.laterlist.callback.MenuItemDialogClickCallBack
@@ -27,10 +30,8 @@ import com.example.laterlist.viewmodel.LaterListViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.therouter.router.Route
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 
 @Route(
     path = RoutePathConstant.LaterListFragment,
@@ -159,7 +160,7 @@ class LaterListFragment :
                     title = content,
                     cnt = 0
                 )
-                viewModel.createFolder(folder)
+                createAndHandleFolder(folder)
             }
 
             override fun onCancelClickListener() {
@@ -191,12 +192,71 @@ class LaterListFragment :
         createTagDialog = CreateTagFragment.newInstance(object : MenuItemDialogClickCallBack<String> {
             override fun onConfirmClickListener(content: String) {
                 // 执行创建文件夹的逻辑
-                viewModel.createTag(content)
+                createAndHandleTag(content)
             }
 
             override fun onCancelClickListener() {
                 // 待加
             }
         })
+    }
+
+    private fun createAndHandleFolder(folder: LaterFolderEntity) {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.createFolder(folder).collect {
+                    when (it) {
+                        is Resource.Success -> {
+                            // 创建文件夹成功
+                            LaterLog.d("create folder success")
+                        }
+                        is Resource.Error -> {
+                            // 创建文件夹失败
+                            LaterLog.d("create folder failed")
+                        }
+                        is Resource.Loading -> {
+                            // 创建文件夹中
+                            LaterLog.d("create folder loading")
+                        }
+                        is Resource.Cached -> {
+                            // 创建文件夹为空
+                            LaterLog.d("create folder empty")
+                        }
+                        else -> {}
+                    }
+                }
+            }
+        }
+    }
+
+    private fun createAndHandleTag(tag: String) {
+        lifecycleScope.launch{
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.createTag(tag).collect {
+                    when (it) {
+                        is Resource.Success -> {
+                            // 创建Tag成功
+                            LaterLog.d("create tag success")
+                        }
+                        is Resource.Error -> {
+                            // 创建Tag失败
+                            LaterLog.d("create tag failed")
+                        }
+                        is Resource.Loading -> {
+                            // 创建Tag中
+                            LaterLog.d("create tag loading")
+                        }
+                        is Resource.Cached -> {
+                            // 创建Tag为空
+                            LaterLog.d("create tag empty")
+                        }
+                        else -> {}
+                    }
+                }
+            }
+        }
+    }
+
+    private fun createAndHandleWebsite(website: LaterViewItem) {
     }
 }

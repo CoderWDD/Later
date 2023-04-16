@@ -59,6 +59,9 @@ dependencies {
     implementation appDependence.room
     implementation appDependence.room_ktx
     implementation appDependence.liveData
+    implementation appDependence.lifecycle
     implementation appDependence.lifecycleViewModel
     implementation appDependence.viewModel
+
+    implementation appDependence.swiperefreshlayout
 }

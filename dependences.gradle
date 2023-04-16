@@ -25,6 +25,7 @@ ext{
     glideVersion = "4.14.2"
     playServicesAuthVersion = "20.4.1"
     firebaseBomVersion = "31.2.0"
+    swiperefreshlayoutVersion = "1.1.0"
 
     app = [
             kaptRoom: "androidx.room:room-compiler:$roomVersion",
@@ -68,7 +69,9 @@ ext{
             playServicesAuth: "com.google.android.gms:play-services-auth: $playServicesAuthVersion",
             firebaseFirestoreKtx:"com.google.firebase:firebase-firestore-ktx",
             firebaseAuthKtx: "com.google.firebase:firebase-auth-ktx",
-            firebaseBom: "com.google.firebase:firebase-bom: $firebaseBomVersion"
+            firebaseBom: "com.google.firebase:firebase-bom: $firebaseBomVersion",
+
+            swiperefreshlayout: "androidx.swiperefreshlayout:swiperefreshlayout:$swiperefreshlayoutVersion"
 
     ]
 }

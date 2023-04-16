@@ -1,70 +1,24 @@
 package com.example.laterlist.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.common.constants.FirebaseFieldsConstants
 import com.example.common.entity.LaterFolderEntity
 import com.example.common.entity.LaterViewItem
-import com.example.common.log.LaterLog
 import com.example.common.reporesource.Resource
-import com.example.common.unify.ResBody
 import com.example.laterlist.repository.LaterListRepository
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class LaterListViewModel: ViewModel() {
-    private val laterListRepository: LaterListRepository by lazy { LaterListRepository() }
+    private val laterListRepository: LaterListRepository by lazy { LaterListRepository(viewModelScope) }
 
-    fun createFolder(folderEntity: LaterFolderEntity){
-        viewModelScope.launch{
-            laterListRepository.createFolder(folderEntity).collect{
-                when (it) {
-                    is Resource.Success -> {
-                        println("createFolder success")
-                    }
-                    is Resource.Error -> {
-                        println("createFolder error")
-                    }
-                    is Resource.Loading -> {
-                        println("createFolder loading")
-                    }
-                    is Resource.Cached -> {
+    fun createFolder(folderEntity: LaterFolderEntity) = laterListRepository.createFolder(folderEntity)
 
-                    }
-                    else -> {}
-                }
-            }
-        }
-    }
+    fun createTag(tag: String) = laterListRepository.createLaterTag(tag).flowOn(Dispatchers.IO)
 
-    fun createTag(tag: String){
-        viewModelScope.launch {
-            laterListRepository.createLaterTag(tag).collect {
-                when (it) {
-                    is Resource.Success -> {
-                        println("createTag success")
-                    }
-                    is Resource.Error -> {
-                        println("createTag error")
-                    }
-                    is Resource.Loading -> {
-                        println("createTag loading")
-                    }
-                    is Resource.Cached -> {
-
-                    }
-                    else -> {}
-                }
-            }
-        }
-    }
-
-    fun createWebsite(website: LaterViewItem){
-
+    fun createWebsite(website: LaterViewItem) {
     }
 
     fun createImage(){
@@ -75,44 +29,19 @@ class LaterListViewModel: ViewModel() {
 
     }
 
+    fun getFavoriteFolderList() = laterListRepository.getFavoriteFolderList().asLiveData()
 
-    fun getFolderList(){
+    fun getRecentFolderList() = laterListRepository.getRecycleBinFolderList().asLiveData()
 
-    }
-
-    fun getTagList(){
-        viewModelScope.launch {
-            laterListRepository.getTagsList().collect {
-                when (it) {
-                    is Resource.Success -> {
-                        println("getTagList success")
-                    }
-                    is Resource.Error -> {
-                        println("getTagList error")
-                    }
-                    is Resource.Loading -> {
-                        println("getTagList loading")
-                    }
-                    is Resource.Cached -> {
-
-                    }
-                    else -> {}
-                }
-            }
-        }
-    }
+    fun getTagList() = laterListRepository.getTagsList().asLiveData()
 
     fun saveToFavorite(){
 
     }
 
-    fun getFavoriteList(){
+    fun getFavoriteList() = laterListRepository.getFavoriteLaterViewItemList().asLiveData()
 
-    }
-
-    fun getTodayList(){
-
-    }
+    fun getTodayList() = laterListRepository.getTodayLaterViewItemList().asLiveData()
 
     fun getListByFolder(){
 

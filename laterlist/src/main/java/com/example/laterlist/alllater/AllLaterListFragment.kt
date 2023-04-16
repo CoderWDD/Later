@@ -2,6 +2,7 @@ package com.example.laterlist.alllater
 
 import android.annotation.SuppressLint
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
@@ -13,7 +14,11 @@ import com.example.common.recyclerview.proxy.FolderData
 import com.example.common.recyclerview.setOnItemClickListener
 import com.example.laterlist.databinding.FragmentAllLaterListBinding
 import com.example.common.adapter.RecyclerViewAdapter
+import com.example.common.log.LaterLog
+import com.example.common.recyclerview.setOnItemLongClickListener
+import com.example.common.reporesource.Resource
 import com.example.laterlist.R
+import com.example.laterlist.viewmodel.LaterListViewModel
 import com.therouter.router.Route
 
 @Route(
@@ -21,45 +26,112 @@ import com.therouter.router.Route
     description = "The sub fragment of later-list fragment"
 )
 class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentAllLaterListBinding::inflate) {
-    private lateinit var categoryListFavoriteAdapter: RecyclerViewAdapter
-    private lateinit var categoryMoreFavoriteAdapter: RecyclerViewAdapter
+    private lateinit var viewModel: LaterListViewModel
+    private lateinit var favoriteFolderListAdapter: RecyclerViewAdapter
+    private lateinit var recycleFolderListAdapter: RecyclerViewAdapter
+    private val favoriteFolderList: MutableList<Any> = mutableListOf()
+    private val recycleFolderList: MutableList<Any> = mutableListOf()
 
     override fun onCreateView() {
-        initCategory()
-        initCategoryListFavorite()
-        initCategoryListMore()
-        setOnCategoryListFavoriteItemClick()
-        setCategoryHeadVisible()
+        initObjects()
+        getDataFromViewModel()
+        initFavoriteCategory(size = 0)
+        initTodayCategory(size = 0)
+        initFavoriteFolderList()
+        initRecycleFolderList()
+    }
+
+    private fun initObjects(){
+        viewModel = ViewModelProvider(requireActivity())[LaterListViewModel::class.java]
+    }
+
+    private fun getDataFromViewModel(){
+        // get favorite list
+        viewModel.getFavoriteList().observe(viewLifecycleOwner) { resource ->
+            when (resource) {
+                is Resource.Success -> {
+                    initFavoriteCategory(resource.data.size)
+                }
+                is Resource.Error -> {}
+                is Resource.Loading -> {}
+                is Resource.Cached -> {}
+                else -> {}
+            }
+        }
+
+        // get today list
+        viewModel.getTodayList().observe(viewLifecycleOwner) { resource ->
+            when (resource) {
+                is Resource.Success -> {
+                    initTodayCategory(resource.data.size)
+                }
+                is Resource.Error -> {}
+                is Resource.Loading -> {}
+                is Resource.Cached -> {}
+                else -> {}
+            }
+        }
+
+        // get favorite folder list
+        viewModel.getFavoriteFolderList().observe(viewLifecycleOwner) { resource ->
+            when (resource) {
+                is Resource.Success -> {
+                    LaterLog.d("getFavoriteFolderList: ${resource.data}")
+                    favoriteFolderList.clear()
+                    resource.data.forEach { favoriteFolderList.add(FolderData(title = it.title, cnt = it.cnt.toString(), icon = resources.getDrawable(com.example.common.R.drawable.folder_icon))) }
+                    favoriteFolderListAdapter.notifyDataSetChanged()
+                    setOnCategoryListFavoriteItemClick()
+                }
+                is Resource.Error -> {}
+                is Resource.Loading -> {}
+                is Resource.Cached -> {}
+                else -> {}
+            }
+        }
+
+        // get recycle folder list
+        viewModel.getRecentFolderList().observe(viewLifecycleOwner) { resource ->
+            when (resource) {
+                is Resource.Success -> {
+                    recycleFolderList.clear()
+                    resource.data.forEach { recycleFolderList.add(FolderData(title = it.title, cnt = it.cnt.toString(), icon = resources.getDrawable(com.example.common.R.drawable.folder_icon))) }
+                    recycleFolderListAdapter.notifyDataSetChanged()
+                    setOnCategoryListMoreItemClick()
+                }
+                is Resource.Error -> {}
+                is Resource.Loading -> {}
+                is Resource.Cached -> {}
+                else -> {}
+            }
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    private fun initCategoryListFavorite(){
-        val folderData = FolderData("folder_1", "12", icon = resources.getDrawable(com.example.common.R.drawable.folder_icon))
-        val dateList = mutableListOf<Any>(folderData)
-        repeat(14){dateList.add(folderData)}
+    private fun initFavoriteFolderList(){
         val folderCardProxy = FolderCardProxy()
         val proxyList = mutableListOf<RVProxy<*, *>>(folderCardProxy)
-        categoryListFavoriteAdapter = RecyclerViewAdapter(dataList = dateList, proxyList = proxyList)
+        favoriteFolderListAdapter = RecyclerViewAdapter(dataList = favoriteFolderList, proxyList = proxyList)
         viewBinding.categoryListFavorite.categoryRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         viewBinding.categoryListFavorite.categoryRecyclerView.addItemDecoration(RecyclerViewItemDecoration(requireContext(), RecyclerViewItemDecoration.VERTICAL, 48.dp.toInt(), 0.dp.toInt()))
-        viewBinding.categoryListFavorite.categoryRecyclerView.adapter = categoryListFavoriteAdapter
+        viewBinding.categoryListFavorite.categoryRecyclerView.adapter = favoriteFolderListAdapter
     }
 
-    private fun initCategoryListMore(){
-        val folderData = FolderData("folder_1", "12", icon = resources.getDrawable(com.example.common.R.drawable.folder_icon))
-        val dateList = mutableListOf<Any>(folderData)
-        repeat(15){dateList.add(folderData)}
+    private fun initRecycleFolderList(){
         val folderCardProxy = FolderCardProxy()
         val proxyList = mutableListOf<RVProxy<*, *>>(folderCardProxy)
-        categoryMoreFavoriteAdapter = RecyclerViewAdapter(dataList = dateList, proxyList = proxyList)
+        recycleFolderListAdapter = RecyclerViewAdapter(dataList = recycleFolderList, proxyList = proxyList)
         viewBinding.categoryListMore.categoryRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         viewBinding.categoryListMore.categoryRecyclerView.addItemDecoration(RecyclerViewItemDecoration(requireContext(), RecyclerViewItemDecoration.VERTICAL, 48.dp.toInt(), 0.dp.toInt()))
-        viewBinding.categoryListMore.categoryRecyclerView.adapter = categoryMoreFavoriteAdapter
+        viewBinding.categoryListMore.categoryRecyclerView.adapter = recycleFolderListAdapter
     }
 
     private fun setOnCategoryListFavoriteItemClick(){
         viewBinding.categoryListFavorite.categoryRecyclerView.setOnItemClickListener { view, position ->
             // 跳转到相应页面
+        }
+
+        viewBinding.categoryListFavorite.categoryRecyclerView.setOnItemLongClickListener { view, position ->
+            // 弹出删除对话框
         }
     }
 
@@ -67,16 +139,20 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
         viewBinding.categoryListMore.categoryRecyclerView.setOnItemClickListener { view, position ->
             // 跳转到相应页面
         }
+
+        viewBinding.categoryListMore.categoryRecyclerView.setOnItemLongClickListener { view, position ->
+            // 弹出删除对话框
+        }
     }
 
     private fun setCategoryHeadVisible(){
         // 如果标题下面没有文件夹，就不显示标题
-        if (categoryListFavoriteAdapter.dataList.size == 0) {
+        if (favoriteFolderListAdapter.dataList.size == 0) {
             viewBinding.categoryListFavorite.categoryHeaderTitle.visibility = View.GONE
         }else {
             viewBinding.categoryListFavorite.categoryHeaderTitle.visibility = View.VISIBLE
         }
-        if (categoryMoreFavoriteAdapter.dataList.size == 0){
+        if (recycleFolderListAdapter.dataList.size == 0){
             viewBinding.categoryListMore.categoryHeaderTitle.visibility = View.GONE
         }else {
             viewBinding.categoryListMore.categoryHeaderTitle.visibility = View.VISIBLE
@@ -84,15 +160,18 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    private fun initCategory(){
-        viewBinding.categoryPlate.categoryFavorite.categoryCnt.text = "0"
-        viewBinding.categoryPlate.categoryFavorite.categoryIcon.setImageDrawable(resources.getDrawable(
-            R.drawable.favorite_icon
-        ))
+    private fun initFavoriteCategory(size: Int){
+        viewBinding.categoryPlate.categoryFavorite.categoryCnt.text = size.toString()
+        viewBinding.categoryPlate.categoryFavorite.categoryIcon.setImageDrawable(resources.getDrawable(R.drawable.favorite_icon))
         viewBinding.categoryPlate.categoryFavorite.categoryText.text = "收藏"
+        viewBinding.categoryPlate.categoryFavorite.root.setOnClickListener {  }
+    }
 
-        viewBinding.categoryPlate.categoryToday.categoryCnt.text = "0"
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun initTodayCategory(size: Int){
+        viewBinding.categoryPlate.categoryToday.categoryCnt.text = size.toString()
         viewBinding.categoryPlate.categoryToday.categoryIcon.setImageDrawable(resources.getDrawable(com.example.common.R.drawable.today_icon))
         viewBinding.categoryPlate.categoryToday.categoryText.text = "今天"
+        viewBinding.categoryPlate.categoryToday.root.setOnClickListener {  }
     }
 }

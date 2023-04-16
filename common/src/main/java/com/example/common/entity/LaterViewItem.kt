@@ -1,5 +1,7 @@
 package com.example.common.entity
 
+import java.util.*
+
 enum class ItemType {
     POST,
     VIDEO,
@@ -9,7 +11,7 @@ enum class ItemType {
 }
 
 data class LaterViewItem(
-    val id: Int = 0,
+    val id: String = UUID.randomUUID().toString(),
     val title: String,
     val content: String,
     val contentUrl: String,

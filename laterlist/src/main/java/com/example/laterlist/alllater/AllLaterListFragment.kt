@@ -14,11 +14,13 @@ import com.example.common.recyclerview.proxy.FolderData
 import com.example.common.recyclerview.setOnItemClickListener
 import com.example.laterlist.databinding.FragmentAllLaterListBinding
 import com.example.common.adapter.RecyclerViewAdapter
+import com.example.common.entity.LaterFolderEntity
 import com.example.common.log.LaterLog
 import com.example.common.recyclerview.setOnItemLongClickListener
 import com.example.common.reporesource.Resource
 import com.example.laterlist.R
 import com.example.laterlist.viewmodel.LaterListViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.therouter.router.Route
 
 @Route(
@@ -39,6 +41,8 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
         initTodayCategory(size = 0)
         initFavoriteFolderList()
         initRecycleFolderList()
+        setOnCategoryListFavoriteItemClick()
+        setOnCategoryListMoreItemClick()
     }
 
     private fun initObjects(){
@@ -78,9 +82,8 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
                 is Resource.Success -> {
                     LaterLog.d("getFavoriteFolderList: ${resource.data}")
                     favoriteFolderList.clear()
-                    resource.data.forEach { favoriteFolderList.add(FolderData(title = it.title, cnt = it.cnt.toString(), icon = resources.getDrawable(com.example.common.R.drawable.folder_icon))) }
+                    resource.data.forEach { favoriteFolderList.add(FolderData(title = it.title, cnt = it.cnt.toString(), icon = resources.getDrawable(com.example.common.R.drawable.folder_icon), key = it.key)) }
                     favoriteFolderListAdapter.notifyDataSetChanged()
-                    setOnCategoryListFavoriteItemClick()
                 }
                 is Resource.Error -> {}
                 is Resource.Loading -> {}
@@ -94,9 +97,8 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
             when (resource) {
                 is Resource.Success -> {
                     recycleFolderList.clear()
-                    resource.data.forEach { recycleFolderList.add(FolderData(title = it.title, cnt = it.cnt.toString(), icon = resources.getDrawable(com.example.common.R.drawable.folder_icon))) }
+                    resource.data.forEach { recycleFolderList.add(FolderData(title = it.title, cnt = it.cnt.toString(), icon = resources.getDrawable(com.example.common.R.drawable.folder_icon), key = it.key)) }
                     recycleFolderListAdapter.notifyDataSetChanged()
-                    setOnCategoryListMoreItemClick()
                 }
                 is Resource.Error -> {}
                 is Resource.Loading -> {}
@@ -131,7 +133,12 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
         }
 
         viewBinding.categoryListFavorite.categoryRecyclerView.setOnItemLongClickListener { view, position ->
+            LaterLog.d("setOnCategoryListMoreItemClick: $position")
             // 弹出删除对话框
+            showDeleteDialog(title = "删除收藏夹", content = "确定要删除收藏夹吗？", positiveText = "确定", negativeText = "取消", positiveListener = {
+                // 删除收藏夹
+                viewModel.deleteFavoriteFolder(folderKey = (favoriteFolderList[position] as FolderData).key )
+            }, negativeListener = {})
         }
     }
 
@@ -141,7 +148,12 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
         }
 
         viewBinding.categoryListMore.categoryRecyclerView.setOnItemLongClickListener { view, position ->
+            LaterLog.d("setOnCategoryListMoreItemClick: $position")
             // 弹出删除对话框
+            showDeleteDialog(title = "删除回收站", content = "确定要删除回收站吗？", positiveText = "确定", negativeText = "取消", positiveListener = {
+                // 删除回收站
+                viewModel.deleteRecycleFolder(folderKey = (recycleFolderList[position] as FolderData).key )
+            }, negativeListener = {})
         }
     }
 
@@ -173,5 +185,21 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
         viewBinding.categoryPlate.categoryToday.categoryIcon.setImageDrawable(resources.getDrawable(com.example.common.R.drawable.today_icon))
         viewBinding.categoryPlate.categoryToday.categoryText.text = "今天"
         viewBinding.categoryPlate.categoryToday.root.setOnClickListener {  }
+    }
+
+    private fun showDeleteDialog(title: String, content: String, positiveText: String, negativeText: String, positiveListener: () -> Unit, negativeListener: () -> Unit) {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(title)
+            .setMessage(content)
+            .setPositiveButton(positiveText) { dialog, which ->
+                positiveListener()
+                dialog.dismiss()
+            }
+            .setNegativeButton(negativeText) { dialog, which ->
+                negativeListener()
+                dialog.dismiss()
+            }
+            .create()
+        dialog.show()
     }
 }

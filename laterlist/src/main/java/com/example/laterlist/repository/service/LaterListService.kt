@@ -1,6 +1,7 @@
 package com.example.laterlist.repository.service
 
 import com.example.common.entity.LaterFolderEntity
+import com.example.common.entity.LaterTagEntity
 import com.example.common.entity.LaterViewItem
 import com.example.common.reporesource.Resource
 import kotlinx.coroutines.flow.Flow
@@ -26,9 +27,9 @@ interface LaterListService {
 
     fun createLaterViewItem(folderPath: String, laterViewItem: LaterViewItem): Flow<Resource<String>>
 
-    fun createLaterTag(tag: String): Flow<Resource<String>>
+    fun createLaterTag(tag: LaterTagEntity): Flow<Resource<String>>
 
-    fun getTagsList(): MutableSharedFlow<Resource<List<String>>>
+    fun getTagsList(): MutableSharedFlow<Resource<List<LaterTagEntity>>>
 
     fun deleteTag(tag: String): Flow<Resource<String>>
 

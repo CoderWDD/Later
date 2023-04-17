@@ -32,6 +32,7 @@ class TagCardProxy : RVProxy<TagCardData, TagCardViewHolder>() {
 }
 
 data class TagCardData(
+    val key: String = "",
     val title: String,
     val icon: Drawable? = null,
     val cnt: String

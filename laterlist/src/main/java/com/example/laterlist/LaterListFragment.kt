@@ -18,6 +18,7 @@ import com.example.common.adapter.ViewPagerAdapter
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
 import com.example.common.entity.LaterFolderEntity
+import com.example.common.entity.LaterTagEntity
 import com.example.common.entity.LaterViewItem
 import com.example.common.log.LaterLog
 import com.example.common.reporesource.Resource
@@ -232,7 +233,7 @@ class LaterListFragment :
     private fun createAndHandleTag(tag: String) {
         lifecycleScope.launch{
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.createTag(tag).collect {
+                viewModel.createTag(LaterTagEntity(name = tag)).collect {
                     when (it) {
                         is Resource.Success -> {
                             // 创建Tag成功

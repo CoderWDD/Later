@@ -33,6 +33,7 @@ class FolderCardProxy: RVProxy<FolderData, FolderViewHolder>() {
 
 data class FolderData(
     val title: String,
+    val key: String,
     val cnt: String,
     val icon: Drawable? = null
 )

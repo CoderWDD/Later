@@ -4,19 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.common.entity.LaterFolderEntity
+import com.example.common.entity.LaterTagEntity
 import com.example.common.entity.LaterViewItem
-import com.example.common.reporesource.Resource
 import com.example.laterlist.repository.LaterListRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
 
 class LaterListViewModel: ViewModel() {
     private val laterListRepository: LaterListRepository by lazy { LaterListRepository(viewModelScope) }
 
     fun createFolder(folderEntity: LaterFolderEntity) = laterListRepository.createFolder(folderEntity)
 
-    fun createTag(tag: String) = laterListRepository.createLaterTag(tag).flowOn(Dispatchers.IO)
+    fun createTag(tag: LaterTagEntity) = laterListRepository.createLaterTag(tag).flowOn(Dispatchers.IO)
 
     fun createWebsite(website: LaterViewItem) {
     }
@@ -51,9 +50,9 @@ class LaterListViewModel: ViewModel() {
 
     }
 
-    fun deleteFolder(){
+    fun deleteFavoriteFolder(folderKey: String) = laterListRepository.deleteFavoriteFolder(folderKey).asLiveData()
 
-    }
+    fun deleteRecycleFolder(folderKey: String) = laterListRepository.deleteRecycleBinFolder(folderKey).asLiveData()
 
     fun deleteTag(){
 

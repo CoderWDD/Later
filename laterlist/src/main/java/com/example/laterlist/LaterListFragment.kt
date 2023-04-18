@@ -21,6 +21,7 @@ import com.example.common.entity.LaterFolderEntity
 import com.example.common.entity.LaterTagEntity
 import com.example.common.entity.LaterViewItem
 import com.example.common.log.LaterLog
+import com.example.common.recyclerview.proxy.FolderData
 import com.example.common.reporesource.Resource
 import com.example.common.utils.TheRouterUtil
 import com.example.laterlist.alllater.AllLaterListFragment
@@ -53,6 +54,10 @@ class LaterListFragment :
 
     private lateinit var createTagDialog: CreateTagFragment
 
+    private val folderList: MutableList<FolderData> = mutableListOf()
+
+    private val tagList: MutableList<LaterTagEntity> = mutableListOf()
+
     override fun onCreateView() {
         viewModel = ViewModelProvider(this)[LaterListViewModel::class.java]
         fragments = arrayOf(
@@ -84,6 +89,8 @@ class LaterListFragment :
     }
 
     private fun init() {
+        // 初始化数据
+        observeData()
         // 初始化 toolbar
         initToolbar()
         // 初始化 viewPager
@@ -94,6 +101,47 @@ class LaterListFragment :
         initMenuItemClick()
     }
 
+    private fun observeData(){
+        viewModel.getFavoriteFolderList().observe(viewLifecycleOwner) { resource ->
+            when (resource) {
+                is Resource.Success -> {
+                    folderList.clear()
+                    resource.data.forEach { folderList.add(FolderData(title = it.title, cnt = it.cnt.toString(), icon = resources.getDrawable(com.example.common.R.drawable.folder_icon), key = it.key)) }
+                    createWebsiteDialog.setFolderList(folderList)
+                }
+
+                is Resource.Error -> {
+                    // 待加
+                }
+
+                is Resource.Loading -> {
+                    // 待加
+                }
+
+                else -> {}
+            }
+        }
+
+        viewModel.getTagList().observe(viewLifecycleOwner) { resource ->
+            when (resource) {
+                is Resource.Success -> {
+                    tagList.clear()
+                    tagList.addAll(resource.data)
+                    createWebsiteDialog.setTagList(tagList)
+                }
+
+                is Resource.Error -> {
+                    // 待加
+                }
+
+                is Resource.Loading -> {
+                    // 待加
+                }
+
+                else -> {}
+            }
+        }
+    }
 
     private fun generateItemTab(position: Int): View {
         val view = LayoutInflater.from(requireContext()).inflate(R.layout.tablayout_item_tab, null)
@@ -188,7 +236,7 @@ class LaterListFragment :
             override fun onCancelClickListener() {
                 // 待加
             }
-        })
+        }, folderList = folderList, tagList = tagList)
 
         createTagDialog = CreateTagFragment.newInstance(object : MenuItemDialogClickCallBack<String> {
             override fun onConfirmClickListener(content: String) {

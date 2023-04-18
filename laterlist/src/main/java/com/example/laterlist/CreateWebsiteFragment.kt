@@ -5,25 +5,71 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import com.example.common.custom.BaseDialogFragment
 import com.example.common.entity.ItemType
+import com.example.common.entity.LaterTagEntity
 import com.example.common.entity.LaterViewItem
+import com.example.common.log.LaterLog
+import com.example.common.recyclerview.proxy.FolderData
 import com.example.laterlist.callback.MenuItemDialogClickCallBack
 import com.example.laterlist.databinding.FragmentCreateWebsiteBinding
+import com.example.laterlist.spinner.FolderSpinnerAdapter
+import com.google.android.material.chip.Chip
 
 class CreateWebsiteFragment : BaseDialogFragment<FragmentCreateWebsiteBinding>(FragmentCreateWebsiteBinding::inflate) {
     private var customDialogCallback: MenuItemDialogClickCallBack<LaterViewItem>? = null
+    private val mTagList: MutableList<LaterTagEntity> = mutableListOf()
 
     companion object{
-        fun newInstance(customDialogCallback: MenuItemDialogClickCallBack<LaterViewItem>): CreateWebsiteFragment {
+        private val mFolderList: MutableList<FolderData> = mutableListOf()
+        fun newInstance(
+            customDialogCallback: MenuItemDialogClickCallBack<LaterViewItem>,
+            folderList: MutableList<FolderData>,
+            tagList: MutableList<LaterTagEntity>
+        ): CreateWebsiteFragment {
             val fragment = CreateWebsiteFragment()
-            fragment.customDialogCallback = customDialogCallback
+            fragment.apply {
+                this.customDialogCallback = customDialogCallback
+                mFolderList.addAll(folderList)
+                mTagList.addAll(tagList)
+            }
             return fragment
         }
     }
 
-    override fun onCreateView() { }
+    override fun onCreateView() {
+        initFolderSelector(mFolderList)
+        initTagSelector(mTagList)
+    }
+
+    private fun initFolderSelector(folderList: List<FolderData>) {
+        // 初始化文件夹选择器
+        val spinnerAdapter = ArrayAdapter(requireContext(), R.layout.folder_spinner_item, folderList.map { it.title })
+        spinnerAdapter.setDropDownViewResource(R.layout.folder_spinner_item)
+        viewBinding.fragmentFolderTagSelector.folderHeaderSpinner.adapter = spinnerAdapter
+    }
+
+    private fun initTagSelector(tagList: List<LaterTagEntity>){
+        // 初始化标签选择器
+        val spinnerAdapter = ArrayAdapter(requireContext(), R.layout.folder_spinner_item, tagList.map { it.name })
+        spinnerAdapter.setDropDownViewResource(R.layout.folder_spinner_item)
+        viewBinding.fragmentFolderTagSelector.folderHeaderSpinner.adapter = spinnerAdapter
+        viewBinding.fragmentFolderTagSelector.folderHeaderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                LaterLog.d("onItemSelected: $position")
+                // todo 将选中的标签添加到标签列表中
+                val tag = tagList[position]
+//                viewBinding.createWebsiteTagChipGroup.addView()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                LaterLog.d("onNothingSelected")
+            }
+        }
+    }
 
     override fun initClickListener() {
         // 注册取消的事件监听
@@ -63,5 +109,15 @@ class CreateWebsiteFragment : BaseDialogFragment<FragmentCreateWebsiteBinding>(F
         // TODO 清空内容，防止下次弹出显示
         // 取消弹出的对话框
         dismiss()
+    }
+
+    fun setFolderList(folderList: List<FolderData>){
+        mFolderList.clear()
+        mFolderList.addAll(folderList)
+    }
+
+    fun setTagList(tagList: List<LaterTagEntity>){
+        mTagList.clear()
+        mTagList.addAll(tagList)
     }
 }

@@ -36,6 +36,7 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
 
     override fun onCreateView() {
         initObjects()
+        initFolderHeader()
         getDataFromViewModel()
         initFavoriteCategory(size = 0)
         initTodayCategory(size = 0)
@@ -47,6 +48,11 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
 
     private fun initObjects(){
         viewModel = ViewModelProvider(requireActivity())[LaterListViewModel::class.java]
+    }
+
+    private fun initFolderHeader(){
+        viewBinding.categoryListFavorite.categoryHeaderTitle.text = getString(R.string.favorite_category_header_title)
+        viewBinding.categoryListMore.categoryHeaderTitle.text = getString(R.string.recycle_category_header_title)
     }
 
     private fun getDataFromViewModel(){

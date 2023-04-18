@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:text="@string/category_header_title"/>
+        android:text="@string/favorite_category_header_title"/>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

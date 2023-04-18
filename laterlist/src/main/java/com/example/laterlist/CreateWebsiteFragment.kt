@@ -15,6 +15,7 @@ import com.example.common.entity.LaterViewItem
 import com.example.common.log.LaterLog
 import com.example.common.recyclerview.proxy.FolderData
 import com.example.laterlist.callback.MenuItemDialogClickCallBack
+import com.example.laterlist.chip.TagChip
 import com.example.laterlist.databinding.FragmentCreateWebsiteBinding
 import com.example.laterlist.spinner.FolderSpinnerAdapter
 import com.google.android.material.chip.Chip
@@ -56,13 +57,16 @@ class CreateWebsiteFragment : BaseDialogFragment<FragmentCreateWebsiteBinding>(F
         // 初始化标签选择器
         val spinnerAdapter = ArrayAdapter(requireContext(), R.layout.folder_spinner_item, tagList.map { it.name })
         spinnerAdapter.setDropDownViewResource(R.layout.folder_spinner_item)
-        viewBinding.fragmentFolderTagSelector.folderHeaderSpinner.adapter = spinnerAdapter
-        viewBinding.fragmentFolderTagSelector.folderHeaderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        viewBinding.fragmentFolderTagSelector.tagHeaderSpinner.adapter = spinnerAdapter
+        viewBinding.fragmentFolderTagSelector.tagHeaderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 LaterLog.d("onItemSelected: $position")
-                // todo 将选中的标签添加到标签列表中
+                // 将选中的标签添加到标签列表中
                 val tag = tagList[position]
-//                viewBinding.createWebsiteTagChipGroup.addView()
+                val tagChip = TagChip(requireContext())
+                tagChip.text = tag.name
+                tagChip.setOnCloseIconClickListener { viewBinding.createWebsiteTagChipGroup.removeView(it) }
+                viewBinding.createWebsiteTagChipGroup.addView(tagChip)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

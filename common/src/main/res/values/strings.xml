@@ -15,5 +15,10 @@
     
     <string name="google_server_client_id">433534959398-lp2fg9q8vhgr6nv4q3dv1n8m8ub27nvi.apps.googleusercontent.com</string>
 
+    <string name="later_item_title">Title: </string>
+    <string name="later_item_content">Content: </string>
+    <string name="later_item_type">Type: </string>
+    <string name="later_item_tag">Tag: </string>
+    <string name="update_time">Update Time: </string>
 
 </resources>

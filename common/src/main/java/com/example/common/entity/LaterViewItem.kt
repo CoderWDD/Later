@@ -10,21 +10,22 @@ enum class ItemType {
     OTHER
 }
 
-data class LaterViewItem(
+data class LaterViewItem @JvmOverloads constructor(
+    var key: String = "",
     val id: String = UUID.randomUUID().toString(),
-    val title: String,
-    val content: String,
-    val contentUrl: String,
-    var thumbnailUrl: String,
-    var description: String,
-    val tag: List<String>,
+    val title: String = "",
+    val content: String = "",
+    val contentUrl: String = "",
+    var thumbnailUrl: String = "",
+    var description: String = "",
+    val tag: List<String> = emptyList(),
     val createTime: Long = System.currentTimeMillis(),
     val updateTime: Long = System.currentTimeMillis(),
     val lastReadTime: Long = System.currentTimeMillis(),
-    val isRead: Boolean,
-    val isDelete: Boolean,
-    val isTop: Boolean,
+    val isRead: Boolean = false,
+    val isDelete: Boolean = false,
+    val isTop: Boolean = false,
     val isStar: Boolean = false,
-    val folder: String,
-    val itemType: ItemType
+    val folder: String = "",
+    val itemType: ItemType = ItemType.OTHER
 )

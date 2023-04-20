@@ -1,5 +1,6 @@
 package com.example.laterlist
 
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import androidx.annotation.RequiresApi
+import androidx.core.view.allViews
 import com.example.common.custom.BaseDialogFragment
 import com.example.common.entity.ItemType
 import com.example.common.entity.LaterTagEntity
@@ -23,6 +26,7 @@ import com.google.android.material.chip.Chip
 class CreateWebsiteFragment : BaseDialogFragment<FragmentCreateWebsiteBinding>(FragmentCreateWebsiteBinding::inflate) {
     private var customDialogCallback: MenuItemDialogClickCallBack<LaterViewItem>? = null
     private val mTagList: MutableList<LaterTagEntity> = mutableListOf()
+    private var selectedTagList: MutableList<LaterTagEntity> = mutableListOf()
 
     companion object{
         private val mFolderList: MutableList<FolderData> = mutableListOf()
@@ -59,14 +63,21 @@ class CreateWebsiteFragment : BaseDialogFragment<FragmentCreateWebsiteBinding>(F
         spinnerAdapter.setDropDownViewResource(R.layout.folder_spinner_item)
         viewBinding.fragmentFolderTagSelector.tagHeaderSpinner.adapter = spinnerAdapter
         viewBinding.fragmentFolderTagSelector.tagHeaderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            @RequiresApi(Build.VERSION_CODES.N)
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 LaterLog.d("onItemSelected: $position")
                 // 将选中的标签添加到标签列表中
                 val tag = tagList[position]
                 val tagChip = TagChip(requireContext())
                 tagChip.text = tag.name
-                tagChip.setOnCloseIconClickListener { viewBinding.createWebsiteTagChipGroup.removeView(it) }
+                tagChip.setOnCloseIconClickListener {
+                    viewBinding.createWebsiteTagChipGroup.removeView(it)
+                    if (it is TagChip) {
+                        selectedTagList.removeIf { selectedTag -> selectedTag.name == it.text }
+                    }
+                }
                 viewBinding.createWebsiteTagChipGroup.addView(tagChip)
+                selectedTagList.add(tag)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -85,12 +96,15 @@ class CreateWebsiteFragment : BaseDialogFragment<FragmentCreateWebsiteBinding>(F
 
         // 注册确定的事件监听
         viewBinding.createWebsiteButtonConfirm.setOnClickListener {
+            val folderPosition = viewBinding.fragmentFolderTagSelector.folderHeaderSpinner.selectedItemPosition
+            val folderPath = mFolderList[folderPosition].key
             val tags = mutableListOf<String>()
+            tags.addAll(selectedTagList.map { it.name })
             val laterViewItem = LaterViewItem(
                 title = viewBinding.createWebsiteTitleEv.text.toString(),
                 contentUrl = viewBinding.createWebsiteUrlEv.text.toString(),
                 itemType = ItemType.WEB_PAGE,
-                folder = viewBinding.fragmentFolderTagSelector.folderHeaderSpinner.selectedItem.toString(),
+                folder = folderPath,
                 tag = tags,
                 thumbnailUrl = "",
                 content = viewBinding.createWebsiteContentEv.text.toString(),

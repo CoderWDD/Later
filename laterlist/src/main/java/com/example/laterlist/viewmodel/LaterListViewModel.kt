@@ -17,8 +17,7 @@ class LaterListViewModel: ViewModel() {
 
     fun createTag(tag: LaterTagEntity) = laterListRepository.createLaterTag(tag).flowOn(Dispatchers.IO)
 
-    fun createWebsite(website: LaterViewItem) {
-    }
+    fun createWebsite(website: LaterViewItem) = laterListRepository.createLaterViewItem(folderPath = website.folder, laterViewItem = website).asLiveData()
 
     fun createImage(){
 
@@ -42,9 +41,7 @@ class LaterListViewModel: ViewModel() {
 
     fun getTodayList() = laterListRepository.getTodayLaterViewItemList().asLiveData()
 
-    fun getListByFolder(){
-
-    }
+    fun getListByFolder(folderKey: String) = laterListRepository.getLaterViewItemByFolder(folderKey).asLiveData()
 
     fun getListByTag(){
 

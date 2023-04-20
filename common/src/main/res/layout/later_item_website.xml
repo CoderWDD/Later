@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="160dp"
+    android:paddingVertical="12dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="@string/later_item_title"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/item_tag_tv"/>
+
+        <TextView
+            android:id="@+id/item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            app:layout_constraintStart_toEndOf="@id/item_title_tv"
+            app:layout_constraintTop_toTopOf="@id/item_title_tv"
+            app:layout_constraintBottom_toBottomOf="@id/item_title_tv"/>
+
+        <TextView
+            android:id="@+id/item_tag_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="@string/later_item_tag"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_title_tv"
+            app:layout_constraintBottom_toTopOf="@id/item_content_tv"/>
+
+        <TextView
+            android:id="@+id/item_tags"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            app:layout_constraintStart_toEndOf="@id/item_tag_tv"
+            app:layout_constraintTop_toTopOf="@id/item_tag_tv"
+            app:layout_constraintBottom_toBottomOf="@id/item_tag_tv"/>
+
+        <TextView
+            android:id="@+id/item_content_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/later_item_content"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_tag_tv"
+            app:layout_constraintBottom_toTopOf="@id/item_update_time_tv"/>
+
+        <TextView
+            android:id="@+id/item_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            app:layout_constraintStart_toEndOf="@id/item_content_tv"
+            app:layout_constraintTop_toTopOf="@id/item_content_tv"
+            app:layout_constraintBottom_toBottomOf="@id/item_content_tv"/>
+
+        <TextView
+            android:id="@+id/item_update_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/update_time"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_content_tv"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/item_update_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            app:layout_constraintStart_toEndOf="@id/item_update_time_tv"
+            app:layout_constraintTop_toTopOf="@id/item_update_time_tv"
+            app:layout_constraintBottom_toBottomOf="@id/item_update_time_tv"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/item_favorite"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/favorite_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/item_share"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/share_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/item_more"
+            app:layout_constraintStart_toEndOf="@id/item_favorite" />
+
+        <ImageView
+            android:id="@+id/item_more"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/more_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -9,5 +9,5 @@ data class LaterFolderEntity @JvmOverloads constructor(
     val title: String = "",
     val createTime: Long = System.currentTimeMillis(),
     val updateTime: Long = System.currentTimeMillis(),
-    val cnt: Int = 0,
+    var cnt: Int = 0,
 )

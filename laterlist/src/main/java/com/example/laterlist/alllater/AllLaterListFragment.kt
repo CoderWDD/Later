@@ -134,11 +134,11 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
     }
 
     private fun setOnCategoryListFavoriteItemClick(){
-        viewBinding.categoryListFavorite.categoryRecyclerView.setOnItemClickListener { view, position ->
+        viewBinding.categoryListFavorite.categoryRecyclerView.setOnItemClickListener { _, position ->
             // 跳转到相应页面
         }
 
-        viewBinding.categoryListFavorite.categoryRecyclerView.setOnItemLongClickListener { view, position ->
+        viewBinding.categoryListFavorite.categoryRecyclerView.setOnItemLongClickListener { _, position ->
             LaterLog.d("setOnCategoryListMoreItemClick: $position")
             // 弹出删除对话框
             showDeleteDialog(title = "删除收藏夹", content = "确定要删除收藏夹吗？", positiveText = "确定", negativeText = "取消", positiveListener = {
@@ -180,7 +180,8 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun initFavoriteCategory(size: Int){
         viewBinding.categoryPlate.categoryFavorite.categoryCnt.text = size.toString()
-        viewBinding.categoryPlate.categoryFavorite.categoryIcon.setImageDrawable(resources.getDrawable(R.drawable.favorite_icon))
+        viewBinding.categoryPlate.categoryFavorite.categoryIcon.setImageDrawable(resources.getDrawable(
+            com.example.common.R.drawable.favorite_icon))
         viewBinding.categoryPlate.categoryFavorite.categoryText.text = "收藏"
         viewBinding.categoryPlate.categoryFavorite.root.setOnClickListener {  }
     }

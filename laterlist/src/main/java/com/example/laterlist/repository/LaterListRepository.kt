@@ -74,14 +74,16 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val folderEntity = snapshot.getValue(LaterFolderEntity::class.java)!!
                 folderEntity.key = snapshot.key!!
+                folderEntity.cnt = snapshot.child(FirebaseFieldsConstants.LATER_VIEW_ITEM).children.toList().size
                 favoriteFolderList.add(folderEntity)
                 viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = favoriteFolderList)) }
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-
                 val folder = snapshot.getValue(LaterFolderEntity::class.java)
+                val itemCnt = snapshot.child(FirebaseFieldsConstants.LATER_VIEW_ITEM).children.toList().size
                 folder?.let {
+                    it.cnt = itemCnt
                     val index = favoriteFolderList.indexOfFirst { folder -> folder.id == it.id }
                     if (index != -1) {
                         favoriteFolderList[index] = it
@@ -92,7 +94,9 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 val folder = snapshot.getValue(LaterFolderEntity::class.java)
+                val itemCnt = snapshot.child(FirebaseFieldsConstants.LATER_VIEW_ITEM).children.toList().size
                 folder?.let {
+                    it.cnt = itemCnt
                     val index = favoriteFolderList.indexOfFirst { folder -> folder.id == it.id }
                     if (index != -1) {
                         favoriteFolderList.removeAt(index)
@@ -130,6 +134,8 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
         val childEventListener = object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val folderEntity = snapshot.getValue(LaterFolderEntity::class.java)!!
+                val itemCnt = snapshot.child(FirebaseFieldsConstants.LATER_VIEW_ITEM).children.toList().size
+                folderEntity.cnt = itemCnt
                 folderEntity.key = snapshot.key!!
                 recycleFolderList.add(folderEntity)
                 viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = recycleFolderList)) }
@@ -137,7 +143,9 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 val folder = snapshot.getValue(LaterFolderEntity::class.java)
+                val itemCnt = snapshot.child(FirebaseFieldsConstants.LATER_VIEW_ITEM).children.toList().size
                 folder?.let {
+                    it.cnt = itemCnt
                     val index = recycleFolderList.indexOfFirst { folder -> folder.id == it.id }
                     if (index != -1) {
                         recycleFolderList[index] = it
@@ -148,7 +156,9 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 val folder = snapshot.getValue(LaterFolderEntity::class.java)
+                val itemCnt = snapshot.child(FirebaseFieldsConstants.LATER_VIEW_ITEM).children.toList().size
                 folder?.let {
+                    it.cnt = itemCnt
                     val index = recycleFolderList.indexOfFirst { folder -> folder.id == it.id }
                     if (index != -1) {
                         recycleFolderList.removeAt(index)
@@ -518,7 +528,7 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 snapshot.getValue(LaterTagEntity::class.java)?.let {
-                    tagsList.indexOfFirst { tag -> tag == it }.let { index ->
+                    tagsList.indexOfFirst { tag -> tag.id == it.id }.let { index ->
                         if (index != -1) {
                             tagsList[index] = it
                             viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = tagsList)) }
@@ -529,7 +539,7 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 snapshot.getValue(LaterTagEntity::class.java)?.let {
-                    tagsList.indexOfFirst { tag -> tag == it }.let { index ->
+                    tagsList.indexOfFirst { tag -> tag.id == it.id }.let { index ->
                         if (index != -1) {
                             tagsList.removeAt(index)
                             viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = tagsList)) }
@@ -574,6 +584,63 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
                     emit(result)
                 }
         }.asSharedFlow(coroutineScope = viewModelScope).catch { emit(Resource.error(message = it.message ?: "Unknown error")) }
+    }
+
+    override fun getLaterViewItemByFolder(folderPath: String): MutableSharedFlow<Resource<List<LaterViewItem>>> {
+        val itemList = mutableListOf<LaterViewItem>()
+        val mutableSharedFlow = object : NetworkBoundResource<List<LaterViewItem>>() {
+            override fun saveToCache(item: Resource<List<LaterViewItem>>) {}
+
+            override fun shouldFetch(data: List<LaterViewItem>?) = true
+
+            override fun loadFromCache(): Flow<List<LaterViewItem>> {
+                return flow { emit(emptyList()) }
+            }
+
+            override suspend fun fetchFromNetwork(): Flow<Resource<List<LaterViewItem>>> =
+                flow<Resource<List<LaterViewItem>>> {
+                    emit(Resource.success(data = emptyList()))
+                }
+        }.asMutableSharedFlow(coroutineScope = viewModelScope)
+
+        val childEventListener = object : ChildEventListener{
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                snapshot.getValue(LaterViewItem::class.java)?.let {
+                    it.key = snapshot.key!!
+                    itemList.add(it)
+                    viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = itemList)) }
+                }
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                snapshot.getValue(LaterViewItem::class.java)?.let {
+                    it.key = snapshot.key!!
+                    itemList.indexOfFirst { item -> item.id == it.id }.let { index ->
+                        if (index != -1) {
+                            itemList[index] = it
+                            viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = itemList)) }
+                        }
+                    }
+                }
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                snapshot.getValue(LaterViewItem::class.java)?.let {
+                    itemList.indexOfFirst { item -> item.id == it.id }.let { index ->
+                        if (index != -1) {
+                            itemList.removeAt(index)
+                            viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = itemList)) }
+                        }
+                    }
+                }
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) { }
+
+            override fun onCancelled(error: DatabaseError) { }
+        }
+        favoriteFolderRef.child(folderPath).child(FirebaseFieldsConstants.LATER_VIEW_ITEM).addChildEventListener(childEventListener)
+        return mutableSharedFlow
     }
 
     private fun getFavoriteFolderReference() =

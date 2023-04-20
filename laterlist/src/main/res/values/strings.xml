@@ -12,6 +12,13 @@
     <string name="recycle_category_header_title">回收站</string>
 
     <string name="later_all_tool_bar_title">列表</string>
+    <string name="later_all_item_list_tool_bar_title">Item列表</string>
+
+    <string name="later_item_title">Title: </string>
+    <string name="later_item_content">Content: </string>
+    <string name="later_item_type">Type: </string>
+    <string name="later_item_tag">Tag: </string>
+    <string name="update_time">Update Time: </string>
 
     <string name="create_folder_title">新建文件夹</string>
     <string name="create_folder_button_confirm">确定</string>

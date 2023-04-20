@@ -33,5 +33,7 @@ interface LaterListService {
 
     fun deleteTag(tag: String): Flow<Resource<String>>
 
+    fun getLaterViewItemByFolder(folderPath: String): MutableSharedFlow<Resource<List<LaterViewItem>>>
+
     fun onClear()
 }

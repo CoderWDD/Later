@@ -35,6 +35,13 @@
     "params": {}
   },
   {
+    "path": "path:/Later/LaterItemListFragment",
+    "className": "com.example.laterlist.LaterItemListFragment",
+    "action": "",
+    "description": "The entrance fragment of later item list",
+    "params": {}
+  },
+  {
     "path": "path:/Later/CollectLaterListFragment",
     "className": "com.example.laterlist.CollectLaterListFragment",
     "action": "",

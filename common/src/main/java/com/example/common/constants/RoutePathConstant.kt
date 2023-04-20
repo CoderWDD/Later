@@ -10,4 +10,6 @@ object RoutePathConstant {
     const val AllLaterListFragment = "path:/Later/AllLaterListFragment"
     const val CollectLaterListFragment = "path:/Later/CollectLaterListFragment"
     const val TagListFragment = "path:/Later/TagListFragment"
+
+    const val LaterItemListFragment = "path:/Later/LaterItemListFragment"
 }

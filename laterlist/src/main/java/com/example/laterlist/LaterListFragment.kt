@@ -84,8 +84,6 @@ class LaterListFragment :
         super.onViewCreated(view, savedInstanceState)
         viewBinding.laterAllToolBarTitle.text = "列表"
         viewBinding.laterAllToolBarTitle.gravity = Gravity.CENTER
-
-
     }
 
     private fun init() {

@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.databinding.LaterItemVideoBinding
-import com.example.common.entity.LaterViewItem
+import com.example.common.entity.LaterViewVideoItem
 import com.example.common.recyclerview.RVProxy
 
-class LaterVideoItemCardProxy: RVProxy<LaterViewItem, LaterVideoItemCardViewHolder>() {
+class LaterVideoItemCardProxy: RVProxy<LaterViewVideoItem, LaterVideoItemCardViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = LaterItemVideoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return LaterVideoItemCardViewHolder(binding)
@@ -15,7 +15,7 @@ class LaterVideoItemCardProxy: RVProxy<LaterViewItem, LaterVideoItemCardViewHold
 
     override fun onBindViewHolder(
         holder: LaterVideoItemCardViewHolder,
-        data: LaterViewItem,
+        data: LaterViewVideoItem,
         index: Int,
         action: ((Any?) -> Unit)?
     ) {

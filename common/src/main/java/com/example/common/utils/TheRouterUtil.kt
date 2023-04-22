@@ -14,6 +14,10 @@ object TheRouterUtil {
     fun<T: Fragment> navToFragmentAdd(path: String, fragmentManager: FragmentManager, tag: String? = null, addToStack: Boolean = true, stackName: String? = null){
         val fragmentByPath = getFragmentByPath<T>(path)
         val fragment = fragmentByPath as Fragment ?: return
+        navToFragmentAdd<T>(fragment, fragmentManager, tag, addToStack, stackName)
+    }
+
+    fun<T: Fragment> navToFragmentAdd(fragment: Fragment, fragmentManager: FragmentManager, tag: String? = null, addToStack: Boolean = true, stackName: String? = null){
         FragmentStackUtil.addToMainFragment(
             fragmentManager = fragmentManager,
             fragment = fragment,

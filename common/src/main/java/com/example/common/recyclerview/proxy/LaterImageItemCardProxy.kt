@@ -6,10 +6,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.databinding.LaterItemImageBinding
-import com.example.common.entity.LaterViewItem
+import com.example.common.entity.LaterViewImageItem
 import com.example.common.recyclerview.RVProxy
 
-class LaterImageItemCardProxy: RVProxy<LaterViewItem, LaterImageItemCardViewHolder>() {
+class LaterImageItemCardProxy: RVProxy<LaterViewImageItem, LaterImageItemCardViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = LaterItemImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return LaterImageItemCardViewHolder(binding)
@@ -17,7 +17,7 @@ class LaterImageItemCardProxy: RVProxy<LaterViewItem, LaterImageItemCardViewHold
 
     override fun onBindViewHolder(
         holder: LaterImageItemCardViewHolder,
-        data: LaterViewItem,
+        data: LaterViewImageItem,
         index: Int,
         action: ((Any?) -> Unit)?
     ) {

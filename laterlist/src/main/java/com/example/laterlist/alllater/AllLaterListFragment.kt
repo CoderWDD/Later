@@ -18,9 +18,12 @@ import com.example.common.entity.LaterFolderEntity
 import com.example.common.log.LaterLog
 import com.example.common.recyclerview.setOnItemLongClickListener
 import com.example.common.reporesource.Resource
+import com.example.common.utils.TheRouterUtil
+import com.example.laterlist.LaterItemListFragment
 import com.example.laterlist.R
 import com.example.laterlist.viewmodel.LaterListViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.therouter.TheRouter
 import com.therouter.router.Route
 
 @Route(
@@ -135,7 +138,15 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
 
     private fun setOnCategoryListFavoriteItemClick(){
         viewBinding.categoryListFavorite.categoryRecyclerView.setOnItemClickListener { _, position ->
+            // 如果收藏夹中没有内容，则不跳转
+            if ((favoriteFolderList[position] as FolderData).cnt == "0") return@setOnItemClickListener
             // 跳转到相应页面
+            val laterItemListFragment = TheRouter.build(RoutePathConstant.LaterItemListFragment)
+                .withString("folderKey", (favoriteFolderList[position] as FolderData).key)
+                .createFragment<LaterItemListFragment>()
+            if (laterItemListFragment != null) {
+                TheRouterUtil.navToFragmentAdd<LaterItemListFragment>(fragment = laterItemListFragment, fragmentManager = parentFragmentManager)
+            }
         }
 
         viewBinding.categoryListFavorite.categoryRecyclerView.setOnItemLongClickListener { _, position ->

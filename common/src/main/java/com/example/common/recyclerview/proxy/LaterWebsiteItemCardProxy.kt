@@ -7,20 +7,24 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.databinding.LaterItemWebsiteBinding
 import com.example.common.entity.LaterViewItem
+import com.example.common.entity.LaterViewWebPageItem
+import com.example.common.log.LaterLog
 import com.example.common.recyclerview.RVProxy
 
-class LaterWebsiteItemCardProxy: RVProxy<LaterViewItem, LaterWebsiteItemCardViewHolder>() {
+class LaterWebsiteItemCardProxy: RVProxy<LaterViewWebPageItem, LaterWebsiteItemCardViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        LaterLog.d("onCreateViewHolder: $viewType")
         val binding = LaterItemWebsiteBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return LaterWebsiteItemCardViewHolder(binding)
     }
 
     override fun onBindViewHolder(
         holder: LaterWebsiteItemCardViewHolder,
-        data: LaterViewItem,
+        data: LaterViewWebPageItem,
         index: Int,
         action: ((Any?) -> Unit)?
     ) {
+        LaterLog.d("onBindViewHolder: $data")
         holder.apply {
             titleText.text = data.title
             tagText.text = data.tag.joinToString(", ")

@@ -46,6 +46,7 @@ dependencies {
     implementation project(':common')
     implementation project(':home')
     implementation project(':collect')
+    implementation project(':laterlist')
     kapt appDependence.kaptTheRouter
     implementation appDependence.therouter
 

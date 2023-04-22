@@ -1,6 +1,7 @@
 package com.example.laterlist
 
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +23,7 @@ class CreateTagFragment : BaseDialogFragment<FragmentCreateTagBinding>(FragmentC
         }
     }
 
-    override fun onCreateView() { }
+    override fun onCreateView() {}
 
     override fun initClickListener() {
         // 注册取消的事件监听

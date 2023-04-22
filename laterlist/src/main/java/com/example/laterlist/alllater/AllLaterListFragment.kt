@@ -160,11 +160,19 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
     }
 
     private fun setOnCategoryListMoreItemClick(){
-        viewBinding.categoryListMore.categoryRecyclerView.setOnItemClickListener { view, position ->
+        viewBinding.categoryListMore.categoryRecyclerView.setOnItemClickListener { _, position ->
+            // 如果收藏夹中没有内容，则不跳转
+            if ((recycleFolderList[position] as FolderData).cnt == "0") return@setOnItemClickListener
             // 跳转到相应页面
+            val laterItemListFragment = TheRouter.build(RoutePathConstant.LaterItemListFragment)
+                .withString("folderKey", (recycleFolderList[position] as FolderData).key)
+                .createFragment<LaterItemListFragment>()
+            if (laterItemListFragment != null) {
+                TheRouterUtil.navToFragmentAdd<LaterItemListFragment>(fragment = laterItemListFragment, fragmentManager = requireActivity().supportFragmentManager)
+            }
         }
 
-        viewBinding.categoryListMore.categoryRecyclerView.setOnItemLongClickListener { view, position ->
+        viewBinding.categoryListMore.categoryRecyclerView.setOnItemLongClickListener { _, position ->
             LaterLog.d("setOnCategoryListMoreItemClick: $position")
             // 弹出删除对话框
             showDeleteDialog(title = "删除回收站", content = "确定要删除回收站吗？", positiveText = "确定", negativeText = "取消", positiveListener = {

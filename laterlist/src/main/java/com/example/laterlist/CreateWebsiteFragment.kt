@@ -1,5 +1,6 @@
 package com.example.laterlist
 
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -22,11 +23,14 @@ import com.example.laterlist.chip.TagChip
 import com.example.laterlist.databinding.FragmentCreateWebsiteBinding
 import com.example.laterlist.spinner.FolderSpinnerAdapter
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class CreateWebsiteFragment : BaseDialogFragment<FragmentCreateWebsiteBinding>(FragmentCreateWebsiteBinding::inflate) {
     private var customDialogCallback: MenuItemDialogClickCallBack<LaterViewItem>? = null
     private val mTagList: MutableList<LaterTagEntity> = mutableListOf()
     private var selectedTagList: MutableList<LaterTagEntity> = mutableListOf()
+    private var laterViewItem: LaterViewItem? = null
 
     companion object{
         private val mFolderList: MutableList<FolderData> = mutableListOf()
@@ -48,6 +52,20 @@ class CreateWebsiteFragment : BaseDialogFragment<FragmentCreateWebsiteBinding>(F
     override fun onCreateView() {
         initFolderSelector(mFolderList)
         initTagSelector(mTagList)
+        initByLaterViewItem()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initFolderSelector(mFolderList)
+        initTagSelector(mTagList)
+        initByLaterViewItem()
+    }
+
+    private fun initByLaterViewItem(){
+        if (laterViewItem == null) return
+        viewBinding.createWebsiteTitleEv.setText(laterViewItem?.title)
+        viewBinding.createWebsiteUrlEv.setText(laterViewItem?.contentUrl)
     }
 
     private fun initFolderSelector(folderList: List<FolderData>) {
@@ -58,6 +76,7 @@ class CreateWebsiteFragment : BaseDialogFragment<FragmentCreateWebsiteBinding>(F
     }
 
     private fun initTagSelector(tagList: List<LaterTagEntity>){
+        viewBinding.createWebsiteTagChipGroup.removeAllViews()
         // 初始化标签选择器
         val spinnerAdapter = ArrayAdapter(requireContext(), R.layout.folder_spinner_item, tagList.map { it.name })
         spinnerAdapter.setDropDownViewResource(R.layout.folder_spinner_item)
@@ -123,8 +142,18 @@ class CreateWebsiteFragment : BaseDialogFragment<FragmentCreateWebsiteBinding>(F
         return viewBinding.createWebsiteUrlEv
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onDismiss()
+    }
+
     private fun onDismiss(){
-        // TODO 清空内容，防止下次弹出显示
+        // 清空内容，防止下次弹出显示
+        this.laterViewItem = null
+        viewBinding.createWebsiteTagChipGroup.removeAllViews()
+        viewBinding.createWebsiteUrlEv.setText("")
+        viewBinding.createWebsiteTitleEv.setText("")
+        viewBinding.createWebsiteContentEv.setText("")
         // 取消弹出的对话框
         dismiss()
     }
@@ -132,10 +161,24 @@ class CreateWebsiteFragment : BaseDialogFragment<FragmentCreateWebsiteBinding>(F
     fun setFolderList(folderList: List<FolderData>){
         mFolderList.clear()
         mFolderList.addAll(folderList)
+        try {
+            initFolderSelector(mFolderList)
+        }catch (e: Exception){
+            LaterLog.e("setFolderList: $e")
+        }
     }
 
     fun setTagList(tagList: List<LaterTagEntity>){
         mTagList.clear()
         mTagList.addAll(tagList)
+        try {
+            initTagSelector(mTagList)
+        }catch (e: Exception){
+            LaterLog.e("setFolderList: $e")
+        }
+    }
+
+    fun setLaterViewItem(laterViewItem: LaterViewItem){
+        this.laterViewItem = laterViewItem
     }
 }

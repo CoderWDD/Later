@@ -2,6 +2,7 @@ package com.example.laterlist
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.ClipData.Item
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -12,11 +13,13 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.common.adapter.ViewPagerAdapter
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
+import com.example.common.entity.ItemType
 import com.example.common.entity.LaterFolderEntity
 import com.example.common.entity.LaterTagEntity
 import com.example.common.entity.LaterViewItem
@@ -34,6 +37,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.therouter.router.Route
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 
 @Route(
     path = RoutePathConstant.LaterListFragment,
@@ -59,7 +63,7 @@ class LaterListFragment :
     private val tagList: MutableList<LaterTagEntity> = mutableListOf()
 
     override fun onCreateView() {
-        viewModel = ViewModelProvider(this)[LaterListViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[LaterListViewModel::class.java]
         fragments = arrayOf(
             // add fragments here
             TheRouterUtil.getFragmentByPath<AllLaterListFragment>(RoutePathConstant.AllLaterListFragment)
@@ -100,6 +104,23 @@ class LaterListFragment :
     }
 
     private fun observeData(){
+        viewModel.sharedAction.observe(viewLifecycleOwner){
+            when (it.itemType) {
+                ItemType.WEB_PAGE -> {
+                    createWebsiteDialog.setLaterViewItem(it)
+                    createWebsiteDialog.show(requireActivity().supportFragmentManager, "createWebsiteDialog")
+                }
+                ItemType.IMAGE -> {
+                    createFolderDialog.show(requireActivity().supportFragmentManager, "createFolderDialog")
+                }
+                ItemType.VIDEO -> {
+                    createTagDialog.show(requireActivity().supportFragmentManager, "createTagDialog")
+                }
+                ItemType.MUSIC -> {}
+                ItemType.OTHER -> {}
+            }
+        }
+
         viewModel.getFavoriteFolderList().observe(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Success -> {

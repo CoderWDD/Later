@@ -15,6 +15,7 @@ import com.example.common.recyclerview.proxy.LaterImageItemCardProxy
 import com.example.common.recyclerview.proxy.LaterVideoItemCardProxy
 import com.example.common.recyclerview.proxy.LaterWebsiteItemCardProxy
 import com.example.common.reporesource.Resource
+import com.example.common.utils.FragmentStackUtil
 import com.example.common.utils.TheRouterUtil
 import com.example.laterlist.databinding.FragmentLaterItemListBinding
 import com.example.laterlist.viewmodel.LaterListViewModel
@@ -99,5 +100,10 @@ class LaterItemListFragment :
         viewBinding.swipeRefreshLayout.setOnRefreshListener {
             getInitData()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        FragmentStackUtil.navBack()
     }
 }

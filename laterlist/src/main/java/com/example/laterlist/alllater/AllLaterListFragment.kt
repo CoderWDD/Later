@@ -145,7 +145,7 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
                 .withString("folderKey", (favoriteFolderList[position] as FolderData).key)
                 .createFragment<LaterItemListFragment>()
             if (laterItemListFragment != null) {
-                TheRouterUtil.navToFragmentAdd<LaterItemListFragment>(fragment = laterItemListFragment, fragmentManager = parentFragmentManager)
+                TheRouterUtil.navToFragmentAdd<LaterItemListFragment>(fragment = laterItemListFragment, fragmentManager = requireActivity().supportFragmentManager)
             }
         }
 

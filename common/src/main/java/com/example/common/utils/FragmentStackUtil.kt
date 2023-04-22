@@ -66,5 +66,6 @@ object FragmentStackUtil {
     }
 
     fun navBack() {
-        fragmentStack.pop()
-    }}
+        if (fragmentStack.isNotEmpty()) fragmentStack.pop()
+    }
+}

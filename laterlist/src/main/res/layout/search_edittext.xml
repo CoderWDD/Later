@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/cardView_radius"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/search_bg"
-        />
+        android:background="@drawable/search_bg" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

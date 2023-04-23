@@ -56,6 +56,27 @@
     "params": {}
   },
   {
+    "path": "path:/Calendar/TodoListFragment",
+    "className": "com.example.calendar.TodoFragment",
+    "action": "",
+    "description": "The fragment which show the todo list",
+    "params": {}
+  },
+  {
+    "path": "path:/Calendar/DoneListFragment",
+    "className": "com.example.calendar.DoneFragment",
+    "action": "",
+    "description": "The fragment which show the done list",
+    "params": {}
+  },
+  {
+    "path": "path:/Calendar/DoingListFragment",
+    "className": "com.example.calendar.DoingFragment",
+    "action": "",
+    "description": "The fragment which show the doing list",
+    "params": {}
+  },
+  {
     "path": "path:/Calendar/CalenderFragment",
     "className": "com.example.calendar.CalenderFragment",
     "action": "",

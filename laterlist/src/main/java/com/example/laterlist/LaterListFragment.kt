@@ -19,6 +19,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.common.adapter.ViewPagerAdapter
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
+import com.example.common.databinding.TablayoutItemTabBinding
 import com.example.common.entity.ItemType
 import com.example.common.entity.LaterFolderEntity
 import com.example.common.entity.LaterTagEntity
@@ -163,12 +164,12 @@ class LaterListFragment :
     }
 
     private fun generateItemTab(position: Int): View {
-        val view = LayoutInflater.from(requireContext()).inflate(R.layout.tablayout_item_tab, null)
-        val imageView = view.findViewById<ImageView>(R.id.item_icon)
-        val textView = view.findViewById<TextView>(R.id.item_text)
+        val tabLayoutItemTabBinding = TablayoutItemTabBinding.inflate(layoutInflater)
+        val imageView = tabLayoutItemTabBinding.itemIcon
+        val textView = tabLayoutItemTabBinding.itemText
         icons[position]?.let { imageView.setImageResource(it) }
         textView.text = titles[position]
-        return view
+        return tabLayoutItemTabBinding.root
     }
 
     private fun initToolbar() {

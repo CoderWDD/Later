@@ -12,4 +12,8 @@ object RoutePathConstant {
     const val TagListFragment = "path:/Later/TagListFragment"
 
     const val LaterItemListFragment = "path:/Later/LaterItemListFragment"
+
+    const val CalendarTodoListFragment = "path:/Calendar/TodoListFragment"
+    const val CalendarDoneListFragment = "path:/Calendar/DoneListFragment"
+    const val CalendarDoingListFragment = "path:/Calendar/DoingListFragment"
 }

@@ -80,9 +80,7 @@ class LaterListViewModel: ViewModel() {
 
     }
 
-    fun updateLaterItem(){
-
-    }
+    fun updateLaterItem(favoriteFolderPath: String, laterViewItem: LaterViewItem) = laterListRepository.updateLaterViewItem(favoriteFolderPath, laterViewItem).asLiveData()
 
     // clear the reference of instance which is not used
     override fun onCleared() {

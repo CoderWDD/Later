@@ -643,6 +643,30 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
         return mutableSharedFlow
     }
 
+    override fun updateLaterViewItem(favoriteFolderPath: String, laterViewItem: LaterViewItem): Flow<Resource<String>> {
+        return object : NetworkBoundResource<String>() {
+            override fun saveToCache(item: Resource<String>) {}
+
+            override fun shouldFetch(data: String?) = true
+
+            override fun loadFromCache(): Flow<String> {
+                return flow { emit("") }
+            }
+
+            override suspend fun fetchFromNetwork(): Flow<Resource<String>> =
+                flow<Resource<String>> {
+                    val result = suspendCoroutine<Resource<String>> { continuation ->
+                        getFavoriteLaterViewItemReference(favoriteFolderPath).updateChildren(mapOf(laterViewItem.key to laterViewItem))
+                            .addOnSuccessListener { continuation.resume(Resource.success(data = "Success")) }
+                            .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
+                            .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
+                    }
+                    emit(result)
+                }
+        }.asSharedFlow(coroutineScope = viewModelScope).catch { emit(Resource.error(message = it.message ?: "Unknown error")) }
+    }
+
+
     private fun getFavoriteFolderReference() =
         database.getReference(FirebaseFieldsConstants.USER_ID).child(userId).child(FirebaseFieldsConstants.FAVORITE_FOLDER)
 

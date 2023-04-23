@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.common.R
 import com.example.common.databinding.LaterItemWebsiteBinding
 import com.example.common.entity.LaterViewItem
 import com.example.common.entity.LaterViewWebPageItem
@@ -24,21 +25,12 @@ class LaterWebsiteItemCardProxy: RVProxy<LaterViewWebPageItem, LaterWebsiteItemC
         index: Int,
         action: ((Any?) -> Unit)?
     ) {
-        LaterLog.d("onBindViewHolder: $data")
         holder.apply {
             titleText.text = data.title
             tagText.text = data.tag.joinToString(", ")
             timeText.text = data.updateTime.toString()
             contentText.text = data.content
-            starIcon.setOnClickListener {
-//                action?.invoke(data)
-            }
-            shareIcon.setOnClickListener {
-//                action?.invoke(data)
-            }
-            moreIcon.setOnClickListener {
-//                action?.invoke(data)
-            }
+            starIcon.isSelected = data.isStar
         }
     }
 }

@@ -14,7 +14,6 @@ import com.example.common.recyclerview.proxy.FolderData
 import com.example.common.recyclerview.setOnItemClickListener
 import com.example.laterlist.databinding.FragmentAllLaterListBinding
 import com.example.common.adapter.RecyclerViewAdapter
-import com.example.common.entity.LaterFolderEntity
 import com.example.common.log.LaterLog
 import com.example.common.recyclerview.setOnItemLongClickListener
 import com.example.common.reporesource.Resource

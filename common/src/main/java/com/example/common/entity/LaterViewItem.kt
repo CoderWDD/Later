@@ -25,7 +25,7 @@ data class LaterViewItem @JvmOverloads constructor(
     val isRead: Boolean = false,
     val isDelete: Boolean = false,
     val isTop: Boolean = false,
-    val isStar: Boolean = false,
+    var isStar: Boolean = false,
     val folder: String = "",
     val itemType: ItemType = ItemType.OTHER
 ){
@@ -137,6 +137,126 @@ data class LaterViewItem @JvmOverloads constructor(
             folder = folder,
             itemType = ItemType.OTHER
         )
+    }
+
+    companion object{
+        fun fromExitItem(item: Any): LaterViewItem {
+            return when (item) {
+                is LaterViewImageItem -> {
+                    LaterViewItem(
+                        key = item.key,
+                        id = item.id,
+                        title = item.title,
+                        content = item.content,
+                        contentUrl = item.contentUrl,
+                        thumbnailUrl = item.thumbnailUrl,
+                        description = item.description,
+                        tag = item.tag,
+                        createTime = item.createTime,
+                        updateTime = item.updateTime,
+                        lastReadTime = item.lastReadTime,
+                        isRead = item.isRead,
+                        isDelete = item.isDelete,
+                        isTop = item.isTop,
+                        isStar = item.isStar,
+                        folder = item.folder,
+                        itemType = item.itemType
+                    )
+                }
+
+                is LaterViewVideoItem -> {
+                    LaterViewItem(
+                        key = item.key,
+                        id = item.id,
+                        title = item.title,
+                        content = item.content,
+                        contentUrl = item.contentUrl,
+                        thumbnailUrl = item.thumbnailUrl,
+                        description = item.description,
+                        tag = item.tag,
+                        createTime = item.createTime,
+                        updateTime = item.updateTime,
+                        lastReadTime = item.lastReadTime,
+                        isRead = item.isRead,
+                        isDelete = item.isDelete,
+                        isTop = item.isTop,
+                        isStar = item.isStar,
+                        folder = item.folder,
+                        itemType = item.itemType
+                    )
+                }
+
+                is LaterViewMusicItem -> {
+                    LaterViewItem(
+                        key = item.key,
+                        id = item.id,
+                        title = item.title,
+                        content = item.content,
+                        contentUrl = item.contentUrl,
+                        thumbnailUrl = item.thumbnailUrl,
+                        description = item.description,
+                        tag = item.tag,
+                        createTime = item.createTime,
+                        updateTime = item.updateTime,
+                        lastReadTime = item.lastReadTime,
+                        isRead = item.isRead,
+                        isDelete = item.isDelete,
+                        isTop = item.isTop,
+                        isStar = item.isStar,
+                        folder = item.folder,
+                        itemType = item.itemType
+                    )
+                }
+
+                is LaterViewWebPageItem -> {
+                    LaterViewItem(
+                        key = item.key,
+                        id = item.id,
+                        title = item.title,
+                        content = item.content,
+                        contentUrl = item.contentUrl,
+                        thumbnailUrl = item.thumbnailUrl,
+                        description = item.description,
+                        tag = item.tag,
+                        createTime = item.createTime,
+                        updateTime = item.updateTime,
+                        lastReadTime = item.lastReadTime,
+                        isRead = item.isRead,
+                        isDelete = item.isDelete,
+                        isTop = item.isTop,
+                        isStar = item.isStar,
+                        folder = item.folder,
+                        itemType = item.itemType
+                    )
+                }
+
+                is LaterViewOtherItem -> {
+                    LaterViewItem(
+                        key = item.key,
+                        id = item.id,
+                        title = item.title,
+                        content = item.content,
+                        contentUrl = item.contentUrl,
+                        thumbnailUrl = item.thumbnailUrl,
+                        description = item.description,
+                        tag = item.tag,
+                        createTime = item.createTime,
+                        updateTime = item.updateTime,
+                        lastReadTime = item.lastReadTime,
+                        isRead = item.isRead,
+                        isDelete = item.isDelete,
+                        isTop = item.isTop,
+                        isStar = item.isStar,
+                        folder = item.folder,
+                        itemType = item.itemType
+                    )
+                }
+
+                else -> {
+                    LaterViewItem()
+                }
+            }
+        }
     }
 }
 

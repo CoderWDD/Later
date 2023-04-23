@@ -7,20 +7,17 @@ import com.example.common.R
 import java.util.*
 
 object FragmentStackUtil {
-    private val currentFragment: Fragment? = null
-    private val fragmentStack = Stack<Fragment>()
-
     fun popBackStack(fragment: Fragment) {
-        popBackStack(fragment.parentFragmentManager)
+        popBackStack(fragment = fragment, fragment.parentFragmentManager)
     }
 
-    fun popBackStack(fragmentManager: FragmentManager) {
-        if (isFragmentStackEmpty(fragmentManager)) return
-        fragmentManager.popBackStack()
+    fun popBackStack(fragment: Fragment, fragmentManager: FragmentManager) {
+        fragmentManager.beginTransaction().remove(fragment).commit()
+        fragmentManager.beginTransaction().show(fragmentManager.fragments.first()).commit()
     }
 
-    fun popBackStack(fragmentActivity: FragmentActivity) {
-        popBackStack(fragmentActivity.supportFragmentManager)
+    fun popBackStack(fragment: Fragment, fragmentActivity: FragmentActivity) {
+        popBackStack(fragment = fragment, fragmentActivity.supportFragmentManager)
     }
 
     private fun isFragmentStackEmpty(fragmentManager: FragmentManager): Boolean {
@@ -35,16 +32,17 @@ object FragmentStackUtil {
         addToStack: Boolean = true,
         stackName: String? = fragment.tag
     ) {
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        // 如果当前有fragment，就先将其隐藏
-        if (!fragmentStack.empty()) {
-            fragmentTransaction.hide(fragmentStack.peek())
+        // 隐藏所有fragment
+        fragmentManager.fragments.forEach {
+            if (it.isVisible) {
+                fragmentManager.beginTransaction().hide(it).commit()
+            }
         }
-        fragmentTransaction.add(R.id.fragment_container, fragment, tag)
+        val fragmentTransaction = fragmentManager.beginTransaction()
         if (addToStack) {
             fragmentTransaction.addToBackStack(stackName)
         }
-        fragmentStack.push(fragment)
+        fragmentTransaction.add(R.id.fragment_container, fragment, tag)
         fragmentTransaction.commit()
     }
 
@@ -57,15 +55,9 @@ object FragmentStackUtil {
     ) {
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, fragment, tag)
-        fragmentStack.pop()
-        fragmentStack.push(fragment)
         if (addToStack) {
             fragmentTransaction.addToBackStack(stackName)
         }
         fragmentTransaction.commit()
-    }
-
-    fun navBack() {
-        if (fragmentStack.isNotEmpty()) fragmentStack.pop()
     }
 }

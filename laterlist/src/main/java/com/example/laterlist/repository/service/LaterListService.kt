@@ -35,5 +35,8 @@ interface LaterListService {
 
     fun getLaterViewItemByFolder(folderPath: String): MutableSharedFlow<Resource<List<LaterViewItem>>>
 
+    fun updateLaterViewItem(favoriteFolderPath: String, laterViewItem: LaterViewItem): Flow<Resource<String>>
+
+
     fun onClear()
 }

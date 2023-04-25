@@ -1,5 +1,6 @@
 package com.example.common.custom
 
+import android.app.IntentService
 import android.content.Context
 import android.graphics.Rect
 import android.os.Build

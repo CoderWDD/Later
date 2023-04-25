@@ -18,7 +18,7 @@ import com.example.common.entity.LaterTagEntity
 import com.example.common.entity.LaterViewItem
 import com.example.common.log.LaterLog
 import com.example.common.recyclerview.proxy.FolderData
-import com.example.laterlist.callback.MenuItemDialogClickCallBack
+import com.example.common.callback.MenuItemDialogClickCallBack
 import com.example.laterlist.chip.TagChip
 import com.example.laterlist.databinding.FragmentCreateWebsiteBinding
 import com.example.laterlist.spinner.FolderSpinnerAdapter

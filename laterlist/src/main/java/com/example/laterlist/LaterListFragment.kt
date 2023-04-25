@@ -29,7 +29,7 @@ import com.example.common.recyclerview.proxy.FolderData
 import com.example.common.reporesource.Resource
 import com.example.common.utils.TheRouterUtil
 import com.example.laterlist.alllater.AllLaterListFragment
-import com.example.laterlist.callback.MenuItemDialogClickCallBack
+import com.example.common.callback.MenuItemDialogClickCallBack
 import com.example.laterlist.databinding.FragmentLaterListBinding
 import com.example.laterlist.tags.TagListFragment
 import com.example.laterlist.viewmodel.LaterListViewModel
@@ -222,7 +222,8 @@ class LaterListFragment :
     }
 
     private fun initMenuItemDialog() {
-        createFolderDialog = CreateFolderFragment.newInstance(object : MenuItemDialogClickCallBack<String> {
+        createFolderDialog = CreateFolderFragment.newInstance(object :
+            MenuItemDialogClickCallBack<String> {
             override fun onConfirmClickListener(content: String) {
                 // 执行创建文件夹的逻辑
                 val folder = LaterFolderEntity(
@@ -237,7 +238,8 @@ class LaterListFragment :
             }
         })
 
-        createWebsiteDialog = CreateWebsiteFragment.newInstance(object : MenuItemDialogClickCallBack<LaterViewItem> {
+        createWebsiteDialog = CreateWebsiteFragment.newInstance(object :
+            MenuItemDialogClickCallBack<LaterViewItem> {
             override fun onConfirmClickListener(content: LaterViewItem) {
                 // 执行创建文件夹的逻辑
                 if (URLUtil.isValidUrl(content.contentUrl)) {
@@ -258,7 +260,8 @@ class LaterListFragment :
             }
         }, folderList = folderList, tagList = tagList)
 
-        createTagDialog = CreateTagFragment.newInstance(object : MenuItemDialogClickCallBack<String> {
+        createTagDialog = CreateTagFragment.newInstance(object :
+            MenuItemDialogClickCallBack<String> {
             override fun onConfirmClickListener(content: String) {
                 // 执行创建文件夹的逻辑
                 createAndHandleTag(content)

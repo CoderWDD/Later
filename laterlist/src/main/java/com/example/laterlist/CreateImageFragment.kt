@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import com.example.common.custom.BaseDialogFragment
 import com.example.common.entity.LaterViewItem
-import com.example.laterlist.callback.MenuItemDialogClickCallBack
+import com.example.common.callback.MenuItemDialogClickCallBack
 import com.example.laterlist.databinding.FragmentCreateImageBinding
 
 class CreateImageFragment : BaseDialogFragment<FragmentCreateImageBinding>(FragmentCreateImageBinding::inflate) {

@@ -12,7 +12,7 @@
     <string name="create_image">添加图片</string>
     <string name="create_video">添加视频</string>
     <string name="create_tag">添加标签</string>
-    
+
     <string name="google_server_client_id">433534959398-lp2fg9q8vhgr6nv4q3dv1n8m8ub27nvi.apps.googleusercontent.com</string>
 
     <string name="later_item_title">Title: </string>
@@ -20,5 +20,12 @@
     <string name="later_item_type">Type: </string>
     <string name="later_item_tag">Tag: </string>
     <string name="update_time">Update Time: </string>
+
+    <string name="todo_dialog_title">Title</string>
+    <string name="todo_dialog_desc">Description</string>
+    <string name="todo_dialog_date">Date</string>
+    <string name="todo_dialog_start_time">Start</string>
+    <string name="todo_dialog_end_time">End</string>
+    <string name="todo_dialog_add">Add Task</string>
 
 </resources>

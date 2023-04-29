@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import kotlin.coroutines.suspendCoroutine
 
 class TodoItemRepository(private val viewModelScope: CoroutineScope): TodoService {
@@ -46,17 +47,19 @@ class TodoItemRepository(private val viewModelScope: CoroutineScope): TodoServic
                 val todoList = mutableListOf<TodoItem>()
                 snapshot.children.forEach { dataSnapshot ->
                     dataSnapshot.getValue(TodoItem::class.java)?.let { todoItem ->
-                        todoItem.key = snapshot.key ?: ""
+                        todoItem.key = dataSnapshot.key ?: ""
                         todoList.add(todoItem)
                     }
                 }
-                mutableSharedFlow.tryEmit(Resource.success(data = todoList))
+                viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = todoList)) }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                mutableSharedFlow.tryEmit(Resource.error(error.message))
+                viewModelScope.launch { mutableSharedFlow.emit(Resource.error(error.message)) }
             }
         }
+
+
 
         todoItemRef.child(date).addValueEventListener(valueEventListener)
 

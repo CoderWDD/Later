@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
@@ -15,7 +14,6 @@ import android.view.Menu
 import android.view.MenuItem
 import com.example.collect.databinding.ActivityCollectBinding
 import com.example.common.log.LaterLog
-import com.example.common.utils.StringUtils
 
 class CollectActivity : AppCompatActivity() {
 

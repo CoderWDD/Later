@@ -5,11 +5,11 @@
     android:id="@+id/todo_item_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
-    android:layout_marginBottom="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp">
+    android:layout_margin="4dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    app:cardCornerRadius="16dp"
+    android:focusable="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

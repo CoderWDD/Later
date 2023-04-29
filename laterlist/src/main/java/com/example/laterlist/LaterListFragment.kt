@@ -1,19 +1,12 @@
 package com.example.laterlist
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.ClipData.Item
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.webkit.URLUtil
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.common.adapter.ViewPagerAdapter
@@ -37,8 +30,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.therouter.router.Route
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 
 @Route(
     path = RoutePathConstant.LaterListFragment,

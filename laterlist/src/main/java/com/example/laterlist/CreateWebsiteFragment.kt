@@ -2,16 +2,11 @@ package com.example.laterlist
 
 import android.content.DialogInterface
 import android.os.Build
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.annotation.RequiresApi
-import androidx.core.view.allViews
 import com.example.common.custom.BaseDialogFragment
 import com.example.common.entity.ItemType
 import com.example.common.entity.LaterTagEntity
@@ -21,10 +16,6 @@ import com.example.common.recyclerview.proxy.FolderData
 import com.example.common.callback.MenuItemDialogClickCallBack
 import com.example.laterlist.chip.TagChip
 import com.example.laterlist.databinding.FragmentCreateWebsiteBinding
-import com.example.laterlist.spinner.FolderSpinnerAdapter
-import com.google.android.material.chip.Chip
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 class CreateWebsiteFragment : BaseDialogFragment<FragmentCreateWebsiteBinding>(FragmentCreateWebsiteBinding::inflate) {
     private var customDialogCallback: MenuItemDialogClickCallBack<LaterViewItem>? = null

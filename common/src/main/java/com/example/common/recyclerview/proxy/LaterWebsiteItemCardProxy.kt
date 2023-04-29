@@ -5,9 +5,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.common.R
 import com.example.common.databinding.LaterItemWebsiteBinding
-import com.example.common.entity.LaterViewItem
 import com.example.common.entity.LaterViewWebPageItem
 import com.example.common.log.LaterLog
 import com.example.common.recyclerview.RVProxy

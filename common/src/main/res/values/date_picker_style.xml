@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TodoDatePickerStyle" parent="ThemeOverlay.Material3.Dialog.Alert">
+        <item name="android:datePickerStyle">@style/Widget.Material3.MaterialCalendar</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="dialogCornerRadius">16dp</item>
+    </style>
+
+</resources>

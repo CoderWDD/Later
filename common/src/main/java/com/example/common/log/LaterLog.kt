@@ -1,6 +1,6 @@
 package com.example.common.log
 
-import android.util.Log
+import com.example.common.entity.TodoItem
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.net.UnknownHostException

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TodoTimePickerStyle" parent="ThemeOverlay.Material3.Dialog.Alert">
+        <item name="android:datePickerStyle">@style/ThemeOverlay.Material3.MaterialTimePicker</item>
+        <item name="dialogCornerRadius">16dp</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/md_theme_light_onPrimary</item> <!-- change to your desired color -->
+        <item name="backgroundTint">@color/md_theme_light_primary</item> <!-- change to your desired color -->
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/md_theme_light_onSecondaryContainer</item> <!-- change to your desired color -->
+        <item name="backgroundTint">@color/md_theme_light_onSecondary</item> <!-- change to your desired color -->
+    </style>
+</resources>

@@ -28,4 +28,7 @@
     <string name="todo_dialog_end_time">End</string>
     <string name="todo_dialog_add">Add Task</string>
 
+    <string name="delete_icon_description">删除</string>
+    <string name="edit_icon_description">修改</string>
+
 </resources>

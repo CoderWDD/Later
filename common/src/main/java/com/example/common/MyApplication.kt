@@ -8,6 +8,10 @@ import com.example.common.log.LaterLogcatInterceptor
 import com.therouter.TheRouter
 
 class MyApplication: Application() {
+    companion object{
+        lateinit var instance: MyApplication
+    }
+
     override fun attachBaseContext(base: Context?) {
         // 设置为debug模式，可以看到具体日志
         TheRouter.isDebug = true
@@ -16,7 +20,7 @@ class MyApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
-
+        instance = this
         initLaterLog()
     }
 

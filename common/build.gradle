@@ -50,6 +50,10 @@ dependencies {
     testImplementation appDependence.junit
     implementation appDependence.navigation
 
+    implementation appDependence.room
+    implementation appDependence.room_ktx
+    annotationProcessor(appDependence.roomAnnotationProcessor)
+
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 

@@ -1,20 +1,21 @@
 package com.example.common.network
 
+import com.example.common.network.interceptor.RetrofitAuthInterceptor
 import com.example.common.network.interceptor.RetrofitLogInterceptor
-import okhttp3.EventListener
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    private const val BASE_URL = ""
+    private const val BASE_URL = "https://api.openai.com/v1/"
 
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
+            .addInterceptor(RetrofitAuthInterceptor())
             .addInterceptor(RetrofitLogInterceptor())
             .build()
     }

@@ -11,7 +11,7 @@ ext{
     materialVersion = "1.7.0"
     hiltVersion = "1.0.0"
     lifecycleVersion = "2.5.1"
-    roomVersion = "2.4.3"
+    roomVersion = "2.5.1"
     recyclerviewVersion = "1.2.1"
     constraintlayoutVersion = "2.1.4"
     junitVersion = "4.13.2"

@@ -27,6 +27,8 @@ ext{
     firebaseBomVersion = "31.2.0"
     swiperefreshlayoutVersion = "1.1.0"
 
+    moshiVersion = "1.14.0"
+
     app = [
             kaptRoom: "androidx.room:room-compiler:$roomVersion",
             coreKtx : "androidx.core:core-ktx:$coreKtxVersion",
@@ -71,7 +73,9 @@ ext{
             firebaseAuthKtx: "com.google.firebase:firebase-auth-ktx",
             firebaseBom: "com.google.firebase:firebase-bom: $firebaseBomVersion",
 
-            swiperefreshlayout: "androidx.swiperefreshlayout:swiperefreshlayout:$swiperefreshlayoutVersion"
+            swiperefreshlayout: "androidx.swiperefreshlayout:swiperefreshlayout:$swiperefreshlayoutVersion",
 
+            moshi: "com.squareup.moshi:moshi:$moshiVersion",
+            moshi_converter: "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
     ]
 }

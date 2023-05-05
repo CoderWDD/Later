@@ -2,7 +2,7 @@ package com.example.common.entity
 
 data class ChatRequest(
     val model: String,
-    val message: List<MsgEntity>,
+    val messages: MutableList<MessageItem> = mutableListOf(),
     val temperature: Double = 1.0,
     val top_p: Double = 1.0,
     val n: Int = 1,
@@ -22,7 +22,7 @@ data class ChatRequest(
         other as ChatRequest
 
         if (model != other.model) return false
-        if (message != other.message) return false
+        if (messages != other.messages) return false
         if (temperature != other.temperature) return false
         if (top_p != other.top_p) return false
         if (n != other.n) return false
@@ -40,7 +40,7 @@ data class ChatRequest(
 
     override fun hashCode(): Int {
         var result = model.hashCode()
-        result = 31 * result + message.hashCode()
+        result = 31 * result + messages.hashCode()
         result = 31 * result + temperature.hashCode()
         result = 31 * result + top_p.hashCode()
         result = 31 * result + n

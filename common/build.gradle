@@ -15,7 +15,7 @@ android {
     }
 
     defaultConfig {
-        minSdk 21
+        minSdk 26
         targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -41,7 +41,8 @@ dependencies {
     implementation appDependence.therouter
     implementation appDependence.retrofit
     implementation appDependence.okHttp
-    implementation appDependence.gson
+    implementation appDependence.moshi
+    implementation appDependence.moshi_converter
 
 
     implementation appDependence.coreKtx

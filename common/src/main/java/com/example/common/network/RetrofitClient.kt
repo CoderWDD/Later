@@ -2,9 +2,10 @@ package com.example.common.network
 
 import com.example.common.network.interceptor.RetrofitAuthInterceptor
 import com.example.common.network.interceptor.RetrofitLogInterceptor
+import com.example.common.network.service.OpenAiChatService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
@@ -20,11 +21,14 @@ object RetrofitClient {
             .build()
     }
 
-    val retrofit: Retrofit by lazy {
+    private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create())
             .build()
     }
+
+    val chatServiceClient: OpenAiChatService by lazy { retrofit.create(OpenAiChatService::class.java) }
+
 }

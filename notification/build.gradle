@@ -14,7 +14,7 @@ android {
     }
 
     defaultConfig {
-        minSdk 21
+        minSdk 26
         targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -48,4 +48,16 @@ dependencies {
     implementation appDependence.constraintlayout
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+
+    implementation appDependence.retrofit
+    implementation appDependence.okHttp
+
+    implementation appDependence.moshi
+
+    implementation appDependence.room
+    implementation appDependence.room_ktx
+    annotationProcessor(appDependence.roomAnnotationProcessor)
+
+    implementation appDependence.lifecycleViewModel
+    implementation appDependence.viewModel
 }

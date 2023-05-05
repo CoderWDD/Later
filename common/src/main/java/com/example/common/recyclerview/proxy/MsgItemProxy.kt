@@ -21,7 +21,7 @@ class MsgItemProxy: RVProxy<MsgEntity, MsgItemViewHolder>() {
         action: ((Any?) -> Unit)?
     ) {
         holder.apply {
-            titleText.text = data.title
+            titleText.text = data.name
             contentText.text = data.content
         }
     }

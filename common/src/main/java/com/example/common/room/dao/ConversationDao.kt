@@ -10,33 +10,34 @@ import androidx.room.Update
 import com.example.common.room.entities.ConversationEntity
 import com.example.common.room.entities.ConversationWithMessageList
 import com.example.common.room.entities.MessageEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ConversationDao {
     @Transaction
     @Query("SELECT * FROM conversation WHERE conversation_id = :conversationId")
-    fun getConversationWithMessageList(conversationId: Long): LiveData<ConversationWithMessageList>
+    suspend fun getConversationWithMessageList(conversationId: Long): ConversationWithMessageList
 
     // Conversation related methods
     @Insert
-    fun insertConversation(conversation: ConversationEntity): Long
+    suspend fun insertConversation(conversation: ConversationEntity): Long
 
     @Update
-    fun updateConversation(conversation: ConversationEntity)
+    suspend fun updateConversation(conversation: ConversationEntity)
 
     @Delete
-    fun deleteConversation(conversation: ConversationEntity)
+    suspend fun deleteConversation(conversation: ConversationEntity)
 
     @Query("SELECT * FROM conversation")
-    fun getAllConversations(): LiveData<List<ConversationEntity>>
+    suspend fun getAllConversations(): LiveData<List<ConversationEntity>>
 
     // Message related methods
     @Insert
-    fun insertMessage(message: MessageEntity): Long
+    suspend fun insertMessage(message: MessageEntity): Long
 
     @Update
-    fun updateMessage(message: MessageEntity)
+    suspend fun updateMessage(message: MessageEntity)
 
     @Delete
-    fun deleteMessage(message: MessageEntity)
+    suspend fun deleteMessage(message: MessageEntity)
 }

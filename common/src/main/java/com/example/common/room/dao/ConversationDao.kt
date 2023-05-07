@@ -29,7 +29,7 @@ interface ConversationDao {
     suspend fun deleteConversation(conversation: ConversationEntity)
 
     @Query("SELECT * FROM conversation")
-    suspend fun getAllConversations(): LiveData<List<ConversationEntity>>
+    suspend fun getAllConversations(): List<ConversationEntity>
 
     // Message related methods
     @Insert

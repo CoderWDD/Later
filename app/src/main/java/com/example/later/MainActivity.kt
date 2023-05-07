@@ -9,6 +9,7 @@ import com.example.common.custom.BaseActivity
 import com.example.common.entity.ItemType
 import com.example.common.entity.LaterViewItem
 import com.example.common.log.LaterLog
+import com.example.common.utils.FragmentStackUtil
 import com.example.common.utils.TheRouterUtil
 import com.example.home.HomeFragment
 import com.example.later.databinding.ActivityMainBinding
@@ -18,8 +19,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     private lateinit var viewModel: LaterListViewModel
 
     override fun onCreate() {
-        TheRouterUtil.navToFragmentAdd<HomeFragment>(RoutePathConstant.HomeFragment, supportFragmentManager)
         viewModel = ViewModelProvider(this)[LaterListViewModel::class.java]
+        FragmentStackUtil.init(com.example.common.R.id.fragment_container, supportFragmentManager)
+        FragmentStackUtil.addFragment(TheRouterUtil.getFragmentByPath(RoutePathConstant.HomeFragment) ?: HomeFragment())
         handleActionSend(intent)
     }
 

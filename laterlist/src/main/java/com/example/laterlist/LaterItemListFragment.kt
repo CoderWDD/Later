@@ -54,8 +54,8 @@ class LaterItemListFragment :
     private fun initToolbar() {
         viewBinding.toolbar.navigationIcon = resources.getDrawable(com.example.common.R.drawable.baseline_arrow_back_24)
         viewBinding.toolbar.setNavigationOnClickListener {
-            FragmentStackUtil.popBackStack(this)
-//            FragmentStackUtil.navBack()
+
+            FragmentStackUtil.goBack()
         }
     }
 
@@ -154,6 +154,5 @@ class LaterItemListFragment :
 
     override fun onDestroy() {
         super.onDestroy()
-        FragmentStackUtil.popBackStack(this)
     }
 }

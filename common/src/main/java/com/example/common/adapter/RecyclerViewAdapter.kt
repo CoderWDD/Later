@@ -51,4 +51,16 @@ class RecyclerViewAdapter(
     fun <T, VH: ViewHolder> removeProxy(proxy: RVProxy<T, VH>){
         proxyList.remove(proxy)
     }
+
+    fun addData(data: Any){
+        dataList.add(data)
+        notifyItemInserted(dataList.size - 1)
+    }
+
+    fun addDataList(dataList: MutableList<Any>){
+        val oldSize = this.dataList.size
+        this.dataList.addAll(dataList)
+        notifyItemRangeInserted(oldSize, dataList.size)
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.example.common.utils
 
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -7,57 +8,65 @@ import com.example.common.R
 import java.util.*
 
 object FragmentStackUtil {
-    fun popBackStack(fragment: Fragment) {
-        popBackStack(fragment = fragment, fragment.parentFragmentManager)
-    }
-
-    fun popBackStack(fragment: Fragment, fragmentManager: FragmentManager) {
-        fragmentManager.beginTransaction().remove(fragment).commit()
-        fragmentManager.beginTransaction().show(fragmentManager.fragments.first()).commit()
-    }
-
-    fun popBackStack(fragment: Fragment, fragmentActivity: FragmentActivity) {
-        popBackStack(fragment = fragment, fragmentActivity.supportFragmentManager)
-    }
-
-    private fun isFragmentStackEmpty(fragmentManager: FragmentManager): Boolean {
-        return fragmentManager.backStackEntryCount == 0
-    }
-
-
-    fun addToMainFragment(
-        fragmentManager: FragmentManager,
-        fragment: Fragment,
-        tag: String? = fragment.tag,
-        addToStack: Boolean = true,
-        stackName: String? = fragment.tag
-    ) {
-        // 隐藏所有fragment
-        fragmentManager.fragments.forEach {
-            if (it.isVisible) {
-                fragmentManager.beginTransaction().hide(it).commit()
+    private var containerViewId: Int = 0
+        get() {
+            if (field == 0) {
+                return R.id.fragment_container
             }
+            return field
         }
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        if (addToStack) {
-            fragmentTransaction.addToBackStack(stackName)
-        }
-        fragmentTransaction.add(R.id.fragment_container, fragment, tag)
-        fragmentTransaction.commit()
+
+    private lateinit var fragmentManager: FragmentManager
+
+    fun init(@IdRes containerViewId: Int, fragmentManager: FragmentManager){
+        this.containerViewId = containerViewId
+        this.fragmentManager = fragmentManager
     }
 
-    fun replaceMainFragment(
-        fragmentManager: FragmentManager,
-        fragment: Fragment,
-        tag: String? = fragment.tag,
-        addToStack: Boolean = true,
-        stackName: String? = fragment.tag
-    ) {
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment, tag)
-        if (addToStack) {
-            fragmentTransaction.addToBackStack(stackName)
+    fun addFragment(fragment: Fragment) {
+        fragmentManager.beginTransaction().apply {
+            val currentFragment = currentFragment
+            currentFragment?.let { hide(it) }
+            add(containerViewId, fragment, fragment.javaClass.simpleName)
+            addToBackStack(fragment.javaClass.simpleName)
+            commit()
         }
-        fragmentTransaction.commit()
+    }
+
+    fun replaceFragment(fragment: Fragment) {
+        fragmentManager.beginTransaction().apply {
+            val currentFragment = currentFragment
+            currentFragment?.let { hide(it) }
+            replace(containerViewId, fragment, fragment.javaClass.simpleName)
+            addToBackStack(fragment.javaClass.simpleName)
+            commit()
+        }
+    }
+
+    fun showFragment(fragment: Fragment) {
+        fragmentManager.beginTransaction().apply {
+            val currentFragment = currentFragment
+            currentFragment?.let { hide(it) }
+            show(fragment)
+            commit()
+        }
+    }
+
+    val currentFragment: Fragment?
+        get() = fragmentManager.findFragmentById(containerViewId)
+
+    fun removeFragment(fragment: Fragment) {
+        fragmentManager.beginTransaction().apply {
+            remove(fragment)
+            commit()
+        }
+    }
+
+    fun goBack() {
+        fragmentManager.popBackStack()
+    }
+
+    fun isFragmentVisible(fragment: Fragment): Boolean {
+        return fragment.isVisible
     }
 }

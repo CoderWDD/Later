@@ -58,6 +58,7 @@ dependencies {
     implementation appDependence.room_ktx
     annotationProcessor(appDependence.roomAnnotationProcessor)
 
+    implementation appDependence.lifecycle
     implementation appDependence.lifecycleViewModel
     implementation appDependence.viewModel
 }

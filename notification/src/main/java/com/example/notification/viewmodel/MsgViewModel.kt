@@ -28,4 +28,6 @@ class MsgViewModel: ViewModel() {
     suspend fun updateConversation(conversation: ConversationEntity) = msgRepository.updateConversation(conversation = conversation)
 
     suspend fun getConversationList(): List<ConversationEntity> = msgRepository.getConversationList()
+
+    suspend fun getConversationById(conversationId: Long): ConversationEntity = msgRepository.getConversationById(conversationId)
 }

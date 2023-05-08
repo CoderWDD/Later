@@ -53,14 +53,18 @@ class RecyclerViewAdapter(
     }
 
     fun addData(data: Any){
-        dataList.add(data)
-        notifyItemInserted(dataList.size - 1)
+        dataList.add(0, data)
+        notifyItemInserted(0)
     }
 
     fun addDataList(dataList: MutableList<Any>){
-        val oldSize = this.dataList.size
-        this.dataList.addAll(dataList)
-        notifyItemRangeInserted(oldSize, dataList.size)
+        this.dataList.addAll(0, dataList)
+        notifyItemRangeInserted(0, dataList.size)
+    }
+
+    fun deleteData(position: Int){
+        dataList.removeAt(position)
+        notifyItemRemoved(position)
     }
 
 }

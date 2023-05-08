@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="cardView_radius">8dp</dimen>
+    <dimen name="message_max_width_ratio">0.6666667</dimen>
 </resources>

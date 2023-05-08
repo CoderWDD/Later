@@ -29,6 +29,8 @@ ext{
 
     moshiVersion = "1.14.0"
 
+    kotlinReflectVersion = "1.8.21"
+
     app = [
             kaptRoom: "androidx.room:room-compiler:$roomVersion",
             coreKtx : "androidx.core:core-ktx:$coreKtxVersion",
@@ -76,6 +78,10 @@ ext{
             swiperefreshlayout: "androidx.swiperefreshlayout:swiperefreshlayout:$swiperefreshlayoutVersion",
 
             moshi: "com.squareup.moshi:moshi:$moshiVersion",
-            moshi_converter: "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
+            moshi_converter: "com.squareup.retrofit2:converter-moshi:$retrofitVersion",
+            moshi_kotlin: "com.squareup.moshi:moshi-kotlin:$moshiVersion",
+
+            kotlin_reflect: "org.jetbrains.kotlin:kotlin-reflect:$coreKtxVersion",
+
     ]
 }

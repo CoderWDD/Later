@@ -32,6 +32,7 @@
         android:id="@+id/chat_message_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_below="@+id/chat_message_body"
         android:layout_toEndOf="@id/chat_message_avatar"
         android:textColor="@color/material_on_background_disabled"

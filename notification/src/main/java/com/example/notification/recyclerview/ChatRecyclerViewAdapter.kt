@@ -3,17 +3,17 @@ package com.example.notification.recyclerview
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.room.entities.MessageEntity
 import com.example.notification.R
 
+
 class ChatRecyclerViewAdapter: RecyclerView.Adapter<ChatRecyclerViewAdapter.ChatViewHolder>() {
     private val msgList = mutableListOf<MessageEntity>()
     // 静态内部类
-    class ChatViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class ChatViewHolder(itemView: View, private val contentWidth: Int): RecyclerView.ViewHolder(itemView) {
         val msgContent: TextView
         val msgTime: TextView
         val msgAvatar: ImageView
@@ -22,6 +22,7 @@ class ChatRecyclerViewAdapter: RecyclerView.Adapter<ChatRecyclerViewAdapter.Chat
             msgContent = itemView.findViewById(R.id.chat_message_body)
             msgTime = itemView.findViewById(R.id.chat_message_time)
             msgAvatar = itemView.findViewById(R.id.chat_message_avatar)
+            msgContent.maxWidth = contentWidth
         }
     }
 
@@ -35,7 +36,8 @@ class ChatRecyclerViewAdapter: RecyclerView.Adapter<ChatRecyclerViewAdapter.Chat
             MsgType.SEND.ordinal -> LayoutInflater.from(parent.context).inflate(R.layout.chat_message_item_sender, parent, false)
             else -> LayoutInflater.from(parent.context).inflate(R.layout.chat_message_item_receiver, parent, false)
         }
-        return ChatViewHolder(view)
+        val screenWidth = parent.resources.displayMetrics.widthPixels
+        return ChatViewHolder(view, (screenWidth * 0.6667).toInt())
     }
 
     override fun getItemCount(): Int = msgList.size

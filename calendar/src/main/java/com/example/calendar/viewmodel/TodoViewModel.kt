@@ -14,4 +14,6 @@ class TodoViewModel: ViewModel() {
     fun updateTodoItem(date: String, todoItem: TodoItem) = todoRepository.updateTodoItem(date = date, todoItem = todoItem).asLiveData()
 
     fun createTodoItem(date: String, todoItem: TodoItem) = todoRepository.createTodoItem(date = date, todoItem = todoItem).asLiveData()
+
+    fun deleteTodoItem(date: String, todoItem: TodoItem) = todoRepository.deleteTodoItem(date = date, todoItem = todoItem).asLiveData()
 }

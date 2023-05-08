@@ -14,4 +14,7 @@ interface TodoService {
 
     // update to do item
     fun updateTodoItem(date: String, todoItem: TodoItem): Flow<Resource<String>>
+
+    // delete to do item
+    fun deleteTodoItem(date: String, todoItem: TodoItem): Flow<Resource<String>>
 }

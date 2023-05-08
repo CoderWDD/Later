@@ -2,15 +2,20 @@ package com.example.notification
 
 import android.view.Gravity
 import android.widget.TextView
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
 import com.example.common.log.LaterLog
 import com.example.common.room.entities.MessageEntity
+import com.example.common.utils.FragmentStackUtil
 import com.example.notification.databinding.FragmentChatMessageBinding
 import com.example.notification.entity.MsgResponseCode
 import com.example.notification.recyclerview.ChatRecyclerViewAdapter
+import com.example.notification.recyclerview.ConversationDividerItemDecoration
 import com.example.notification.viewmodel.MsgViewModel
 import com.therouter.router.Autowired
 import com.therouter.router.Route
@@ -42,8 +47,8 @@ class ChatMessageFragment : BaseFragment<FragmentChatMessageBinding>(FragmentCha
     private fun initMsgList(){
         viewLifecycleOwner.lifecycleScope.launch {
             msgList.addAll(viewModel.getMsgListByConversationId(conversationId.toLong()))
-            LaterLog.d("msgList: $msgList", "ChatMessageFragment")
             msgRVAdapter.addMsgList(msgList)
+            if (msgList.isNotEmpty()) viewBinding.chatHistoryRecyclerView.smoothScrollToPosition(msgList.size - 1)
         }
     }
 
@@ -78,18 +83,19 @@ class ChatMessageFragment : BaseFragment<FragmentChatMessageBinding>(FragmentCha
                 viewModel.sendMsg(msgSend).collect{ msgResponse ->
                     when (msgResponse.code){
                         MsgResponseCode.MESSAGE -> {
-                            val childAt = viewBinding.chatHistoryRecyclerView.getChildAt(msgRVAdapter.itemCount - 1)
-                            val messageBodyTV = childAt.findViewById<TextView>(R.id.chat_message_body)
-                            // 移除上一条消息末尾的下划线字符
-                            if (messageBodyTV.text.isNotEmpty() && messageBodyTV.text.last() == '_') {
-                                messageBodyTV.text = messageBodyTV.text.substring(0, messageBodyTV.text.length - 1)
+                            viewBinding.chatHistoryRecyclerView.layoutManager?.findViewByPosition(msgRVAdapter.itemCount - 1)?.let {
+                                val messageBodyTV = it.findViewById<TextView>(R.id.chat_message_body)
+                                // 移除上一条消息末尾的下划线字符
+                                if (messageBodyTV.text.isNotEmpty() && messageBodyTV.text.last() == '_') {
+                                    messageBodyTV.text = messageBodyTV.text.substring(0, messageBodyTV.text.length - 1)
+                                }
+                                // 添加新消息
+                                messageBodyTV.append(msgResponse.msg)
+                                receiverContent.plus(msgResponse.msg)
+                                // 在消息未结束之前，在文本末尾显示输入的光标
+                                messageBodyTV.append("_")
                             }
 
-                            // 添加新消息
-                            messageBodyTV.append(msgResponse.msg)
-                            receiverContent.plus(msgResponse.msg)
-                            // 在消息未结束之前，在文本末尾显示输入的光标
-                            messageBodyTV.append("_")
                         }
                         MsgResponseCode.ROLE -> {
                             msgReceiver.messageSender = msgResponse.msg
@@ -101,21 +107,23 @@ class ChatMessageFragment : BaseFragment<FragmentChatMessageBinding>(FragmentCha
                             viewBinding.chatHistoryRecyclerView.smoothScrollToPosition(msgList.size - 1)
                         }
                         MsgResponseCode.DONE -> {
-                            val childAt = viewBinding.chatHistoryRecyclerView.getChildAt(msgRVAdapter.itemCount - 1)
-                            val messageBodyTV = childAt.findViewById<TextView>(R.id.chat_message_body)
-                            // 移除消息末尾的下划线字符
-                            if (messageBodyTV.text.isNotEmpty() && messageBodyTV.text.last() == '_') {
-                                messageBodyTV.text = messageBodyTV.text.substring(0, messageBodyTV.text.length - 1)
+                            viewBinding.chatHistoryRecyclerView.layoutManager?.findViewByPosition(msgRVAdapter.itemCount - 1)?.let {
+                                val messageBodyTV = it.findViewById<TextView>(R.id.chat_message_body)
+                                // 移除消息末尾的下划线字符
+                                if (messageBodyTV.text.isNotEmpty() && messageBodyTV.text.last() == '_') {
+                                    messageBodyTV.text = messageBodyTV.text.substring(0, messageBodyTV.text.length - 1)
+                                }
                             }
                         }
                         MsgResponseCode.ERROR -> {
-                            val childAt = viewBinding.chatHistoryRecyclerView.getChildAt(msgRVAdapter.itemCount - 1)
-                            val messageBodyTV = childAt.findViewById<TextView>(R.id.chat_message_body)
-                            // 移除消息末尾的下划线字符
-                            if (messageBodyTV.text.isNotEmpty() && messageBodyTV.text.last() == '_') {
-                                messageBodyTV.text = messageBodyTV.text.substring(0, messageBodyTV.text.length - 1)
+                            viewBinding.chatHistoryRecyclerView.layoutManager?.findViewByPosition(msgRVAdapter.itemCount - 1)?.let {
+                                val messageBodyTV = it.findViewById<TextView>(R.id.chat_message_body)
+                                // 移除消息末尾的下划线字符
+                                if (messageBodyTV.text.isNotEmpty() && messageBodyTV.text.last() == '_') {
+                                    messageBodyTV.text = messageBodyTV.text.substring(0, messageBodyTV.text.length - 1)
+                                }
+                                messageBodyTV.append(msgResponse.msg)
                             }
-                            messageBodyTV.append(msgResponse.msg)
                         }
                     }
                 }
@@ -126,5 +134,10 @@ class ChatMessageFragment : BaseFragment<FragmentChatMessageBinding>(FragmentCha
     private fun initToolbar(){
         viewBinding.chatToolbarTitle.text = conversationName
         viewBinding.chatToolbarTitle.gravity = Gravity.CENTER
+
+        viewBinding.toolbar.navigationIcon = resources.getDrawable(com.example.common.R.drawable.baseline_arrow_back_24)
+        viewBinding.toolbar.setNavigationOnClickListener {
+            FragmentStackUtil.goBack()
+        }
     }
 }

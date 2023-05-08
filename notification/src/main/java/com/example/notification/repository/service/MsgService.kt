@@ -18,4 +18,6 @@ interface MsgService {
 
     suspend fun getConversationList(): List<ConversationEntity>
 
+    suspend fun getConversationById(conversationId: Long): ConversationEntity
+
 }

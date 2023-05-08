@@ -1,8 +1,11 @@
 package com.example.common.network
 
+import com.example.common.entity.ChatResponseStream
 import com.example.common.network.interceptor.RetrofitAuthInterceptor
 import com.example.common.network.interceptor.RetrofitLogInterceptor
 import com.example.common.network.service.OpenAiChatService
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -25,8 +28,12 @@ object RetrofitClient {
         Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
+    }
+
+    val moshi: Moshi by lazy {
+        Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
     }
 
     val chatServiceClient: OpenAiChatService by lazy { retrofit.create(OpenAiChatService::class.java) }

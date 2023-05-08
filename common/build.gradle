@@ -43,7 +43,9 @@ dependencies {
     implementation appDependence.okHttp
     implementation appDependence.moshi
     implementation appDependence.moshi_converter
+    implementation appDependence.moshi_kotlin
 
+    implementation appDependence.kotlin_reflect
 
     implementation appDependence.coreKtx
     implementation appDependence.appCompat

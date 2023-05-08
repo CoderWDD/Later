@@ -18,6 +18,9 @@ interface ConversationDao {
     @Query("SELECT * FROM conversation WHERE conversation_id = :conversationId")
     suspend fun getConversationWithMessageList(conversationId: Long): ConversationWithMessageList
 
+    @Query("SELECT * FROM conversation WHERE conversation_id = :conversationId")
+    suspend fun getConversationById(conversationId: Long): ConversationEntity
+
     // Conversation related methods
     @Insert
     suspend fun insertConversation(conversation: ConversationEntity): Long

@@ -4,6 +4,7 @@ import com.example.common.constants.ChatConstants
 import com.example.common.constants.HTTPConstants
 import com.example.common.entity.ChatRequest
 import com.example.common.entity.ChatResponseStream
+import com.example.common.entity.ChatResponseWrapper
 import com.example.common.entity.Choice
 import com.example.common.entity.MessageItem
 import com.example.common.network.RetrofitClient
@@ -18,6 +19,7 @@ import com.example.notification.repository.service.MsgService
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
@@ -31,7 +33,7 @@ class MsgRepository: MsgService {
         conversationDao.insertMessage(msg)
 
         // TODO 设置请求模型
-        val chatRequest = ChatRequest(model = "")
+        val chatRequest = ChatRequest(model = "gpt-3.5-turbo")
 
         // 每次只携带最新的 MSG_ITEM_SIZE 条消息
         val msgList = getLastMsgListByNumInConversation(num = ChatConstants.MSG_ITEM_SIZE, conversationId = msg.messageConversationId)
@@ -45,19 +47,20 @@ class MsgRepository: MsgService {
             return@flow
         }
 
-        val responseContent: String = ""
+        var responseContent: String = ""
         var responseRole: String = "assistant"
 
         // 请求成功, 返回聊天内容
         responseBody.body()?.byteStream()?.bufferedReader()?.useLines { lines ->
             lines.forEach { line ->
-                if (line.startsWith("{")) {
+                if (line.startsWith("data: {")) {
                     // 解析返回的结果
-                    Moshi.Builder().build().adapter(ChatResponseStream::class.java).fromJson(line)?.let { chatResponseStream ->
-                        chatResponseStream.choices.forEach {choice: Choice ->
+
+                    RetrofitClient.moshi.adapter(ChatResponseStream::class.java).fromJson(line.substringAfter("data: "))?.let { chatResponseWrapper ->
+                        chatResponseWrapper.choices.forEach {choice: Choice ->
                             // 根据返回的结果, 发送不同的消息
                             if (choice.delta.content != null) {
-                                responseContent.plus(choice.delta.content!!)
+                                responseContent += choice.delta.content!!
                                 emit(MsgResponse(code = MsgResponseCode.MESSAGE, msg = choice.delta.content!!))
                             }
                             else if (choice.delta.role != null) {
@@ -70,7 +73,7 @@ class MsgRepository: MsgService {
                         }
                     }
                 }
-                else if (line.startsWith("[")){
+                else if (line.startsWith("data: [DONE]")){
                     // done
                     // 只有成功才会存入数据库
                     val responseMsg = MessageEntity(messageConversationId = msg.messageConversationId, messageContent = responseContent, messageSender = responseRole, messageIsSender = false)
@@ -80,6 +83,8 @@ class MsgRepository: MsgService {
             }
         }
     }.flowOn(Dispatchers.IO)
+        .catch { throwable ->
+            emit(MsgResponse(code = MsgResponseCode.ERROR, msg = throwable.message ?: "unknown error")) }
 
     override suspend fun getMsgListByConversationId(conversationId: Long): List<MessageEntity> {
         val conversationWithMessageList = conversationDao.getConversationWithMessageList(conversationId = conversationId)
@@ -101,6 +106,11 @@ class MsgRepository: MsgService {
     }
 
     override suspend fun getConversationList(): List<ConversationEntity> = conversationDao.getAllConversations()
+
+    override suspend fun getConversationById(conversationId: Long): ConversationEntity {
+        if (conversationId < 0) throw IllegalArgumentException("conversationId must be positive")
+        return conversationDao.getConversationById(conversationId)
+    }
 
     private suspend fun getLastMsgListByNumInConversation(num: Int, conversationId: Long): List<MessageItem> {
         val conversationWithMessageList = conversationDao.getConversationWithMessageList(conversationId = conversationId)

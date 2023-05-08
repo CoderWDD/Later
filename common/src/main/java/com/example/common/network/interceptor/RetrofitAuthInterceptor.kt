@@ -6,7 +6,7 @@ import okhttp3.Response
 class RetrofitAuthInterceptor: Interceptor {
 
     private fun getOpenAiToken(): String {
-        return ""
+        return "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"
     }
 
     private fun getOpenAiOrganization(): String {
@@ -18,7 +18,7 @@ class RetrofitAuthInterceptor: Interceptor {
 
         val newRequest = request.newBuilder()
             .addHeader("Authorization", "Bearer ${getOpenAiToken()}")
-            .addHeader("OpenAI-Organization", getOpenAiOrganization())
+//            .addHeader("OpenAI-Organization", getOpenAiOrganization())
             .build()
 
         return chain.proceed(newRequest)

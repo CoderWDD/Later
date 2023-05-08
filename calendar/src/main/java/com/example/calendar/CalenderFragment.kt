@@ -10,12 +10,14 @@ import com.example.common.callback.AddTodoItemDialogClickCallBack
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
 import com.example.common.dialogs.AddTodoDialogFragment
+import com.example.common.dialogs.showDeleteDialog
 import com.example.common.entity.TodoItem
 import com.example.common.entity.TodoState
 import com.example.common.log.LaterLog
 import com.example.common.recyclerview.RVProxy
 import com.example.common.recyclerview.proxy.TodoItemProxy
 import com.example.common.recyclerview.setOnItemClickListener
+import com.example.common.recyclerview.setOnItemLongClickListener
 import com.example.common.reporesource.Resource
 import com.example.common.utils.DateUtil
 import com.therouter.router.Route
@@ -136,6 +138,26 @@ class CalenderFragment : BaseFragment<FragmentCalenderBinding>(FragmentCalenderB
                     }
                 }
             }
+        }
+
+        viewBinding.todoList.todoListRecyclerView.setOnItemLongClickListener{ _, position ->
+            showDeleteDialog(requireContext(), "删除", "确定删除该待办事项吗？", positiveText = "确定", negativeText = "取消", negativeListener = {}, positiveListener = {
+                val todoItem = todoList[position] as TodoItem
+                viewModel.deleteTodoItem(date = curDate, todoItem).observe(viewLifecycleOwner) {resource ->
+                    when(resource){
+                        is Resource.Success -> {
+                            LaterLog.d("delete todo item success")
+                        }
+                        is Resource.Loading-> {
+                            // todo show the loading view
+                        }
+                        is Resource.Cached -> {
+
+                        }
+                        else -> {}
+                    }
+                }
+            })
         }
     }
 }

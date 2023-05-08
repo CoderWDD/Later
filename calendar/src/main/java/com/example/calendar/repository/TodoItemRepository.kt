@@ -122,6 +122,34 @@ class TodoItemRepository(private val viewModelScope: CoroutineScope): TodoServic
         }.asSharedFlow(coroutineScope = viewModelScope)
     }
 
+    override fun deleteTodoItem(date: String, todoItem: TodoItem): Flow<Resource<String>> {
+        return object : NetworkBoundResource<String>() {
+            override fun saveToCache(item: Resource<String>) { }
+
+            override fun shouldFetch(data: String?): Boolean {
+                return true
+            }
+
+            override fun loadFromCache(): Flow<String> = flow { emit("") }
+
+            override suspend fun fetchFromNetwork(): Flow<Resource<String>> {
+                return flow {
+                    emit(Resource.loading())
+                    val result = suspendCoroutine<Resource<String>> {
+                        todoItemRef.child(date).child(todoItem.key).removeValue().addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                it.resumeWith(Result.success(Resource.success(data = "success")))
+                            } else {
+                                it.resumeWith(Result.success(Resource.error(task.exception?.message)))
+                            }
+                        }
+                    }
+                    emit(result)
+                }
+            }
+        }.asSharedFlow(coroutineScope = viewModelScope)
+    }
+
     private fun getTodoRef() = database.getReference(FirebaseFieldsConstants.USER_ID).child(userId).child(FirebaseFieldsConstants.TODO)
 
 }

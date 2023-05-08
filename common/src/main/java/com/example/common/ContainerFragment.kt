@@ -15,7 +15,6 @@ class ContainerFragment : BaseFragment<FragmentContainerBinding>(FragmentContain
     }
 
     override fun onCreateView() {
-
     }
 }
 

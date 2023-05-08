@@ -17,3 +17,4 @@ fun Activity.hideSystemStatusBar(){
 fun Activity.showToast(content: String){
     Toast.makeText(this, content, Toast.LENGTH_SHORT).show()
 }
+

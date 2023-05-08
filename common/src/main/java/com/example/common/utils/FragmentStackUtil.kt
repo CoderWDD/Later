@@ -1,5 +1,7 @@
 package com.example.common.utils
 
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -21,34 +23,42 @@ object FragmentStackUtil {
     fun init(@IdRes containerViewId: Int, fragmentManager: FragmentManager){
         this.containerViewId = containerViewId
         this.fragmentManager = fragmentManager
+
     }
 
     fun addFragment(fragment: Fragment) {
-        fragmentManager.beginTransaction().apply {
-            val currentFragment = currentFragment
-            currentFragment?.let { hide(it) }
-            add(containerViewId, fragment, fragment.javaClass.simpleName)
-            addToBackStack(fragment.javaClass.simpleName)
-            commit()
+        // 使用Handler来将新的事务加入到消息队列中，从而确保在执行新的事务时，FragmentManager已经完成了当前事务的执行
+        Handler(Looper.getMainLooper()).post {
+            fragmentManager.beginTransaction().apply {
+                val currentFragment = currentFragment
+                currentFragment?.let { hide(it) }
+                add(containerViewId, fragment, fragment.javaClass.simpleName)
+                addToBackStack(fragment.javaClass.simpleName)
+                commit()
+            }
         }
     }
 
     fun replaceFragment(fragment: Fragment) {
-        fragmentManager.beginTransaction().apply {
-            val currentFragment = currentFragment
-            currentFragment?.let { hide(it) }
-            replace(containerViewId, fragment, fragment.javaClass.simpleName)
-            addToBackStack(fragment.javaClass.simpleName)
-            commit()
+        Handler(Looper.getMainLooper()).post {
+            fragmentManager.beginTransaction().apply {
+                val currentFragment = currentFragment
+                currentFragment?.let { hide(it) }
+                replace(containerViewId, fragment, fragment.javaClass.simpleName)
+                addToBackStack(fragment.javaClass.simpleName)
+                commit()
+            }
         }
     }
 
     fun showFragment(fragment: Fragment) {
-        fragmentManager.beginTransaction().apply {
-            val currentFragment = currentFragment
-            currentFragment?.let { hide(it) }
-            show(fragment)
-            commit()
+        Handler(Looper.getMainLooper()).post {
+            fragmentManager.beginTransaction().apply {
+                val currentFragment = currentFragment
+                currentFragment?.let { hide(it) }
+                show(fragment)
+                commit()
+            }
         }
     }
 
@@ -56,9 +66,11 @@ object FragmentStackUtil {
         get() = fragmentManager.findFragmentById(containerViewId)
 
     fun removeFragment(fragment: Fragment) {
-        fragmentManager.beginTransaction().apply {
-            remove(fragment)
-            commit()
+        Handler(Looper.getMainLooper()).post {
+            fragmentManager.beginTransaction().apply {
+                remove(fragment)
+                commit()
+            }
         }
     }
 

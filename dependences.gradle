@@ -31,6 +31,8 @@ ext{
 
     kotlinReflectVersion = "1.8.21"
 
+    datastoreVersion = "1.0.0"
+
     app = [
             kaptRoom: "androidx.room:room-compiler:$roomVersion",
             coreKtx : "androidx.core:core-ktx:$coreKtxVersion",
@@ -82,6 +84,8 @@ ext{
             moshi_kotlin: "com.squareup.moshi:moshi-kotlin:$moshiVersion",
 
             kotlin_reflect: "org.jetbrains.kotlin:kotlin-reflect:$coreKtxVersion",
+
+            datastore_preference: "androidx.datastore:datastore-preferences:$datastoreVersion",
 
     ]
 }

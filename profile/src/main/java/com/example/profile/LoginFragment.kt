@@ -13,14 +13,20 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProvider
 import com.example.common.enums.LoginType
+import com.example.common.log.LaterLog
 import com.example.profile.databinding.FragmentLoginBinding
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import kotlin.contracts.contract
 
 class LoginFragment : BottomSheetDialogFragment() {
     private lateinit var viewBinding: FragmentLoginBinding
@@ -30,34 +36,37 @@ class LoginFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initObject()
+    }
 
+    private fun initObject() {
         // 获取 viewModel
         viewModel = ViewModelProvider(requireActivity())[ProfileViewModel::class.java]
         firebaseAuth = FirebaseAuth.getInstance()
-
         activityLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
-        ){ result ->
+        ) { result ->
             // todo handle result
             when (result.resultCode) {
-                LoginType.GOOGLE.num -> {
+                LoginType.GOOGLE.ordinal -> {
                     val accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                     handleGoogleSignInResult(accountTask)
                 }
-                LoginType.FACEBOOK.num -> {}
-                LoginType.TWITTER.num -> {}
-                LoginType.GITHUB.num -> {}
-                LoginType.EMAIL.num -> {}
-                LoginType.PHONE.num -> {}
+                LoginType.FACEBOOK.ordinal -> {}
+                LoginType.TWITTER.ordinal -> {}
+                LoginType.GITHUB.ordinal -> {}
+                LoginType.EMAIL.ordinal -> {}
+                LoginType.PHONE.ordinal -> {}
+                else -> {}
             }
         }
     }
 
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.setOnShowListener {
-            val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            val bottomSheet =
+                dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
             val layoutParams = bottomSheet.layoutParams as CoordinatorLayout.LayoutParams
             layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             bottomSheet.layoutParams = layoutParams
@@ -77,7 +86,7 @@ class LoginFragment : BottomSheetDialogFragment() {
         return viewBinding.root
     }
 
-    private fun initClickListener(){
+    private fun initClickListener() {
         // 设置账号密码登录按钮点击事件
         viewBinding.btnLogin.setOnClickListener {
             if (viewBinding.etEmail.text.isNullOrBlank() || viewBinding.etPassword.text.isNullOrBlank()) {
@@ -99,16 +108,23 @@ class LoginFragment : BottomSheetDialogFragment() {
                 }
                 .addOnFailureListener {
                     viewModel.setLoginState(false)
-                    it.message?.let { it1 -> Toast.makeText(requireContext(), it1, Toast.LENGTH_SHORT).show() }
+                    it.message?.let { it1 ->
+                        Toast.makeText(
+                            requireContext(),
+                            it1,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
         }
 
         // 设置 google 登录按钮点击事件
         viewBinding.ibGoogle.setOnClickListener {
-            val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(com.example.common.R.string.google_server_client_id))
-                .requestEmail()
-                .build()
+            val googleSignInOptions =
+                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(com.example.common.R.string.google_server_client_id))
+                    .requestEmail()
+                    .build()
             val googleSignInClient = GoogleSignIn.getClient(requireActivity(), googleSignInOptions)
             val signInIntent: Intent = googleSignInClient.signInIntent
             activityLauncher.launch(signInIntent)
@@ -125,20 +141,27 @@ class LoginFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun initView(){
+    private fun initView() {
         viewBinding.tvSignup.paintFlags = Paint.UNDERLINE_TEXT_FLAG
         viewBinding.tvSignup.paint.isAntiAlias = true
     }
 
     private fun handleGoogleSignInResult(task: Task<GoogleSignInAccount>) {
-        task.addOnSuccessListener { googleAccount ->
-            // todo 保存 google 账号信息到 viewModel 中
-            viewModel.setLoginState(true)
-            viewModel.loginType = LoginType.GOOGLE
-            dismiss()
-        }
-            .addOnFailureListener { viewModel.setLoginState(false) }
-            .addOnCanceledListener {  }
-            .addOnCompleteListener {  }
+        task
+            .addOnSuccessListener { googleAccount ->
+                // todo 保存 google 账号信息到 viewModel 中
+                viewModel.setLoginState(true)
+                viewModel.loginType = LoginType.GOOGLE
+                dismiss()
+            }
+            .addOnFailureListener {
+                viewModel.setLoginState(false)
+                Snackbar.make(viewBinding.root, "${it.message}", Snackbar.LENGTH_SHORT).show()
+                dismiss()
+            }
+            .addOnCanceledListener {
+                dismiss()
+            }
+            .addOnCompleteListener { }
     }
 }

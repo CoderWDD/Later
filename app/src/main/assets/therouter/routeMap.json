@@ -7,6 +7,13 @@
     "params": {}
   },
   {
+    "path": "path:/Profile/ProfileOpenAISettingFragment",
+    "className": "com.example.profile.OpenAISettingFragment",
+    "action": "",
+    "description": "The entrance fragment of profile openai setting",
+    "params": {}
+  },
+  {
     "path": "path:/Notification/NotificationFragment",
     "className": "com.example.notification.NotificationFragment",
     "action": "",

@@ -14,10 +14,15 @@ import kotlinx.coroutines.flow.map
 class SettingDataStore(private val dataStore: DataStore<Preferences>) {
     data class SettingDataParameters(
         val token: String,
-        val model: String,
+        val model: OpenAIModel,
         val temperature: Double,
         val msgNum: Int
     )
+
+    enum class OpenAIModel(val modelName: String) {
+        GPT35TURBO("gpt-3.5-turbo"),
+        GPT4("gpt-4"),
+    }
 
     companion object {
         val TOKEN_KEY = stringPreferencesKey(DataStoreConstants.OPENAI_TOKEN_KEY)
@@ -32,9 +37,9 @@ class SettingDataStore(private val dataStore: DataStore<Preferences>) {
         }
     }
 
-    suspend fun saveModel(model: String) {
+    suspend fun saveModel(model: OpenAIModel) {
         dataStore.edit {
-            it[MODEL_KEY] = model
+            it[MODEL_KEY] = model.name
         }
     }
 
@@ -53,7 +58,7 @@ class SettingDataStore(private val dataStore: DataStore<Preferences>) {
     suspend fun saveAll(settingDataParameters: SettingDataParameters) {
         dataStore.edit {
             it[TOKEN_KEY] = settingDataParameters.token
-            it[MODEL_KEY] = settingDataParameters.model
+            it[MODEL_KEY] = settingDataParameters.model.name
             it[TEMPERATURE_KEY] = settingDataParameters.temperature
             it[MSG_NUM_KEY] = settingDataParameters.msgNum
         }
@@ -62,9 +67,9 @@ class SettingDataStore(private val dataStore: DataStore<Preferences>) {
     fun getAll(): kotlinx.coroutines.flow.Flow<SettingDataParameters> = dataStore.data.map {
         SettingDataParameters(
             it[TOKEN_KEY] ?: "",
-            it[MODEL_KEY] ?: "",
-            it[TEMPERATURE_KEY] ?: 0.0,
-            it[MSG_NUM_KEY] ?: 0
+            it[MODEL_KEY]?.let { model -> OpenAIModel.valueOf(model) } ?: OpenAIModel.GPT35TURBO,
+            it[TEMPERATURE_KEY] ?: 0.75,
+            it[MSG_NUM_KEY] ?: 8
         )
     }.flowOn(Dispatchers.IO)
 
@@ -73,14 +78,14 @@ class SettingDataStore(private val dataStore: DataStore<Preferences>) {
     }.flowOn(Dispatchers.IO)
 
     fun getModel(): kotlinx.coroutines.flow.Flow<String> = dataStore.data.map {
-        it[MODEL_KEY] ?: ""
+        it[MODEL_KEY] ?: OpenAIModel.GPT35TURBO.modelName
     }.flowOn(Dispatchers.IO)
 
     fun getTemperature(): kotlinx.coroutines.flow.Flow<Double> = dataStore.data.map {
-        it[TEMPERATURE_KEY] ?: 0.0
+        it[TEMPERATURE_KEY] ?: 0.75
     }.flowOn(Dispatchers.IO)
 
     fun getMsgNum(): kotlinx.coroutines.flow.Flow<Int> = dataStore.data.map {
-        it[MSG_NUM_KEY] ?: 0
+        it[MSG_NUM_KEY] ?: 8
     }.flowOn(Dispatchers.IO)
 }

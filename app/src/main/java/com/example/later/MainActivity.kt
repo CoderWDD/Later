@@ -4,25 +4,48 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Parcelable
 import androidx.lifecycle.ViewModelProvider
+import com.example.common.MyApplication
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseActivity
+import com.example.common.datastore.settingDataStore
 import com.example.common.entity.ItemType
 import com.example.common.entity.LaterViewItem
 import com.example.common.log.LaterLog
 import com.example.common.utils.FragmentStackUtil
 import com.example.common.utils.TheRouterUtil
+import com.example.common.viewmodel.OpenAISettingViewModel
 import com.example.home.HomeFragment
 import com.example.later.databinding.ActivityMainBinding
 import com.example.laterlist.viewmodel.LaterListViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
     private lateinit var viewModel: LaterListViewModel
+    private lateinit var openAISettingViewModel: OpenAISettingViewModel
 
     override fun onCreate() {
-        viewModel = ViewModelProvider(this)[LaterListViewModel::class.java]
+        initObject()
+        initOpenAISetting()
         FragmentStackUtil.init(com.example.common.R.id.fragment_container, supportFragmentManager)
-        FragmentStackUtil.addFragment(TheRouterUtil.getFragmentByPath(RoutePathConstant.HomeFragment) ?: HomeFragment())
+        FragmentStackUtil.replaceFragment(TheRouterUtil.getFragmentByPath(RoutePathConstant.HomeFragment) ?: HomeFragment())
         handleActionSend(intent)
+    }
+
+    private fun initObject(){
+        viewModel = ViewModelProvider(this)[LaterListViewModel::class.java]
+        openAISettingViewModel = ViewModelProvider(this)[OpenAISettingViewModel::class.java]
+        openAISettingViewModel.setDataStore(settingDataStore)
+    }
+
+    private fun initOpenAISetting(){
+        CoroutineScope(Dispatchers.IO).launch {
+            openAISettingViewModel.getOpenAIAll().collect{
+                MyApplication.setSettingData(it)
+            }
+        }
     }
 
     private fun handleActionSend(intent: Intent?) {

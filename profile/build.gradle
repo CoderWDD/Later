@@ -61,5 +61,6 @@ dependencies {
     implementation appDependence.firebaseFirestoreKtx
     implementation appDependence.playServicesAuth
 
+    implementation appDependence.datastore_preference
 
 }

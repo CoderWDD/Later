@@ -16,6 +16,7 @@ import com.example.common.entity.ProfileSettingData
 import com.example.common.recyclerview.RVProxy
 import com.example.common.recyclerview.proxy.ProfileSettingItemProxy
 import com.example.common.recyclerview.setOnItemClickListener
+import com.example.common.utils.FragmentStackUtil
 import com.example.profile.databinding.FragmentProfileBinding
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -24,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.therouter.TheRouter
 import com.therouter.router.Route
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -65,7 +67,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         viewBinding.settingsList.setOnItemClickListener{ _, position ->
             when (position) {
                 0 -> {
-                    // todo 跳转到 OpenAI 设置界面
+                    // 跳转到 OpenAI 设置界面
+                    val openAISettingFragment =
+                        TheRouter.build(RoutePathConstant.ProfileOpenAISettingFragment)
+                            .createFragment<OpenAISettingFragment>()
+                    openAISettingFragment?.let { FragmentStackUtil.addFragment(it) }
                 }
                 1 -> {
                     if (mIsLogin) {

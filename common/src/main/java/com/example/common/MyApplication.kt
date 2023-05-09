@@ -10,6 +10,8 @@ import com.example.common.log.LaterLog
 import com.example.common.log.LaterLogcatInterceptor
 import com.example.common.room.ConversationDBManager
 import com.therouter.TheRouter
+import java.io.PrintWriter
+import java.io.StringWriter
 
 class MyApplication: Application() {
     var loadingView: View? = null
@@ -34,6 +36,7 @@ class MyApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
+        setupExceptionHandler()
         instance = this
         initLaterLog()
     }
@@ -41,5 +44,27 @@ class MyApplication: Application() {
     private fun initLaterLog(){
         LaterLog.addInterceptor(CallStackLogInterceptor())
         LaterLog.addInterceptor(LaterLogcatInterceptor())
+    }
+
+
+    private fun setupExceptionHandler() {
+        val defaultExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
+
+        Thread.setDefaultUncaughtExceptionHandler { thread, exception ->
+            // 获取堆栈跟踪信息
+            val sw = StringWriter()
+            exception.printStackTrace(PrintWriter(sw))
+            val exceptionAsString = sw.toString()
+
+            // 将异常信息发送到服务器
+            sendErrorReportToServer(exceptionAsString)
+
+            // 调用系统默认的异常处理器
+            defaultExceptionHandler?.uncaughtException(thread, exception)
+        }
+    }
+
+    private fun sendErrorReportToServer(errorReport: String) {
+        // 在这里实现将错误报告发送到服务器的逻辑
     }
 }

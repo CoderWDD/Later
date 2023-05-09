@@ -70,6 +70,13 @@
     "params": {}
   },
   {
+    "path": "path:/Common/WebViewFragment",
+    "className": "com.example.common.WebViewFragment",
+    "action": "",
+    "description": "The entrance fragment of WebView",
+    "params": {}
+  },
+  {
     "path": "path:/Calendar/TodoListFragment",
     "className": "com.example.calendar.TodoFragment",
     "action": "",

@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
+import com.example.common.WebViewFragment
 import com.example.common.adapter.RecyclerViewAdapter
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
@@ -13,6 +14,7 @@ import com.example.common.entity.ItemType
 import com.example.common.entity.LaterViewItem
 import com.example.common.log.LaterLog
 import com.example.common.recyclerview.RVProxy
+import com.example.common.recyclerview.proxy.FolderData
 import com.example.common.recyclerview.proxy.LaterImageItemCardProxy
 import com.example.common.recyclerview.proxy.LaterVideoItemCardProxy
 import com.example.common.recyclerview.proxy.LaterWebsiteItemCardProxy
@@ -22,6 +24,7 @@ import com.example.common.reporesource.Resource
 import com.example.common.utils.FragmentStackUtil
 import com.example.laterlist.databinding.FragmentLaterItemListBinding
 import com.example.laterlist.viewmodel.LaterListViewModel
+import com.therouter.TheRouter
 import com.therouter.router.Autowired
 import com.therouter.router.Route
 
@@ -32,7 +35,6 @@ import com.therouter.router.Route
 class LaterItemListFragment :
     BaseFragment<FragmentLaterItemListBinding>(FragmentLaterItemListBinding::inflate) {
     private lateinit var viewModel: LaterListViewModel
-    private var laterItemList: MutableList<Any> = mutableListOf()
     private lateinit var laterItemListAdapter: RecyclerViewAdapter
 
     @Autowired(name = "folderKey")
@@ -65,29 +67,23 @@ class LaterItemListFragment :
             viewBinding.swipeRefreshLayout.isRefreshing = false
             when (resource) {
                 is Resource.Success -> {
-                    laterItemList.clear()
                     laterItemListAdapter.deleteAllData()
                     resource.data.forEach {
                         when (it.itemType){
                             ItemType.IMAGE -> {
                                 laterItemListAdapter.addData(it.toImageItem())
-                                laterItemList.add(it.toImageItem())
                             }
                             ItemType.VIDEO -> {
                                 laterItemListAdapter.addData(it.toVideoItem())
-                                laterItemList.add(it.toVideoItem())
                             }
                             ItemType.WEB_PAGE -> {
                                 laterItemListAdapter.addData(it.toWebPageItem())
-                                laterItemList.add(it.toWebPageItem())
                             }
                             ItemType.MUSIC -> {
                                 laterItemListAdapter.addData(it.toMusicItem())
-                                laterItemList.add(it.toMusicItem())
                             }
                             ItemType.OTHER -> {
                                 laterItemListAdapter.addData(it.toOtherItem())
-                                laterItemList.add(it.toOtherItem())
                             }
                         }
                     }
@@ -121,13 +117,21 @@ class LaterItemListFragment :
     private fun initItemListClickListener() {
         viewBinding.laterItemList.setOnItemClickListener { view, position ->
             // todo 根据item类型跳转到不同的页面
+            val laterItem = LaterViewItem.fromExitItem(laterItemListAdapter.dataList[position])
+            LaterLog.d("laterItem $laterItem", tag = "webview")
+            if (laterItem.itemType == ItemType.WEB_PAGE) {
+                val laterItemListFragment = TheRouter.build(RoutePathConstant.WebViewFragment)
+                    .withString("url", laterItem.contentUrl)
+                    .createFragment<WebViewFragment>()
+                laterItemListFragment?.let { FragmentStackUtil.addFragment(it) }
+            }
         }
 
         viewBinding.laterItemList.setOnItemClickListener { view, position, fl, fl2 ->
             // set item click listener
             // star item
             if (view.id == com.example.common.R.id.item_favorite){
-                val laterItem = LaterViewItem.fromExitItem(laterItemList[position])
+                val laterItem = LaterViewItem.fromExitItem(laterItemListAdapter.dataList[position])
                 LaterLog.d("laterItem $laterItem")
                 viewModel.updateLaterItem(folderKey, laterItem.copy(isStar = !laterItem.isStar)).observe(viewLifecycleOwner) { resource ->
                     when (resource) {
@@ -152,7 +156,7 @@ class LaterItemListFragment :
 
         viewBinding.laterItemList.setOnItemLongClickListener { view, position ->
             showDeleteDialog(requireContext(), "是否删除", "确定删除该Item吗？", positiveText = "确定", negativeText = "取消", negativeListener = {}, positiveListener =  {
-                val laterItem = LaterViewItem.fromExitItem(laterItemList[position])
+                val laterItem = LaterViewItem.fromExitItem(laterItemListAdapter.dataList[position])
                 viewModel.deleteLaterItem(folderKey, laterItem)
             })
         }

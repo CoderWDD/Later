@@ -20,4 +20,6 @@ object RoutePathConstant {
     const val CalendarDoingListFragment = "path:/Calendar/DoingListFragment"
 
     const val ChatMessageFragment = "path:/Notification/ChatMessageFragment"
+
+    const val WebViewFragment = "path:/Common/WebViewFragment"
 }

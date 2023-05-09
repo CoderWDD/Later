@@ -2,6 +2,7 @@ package com.example.common
 
 import android.app.Application
 import android.content.Context
+import android.view.View
 import androidx.room.Room
 import com.example.common.datastore.SettingDataStore
 import com.example.common.log.CallStackLogInterceptor
@@ -11,6 +12,7 @@ import com.example.common.room.ConversationDBManager
 import com.therouter.TheRouter
 
 class MyApplication: Application() {
+    var loadingView: View? = null
     companion object{
         lateinit var instance: MyApplication
         private lateinit var openAISettingData: SettingDataStore.SettingDataParameters

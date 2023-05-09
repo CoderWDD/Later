@@ -10,6 +10,7 @@ import com.example.common.custom.BaseActivity
 import com.example.common.datastore.settingDataStore
 import com.example.common.entity.ItemType
 import com.example.common.entity.LaterViewItem
+import com.example.common.extents.showLoadingView
 import com.example.common.log.LaterLog
 import com.example.common.utils.FragmentStackUtil
 import com.example.common.utils.TheRouterUtil

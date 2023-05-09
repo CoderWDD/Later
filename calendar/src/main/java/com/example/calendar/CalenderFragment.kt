@@ -1,6 +1,7 @@
 package com.example.calendar
 
 import android.view.Gravity
+import android.view.View
 import android.widget.CheckBox
 import androidx.lifecycle.ViewModelProvider
 import com.example.calendar.databinding.FragmentCalenderBinding
@@ -13,6 +14,8 @@ import com.example.common.dialogs.AddTodoDialogFragment
 import com.example.common.dialogs.showDeleteDialog
 import com.example.common.entity.TodoItem
 import com.example.common.entity.TodoState
+import com.example.common.extents.hideLoadingView
+import com.example.common.extents.showLoadingView
 import com.example.common.log.LaterLog
 import com.example.common.recyclerview.RVProxy
 import com.example.common.recyclerview.proxy.TodoItemProxy
@@ -51,14 +54,18 @@ class CalenderFragment : BaseFragment<FragmentCalenderBinding>(FragmentCalenderB
                     viewModel.createTodoItem(todoItem = todoItem, date = date).observe(viewLifecycleOwner) {resource ->
                         when(resource){
                             is Resource.Success -> {
+                                requireActivity().hideLoadingView()
                             }
                             is Resource.Loading-> {
-                                // todo show the loading view
+                                // show the loading view
+                                requireActivity().showLoadingView()
                             }
                             is Resource.Cached -> {
-
+                                requireActivity().hideLoadingView()
                             }
-                            else -> {}
+                            else -> {
+                                requireActivity().hideLoadingView()
+                            }
                         }
                     }
                 }
@@ -90,17 +97,21 @@ class CalenderFragment : BaseFragment<FragmentCalenderBinding>(FragmentCalenderB
         viewModel.getTodoListByDate(date).observe(viewLifecycleOwner) {resource ->
             when(resource){
                 is Resource.Success -> {
+                    requireActivity().hideLoadingView()
                     todoList.clear()
                     todoList.addAll(resource.data)
                     todoAdapter.notifyDataSetChanged()
                 }
                 is Resource.Loading-> {
-                    // todo show the loading view
+                    // show the loading view
+                    requireActivity().showLoadingView()
                 }
                 is Resource.Cached -> {
-
+                    requireActivity().hideLoadingView()
                 }
-                else -> {}
+                else -> {
+                    requireActivity().hideLoadingView()
+                }
             }
         }
     }
@@ -126,15 +137,19 @@ class CalenderFragment : BaseFragment<FragmentCalenderBinding>(FragmentCalenderB
                 viewModel.updateTodoItem(date = curDate, todoItem).observe(viewLifecycleOwner) {resource ->
                     when(resource){
                         is Resource.Success -> {
+                            requireActivity().hideLoadingView()
                             LaterLog.d("update todo item success")
                         }
                         is Resource.Loading-> {
-                            // todo show the loading view
+                            // show the loading view
+                            requireActivity().showLoadingView()
                         }
                         is Resource.Cached -> {
-
+                            requireActivity().hideLoadingView()
                         }
-                        else -> {}
+                        else -> {
+                            requireActivity().hideLoadingView()
+                        }
                     }
                 }
             }
@@ -146,15 +161,19 @@ class CalenderFragment : BaseFragment<FragmentCalenderBinding>(FragmentCalenderB
                 viewModel.deleteTodoItem(date = curDate, todoItem).observe(viewLifecycleOwner) {resource ->
                     when(resource){
                         is Resource.Success -> {
+                            requireActivity().hideLoadingView()
                             LaterLog.d("delete todo item success")
                         }
                         is Resource.Loading-> {
-                            // todo show the loading view
+                            // show the loading view
+                            requireActivity().showLoadingView()
                         }
                         is Resource.Cached -> {
-
+                            requireActivity().hideLoadingView()
                         }
-                        else -> {}
+                        else -> {
+                            requireActivity().hideLoadingView()
+                        }
                     }
                 }
             })

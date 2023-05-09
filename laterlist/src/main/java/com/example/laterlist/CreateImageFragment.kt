@@ -11,10 +11,11 @@ import com.example.common.entity.LaterViewItem
 import com.example.common.callback.MenuItemDialogClickCallBack
 import com.example.laterlist.databinding.FragmentCreateImageBinding
 
-class CreateImageFragment : BaseDialogFragment<FragmentCreateImageBinding>(FragmentCreateImageBinding::inflate) {
+class CreateImageFragment :
+    BaseDialogFragment<FragmentCreateImageBinding>(FragmentCreateImageBinding::inflate) {
     private var customDialogCallback: MenuItemDialogClickCallBack<LaterViewItem>? = null
 
-    companion object{
+    companion object {
         fun newInstance(customDialogCallback: MenuItemDialogClickCallBack<LaterViewItem>): CreateImageFragment {
             val fragment = CreateImageFragment()
             fragment.customDialogCallback = customDialogCallback
@@ -22,13 +23,12 @@ class CreateImageFragment : BaseDialogFragment<FragmentCreateImageBinding>(Fragm
         }
     }
 
-    override fun onCreateView() { }
+    override fun onCreateView() {}
 
     override fun initClickListener() {
-        TODO("Not yet implemented")
     }
 
     override fun focusWidget(): EditText? {
-        TODO("Not yet implemented")
+        return null
     }
 }

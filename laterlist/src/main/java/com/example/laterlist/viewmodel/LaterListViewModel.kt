@@ -68,9 +68,7 @@ class LaterListViewModel: ViewModel() {
 
     }
 
-    fun deleteLaterItem(){
-
-    }
+    fun deleteLaterItem(favoriteFolderPath: String, laterViewItem: LaterViewItem) = laterListRepository.deleteLaterViewItem(favoriteFolderPath, laterViewItem).asLiveData()
 
     fun updateFolder(){
 

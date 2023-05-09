@@ -37,6 +37,7 @@ interface LaterListService {
 
     fun updateLaterViewItem(favoriteFolderPath: String, laterViewItem: LaterViewItem): Flow<Resource<String>>
 
+    fun deleteLaterViewItem(favoriteFolderPath: String, laterViewItem: LaterViewItem): Flow<Resource<String>>
 
     fun onClear()
 }

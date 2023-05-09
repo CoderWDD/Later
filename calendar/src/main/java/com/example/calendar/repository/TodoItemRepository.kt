@@ -59,8 +59,6 @@ class TodoItemRepository(private val viewModelScope: CoroutineScope): TodoServic
             }
         }
 
-
-
         todoItemRef.child(date).addValueEventListener(valueEventListener)
 
         return mutableSharedFlow

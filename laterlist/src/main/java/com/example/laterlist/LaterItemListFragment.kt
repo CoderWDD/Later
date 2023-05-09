@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.common.adapter.RecyclerViewAdapter
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
+import com.example.common.dialogs.showDeleteDialog
 import com.example.common.entity.ItemType
 import com.example.common.entity.LaterViewItem
 import com.example.common.log.LaterLog
@@ -16,6 +17,7 @@ import com.example.common.recyclerview.proxy.LaterImageItemCardProxy
 import com.example.common.recyclerview.proxy.LaterVideoItemCardProxy
 import com.example.common.recyclerview.proxy.LaterWebsiteItemCardProxy
 import com.example.common.recyclerview.setOnItemClickListener
+import com.example.common.recyclerview.setOnItemLongClickListener
 import com.example.common.reporesource.Resource
 import com.example.common.utils.FragmentStackUtil
 import com.example.laterlist.databinding.FragmentLaterItemListBinding
@@ -64,27 +66,31 @@ class LaterItemListFragment :
             when (resource) {
                 is Resource.Success -> {
                     laterItemList.clear()
+                    laterItemListAdapter.deleteAllData()
                     resource.data.forEach {
                         when (it.itemType){
                             ItemType.IMAGE -> {
+                                laterItemListAdapter.addData(it.toImageItem())
                                 laterItemList.add(it.toImageItem())
                             }
                             ItemType.VIDEO -> {
+                                laterItemListAdapter.addData(it.toVideoItem())
                                 laterItemList.add(it.toVideoItem())
                             }
                             ItemType.WEB_PAGE -> {
+                                laterItemListAdapter.addData(it.toWebPageItem())
                                 laterItemList.add(it.toWebPageItem())
                             }
                             ItemType.MUSIC -> {
+                                laterItemListAdapter.addData(it.toMusicItem())
                                 laterItemList.add(it.toMusicItem())
                             }
                             ItemType.OTHER -> {
+                                laterItemListAdapter.addData(it.toOtherItem())
                                 laterItemList.add(it.toOtherItem())
                             }
                         }
                     }
-                    LaterLog.d("laterItemList $laterItemList")
-                    laterItemListAdapter.notifyDataSetChanged()
                 }
                 is Resource.Error -> {
                     LaterLog.d("error ${resource.message}")
@@ -102,7 +108,7 @@ class LaterItemListFragment :
             LaterVideoItemCardProxy(),
             LaterWebsiteItemCardProxy()
         )
-        laterItemListAdapter = RecyclerViewAdapter(proxyList = proxyList, dataList = laterItemList)
+        laterItemListAdapter = RecyclerViewAdapter(proxyList = proxyList)
         viewBinding.laterItemList.adapter = laterItemListAdapter
     }
 
@@ -117,11 +123,10 @@ class LaterItemListFragment :
             // todo 根据item类型跳转到不同的页面
         }
 
-
         viewBinding.laterItemList.setOnItemClickListener { view, position, fl, fl2 ->
             // set item click listener
             // star item
-            view.findViewById<ImageView>(com.example.common.R.id.item_favorite).setOnClickListener {
+            if (view.id == com.example.common.R.id.item_favorite){
                 val laterItem = LaterViewItem.fromExitItem(laterItemList[position])
                 LaterLog.d("laterItem $laterItem")
                 viewModel.updateLaterItem(folderKey, laterItem.copy(isStar = !laterItem.isStar)).observe(viewLifecycleOwner) { resource ->
@@ -138,16 +143,18 @@ class LaterItemListFragment :
                         else -> {}
                     }
                 }
-            }
+            }else if (view.id == com.example.common.R.id.item_share){
 
-            // todo share item
-            view.findViewById<ImageView>(com.example.common.R.id.item_share).setOnClickListener {
-                LaterLog.d("share item")
-            }
+            }else if (view.id == com.example.common.R.id.item_more){
 
-            // todo delete item
-            view.findViewById<ImageView>(com.example.common.R.id.item_more).setOnClickListener {
             }
+        }
+
+        viewBinding.laterItemList.setOnItemLongClickListener { view, position ->
+            showDeleteDialog(requireContext(), "是否删除", "确定删除该Item吗？", positiveText = "确定", negativeText = "取消", negativeListener = {}, positiveListener =  {
+                val laterItem = LaterViewItem.fromExitItem(laterItemList[position])
+                viewModel.deleteLaterItem(folderKey, laterItem)
+            })
         }
     }
 

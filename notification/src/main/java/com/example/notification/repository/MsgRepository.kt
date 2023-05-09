@@ -1,5 +1,6 @@
 package com.example.notification.repository
 
+import com.example.common.MyApplication
 import com.example.common.constants.ChatConstants
 import com.example.common.constants.HTTPConstants
 import com.example.common.entity.ChatRequest
@@ -32,11 +33,12 @@ class MsgRepository: MsgService {
         // 保存发送的消息到数据库
         conversationDao.insertMessage(msg)
 
-        // TODO 设置请求模型
-        val chatRequest = ChatRequest(model = "gpt-3.5-turbo")
+        // 设置请求模型
+        val chatRequest = ChatRequest(model = MyApplication.getSettingData().model.modelName, temperature = MyApplication.getSettingData().temperature)
 
         // 每次只携带最新的 MSG_ITEM_SIZE 条消息
-        val msgList = getLastMsgListByNumInConversation(num = ChatConstants.MSG_ITEM_SIZE, conversationId = msg.messageConversationId)
+        val defaultMsgNumCarry = MyApplication.getSettingData().msgNum
+        val msgList = getLastMsgListByNumInConversation(num = defaultMsgNumCarry, conversationId = msg.messageConversationId)
         chatRequest.messages.clear()
         chatRequest.messages.addAll(msgList)
         val responseBody = chatServiceClient.getChatResponseByRequest(chatRequest)

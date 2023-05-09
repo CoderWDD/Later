@@ -67,4 +67,9 @@ class RecyclerViewAdapter(
         notifyItemRemoved(position)
     }
 
+    fun deleteAllData(){
+        dataList.clear()
+        notifyDataSetChanged()
+    }
+
 }

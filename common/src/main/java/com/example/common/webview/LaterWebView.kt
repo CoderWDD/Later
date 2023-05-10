@@ -20,6 +20,8 @@ class LaterWebView @JvmOverloads constructor(
 
     private var onTitleChangeListener: OnTitleChangeListener? = null
 
+    private var destroy = false
+
     init {
         val webSettings = settings
         webSettings.javaScriptEnabled = true
@@ -38,7 +40,7 @@ class LaterWebView @JvmOverloads constructor(
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 view?.title?.let {
-                    onTitleChangeListener?.onTitleChange(it)
+                    if (!destroy) onTitleChangeListener?.onTitleChange(it)
                 }
             }
         }
@@ -51,6 +53,10 @@ class LaterWebView @JvmOverloads constructor(
     fun toggleNightMode() {
         isNightMode = !isNightMode
         applyNightMode()
+    }
+
+    fun clearData(){
+        destroy = true
     }
 
     private fun applyNightMode() {

@@ -115,7 +115,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/item_favorite"
+                android:id="@+id/item_favorite_image"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/favorite_icon"
@@ -123,16 +123,16 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <ImageView
-                android:id="@+id/item_share"
+                android:id="@+id/item_share_image"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/share_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/item_more"
-                app:layout_constraintStart_toEndOf="@id/item_favorite" />
+                app:layout_constraintEnd_toStartOf="@id/item_more_image"
+                app:layout_constraintStart_toEndOf="@id/item_favorite_image" />
 
             <ImageView
-                android:id="@+id/item_more"
+                android:id="@+id/item_more_image"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/more_icon"

@@ -53,9 +53,9 @@ class LaterImageItemCardViewHolder(itemBinding: LaterItemImageBinding): Recycler
         tagText = itemBinding.itemTags
         timeText = itemBinding.itemUpdateTime
         contentText = itemBinding.itemContent
-        starIcon = itemBinding.itemFavorite
-        shareIcon = itemBinding.itemShare
-        moreIcon = itemBinding.itemMore
+        starIcon = itemBinding.itemFavoriteImage
+        shareIcon = itemBinding.itemShareImage
+        moreIcon = itemBinding.itemMoreImage
         image = itemBinding.itemImage
     }
 }

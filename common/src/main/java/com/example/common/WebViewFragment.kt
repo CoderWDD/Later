@@ -29,7 +29,10 @@ class WebViewFragment : BaseFragment<FragmentWebViewBinding>(FragmentWebViewBind
         viewBinding.toolbarWebview.setNavigationOnClickListener {
             // 如果WebView可以返回上一页，则返回上一页，否则返回上一个Fragment
             if (viewBinding.webView.canGoBack()) viewBinding.webView.goBack()
-            else FragmentStackUtil.goBack()
+            else {
+                viewBinding.webView.clearData()
+                FragmentStackUtil.goBack()
+            }
         }
     }
 

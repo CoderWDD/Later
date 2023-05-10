@@ -143,4 +143,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             // Update UI to reflect multiple images being shared
         }
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+    }
 }

@@ -1,4 +1,4 @@
-package webview
+package com.example.common.webview
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -18,6 +18,8 @@ class LaterWebView @JvmOverloads constructor(
 ) : WebView(context, attrs, defStyleAttr) {
     private var isNightMode: Boolean = false
 
+    private var onTitleChangeListener: OnTitleChangeListener? = null
+
     init {
         val webSettings = settings
         webSettings.javaScriptEnabled = true
@@ -31,6 +33,13 @@ class LaterWebView @JvmOverloads constructor(
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 applyNightMode()
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                view?.title?.let {
+                    onTitleChangeListener?.onTitleChange(it)
+                }
             }
         }
     }
@@ -73,4 +82,13 @@ class LaterWebView @JvmOverloads constructor(
             }
         }
     }
+
+    fun setOnTitleChangeListener(listener: OnTitleChangeListener) {
+        onTitleChangeListener = listener
+    }
+
+    interface OnTitleChangeListener {
+        fun onTitleChange(title: String)
+    }
+
 }

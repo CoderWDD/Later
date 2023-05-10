@@ -31,4 +31,6 @@
     <string name="delete_icon_description">删除</string>
     <string name="edit_icon_description">修改</string>
 
+    <string name="toolbar_webview">WebView</string>
+
 </resources>

@@ -3,7 +3,6 @@ package com.example.laterlist
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import com.example.common.WebViewFragment
 import com.example.common.adapter.RecyclerViewAdapter
@@ -14,7 +13,6 @@ import com.example.common.entity.ItemType
 import com.example.common.entity.LaterViewItem
 import com.example.common.log.LaterLog
 import com.example.common.recyclerview.RVProxy
-import com.example.common.recyclerview.proxy.FolderData
 import com.example.common.recyclerview.proxy.LaterImageItemCardProxy
 import com.example.common.recyclerview.proxy.LaterVideoItemCardProxy
 import com.example.common.recyclerview.proxy.LaterWebsiteItemCardProxy
@@ -118,7 +116,7 @@ class LaterItemListFragment :
         viewBinding.laterItemList.setOnItemClickListener { view, position ->
             // todo 根据item类型跳转到不同的页面
             val laterItem = LaterViewItem.fromExitItem(laterItemListAdapter.dataList[position])
-            LaterLog.d("laterItem $laterItem", tag = "webview")
+            LaterLog.d("laterItem $laterItem", tag = "com/example/common/webview")
             if (laterItem.itemType == ItemType.WEB_PAGE) {
                 val laterItemListFragment = TheRouter.build(RoutePathConstant.WebViewFragment)
                     .withString("url", laterItem.contentUrl)

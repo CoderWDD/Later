@@ -210,6 +210,6 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
         viewBinding.categoryPlate.categoryToday.categoryCnt.text = size.toString()
         viewBinding.categoryPlate.categoryToday.categoryIcon.setImageDrawable(resources.getDrawable(com.example.common.R.drawable.today_icon))
         viewBinding.categoryPlate.categoryToday.categoryText.text = "今天"
-        viewBinding.categoryPlate.categoryToday.root.setOnClickListener {  }
+        viewBinding.categoryPlate.categoryToday.root.setOnClickListener {}
     }
 }

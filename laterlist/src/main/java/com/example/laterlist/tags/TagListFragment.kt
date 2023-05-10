@@ -5,9 +5,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.common.adapter.RecyclerViewAdapter
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
+import com.example.common.dialogs.showDeleteDialog
+import com.example.common.log.LaterLog
 import com.example.common.recyclerview.RVProxy
+import com.example.common.recyclerview.proxy.FolderData
 import com.example.common.recyclerview.proxy.TagCardData
 import com.example.common.recyclerview.proxy.TagCardProxy
+import com.example.common.recyclerview.setOnItemClickListener
+import com.example.common.recyclerview.setOnItemLongClickListener
 import com.example.common.reporesource.Resource
 import com.example.laterlist.databinding.FragmentTagListBinding
 import com.example.laterlist.viewmodel.LaterListViewModel
@@ -60,6 +65,14 @@ class TagListFragment : BaseFragment<FragmentTagListBinding>(FragmentTagListBind
     }
 
     private fun setTagListRecyclerViewClickListener(){
-
+        viewBinding.tagRecyclerView.setOnItemLongClickListener { _, position ->
+            LaterLog.d("setTagListRecyclerViewClickListener: $position")
+            val tag = tagList[position] as TagCardData
+            // 弹出删除对话框
+            showDeleteDialog(context = requireContext(), title = "删除标签", content = "确定要删除该标签吗？", positiveText = "确定", negativeText = "取消", positiveListener = {
+                // 删除收藏夹
+                viewModel.deleteTag(tag = tag.key)
+            }, negativeListener = {})
+        }
     }
 }

@@ -64,9 +64,7 @@ class LaterListViewModel: ViewModel() {
 
     fun deleteRecycleFolder(folderKey: String) = laterListRepository.deleteRecycleBinFolder(folderKey).asLiveData()
 
-    fun deleteTag(){
-
-    }
+    fun deleteTag(tag: String) = laterListRepository.deleteTag(tag = tag)
 
     fun deleteLaterItem(favoriteFolderPath: String, laterViewItem: LaterViewItem) = laterListRepository.deleteLaterViewItem(favoriteFolderPath, laterViewItem).asLiveData()
 

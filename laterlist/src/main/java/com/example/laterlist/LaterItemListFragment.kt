@@ -3,12 +3,13 @@ package com.example.laterlist
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import android.widget.ImageView
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import com.example.common.WebViewFragment
 import com.example.common.adapter.RecyclerViewAdapter
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
+import com.example.common.custom.customView.InterceptEventImageView
 import com.example.common.dialogs.showDeleteDialog
 import com.example.common.entity.ItemType
 import com.example.common.entity.LaterViewItem
@@ -22,7 +23,7 @@ import com.example.common.recyclerview.setOnItemLongClickListener
 import com.example.common.reporesource.Resource
 import com.example.common.utils.FragmentStackUtil
 import com.example.laterlist.databinding.FragmentLaterItemListBinding
-import com.example.laterlist.viewmodel.LaterListViewModel
+import com.example.common.viewmodel.LaterListViewModel
 import com.therouter.TheRouter
 import com.therouter.router.Autowired
 import com.therouter.router.Route
@@ -121,59 +122,11 @@ class LaterItemListFragment :
             if (laterItem.itemType == ItemType.WEB_PAGE) {
                 val laterItemListFragment = TheRouter.build(RoutePathConstant.WebViewFragment)
                     .withString("url", laterItem.contentUrl)
+                    .withSerializable("laterItem", laterItem)
+                    .withString("folderKey", folderKey)
                     .createFragment<WebViewFragment>()
                 laterItemListFragment?.let { FragmentStackUtil.addFragment(it) }
             }
-        }
-
-        viewBinding.laterItemList.setOnItemClickListener { view, position, fl, fl2 ->
-            // set item click listener
-            // star item
-            view.findViewById<ImageView>(com.example.common.R.id.item_favorite_website)?.setOnClickListener {
-                val laterItem = LaterViewItem.fromExitItem(laterItemListAdapter.dataList[position])
-                LaterLog.d("laterItem $laterItem")
-                viewModel.updateLaterItem(folderKey, laterItem.copy(isStar = !laterItem.isStar)).observe(viewLifecycleOwner) { resource ->
-                    when (resource) {
-                        is Resource.Success -> {
-                            LaterLog.d("updateLaterItem success")
-                            laterItemListAdapter.notifyItemChanged(position)
-                        }
-                        is Resource.Error -> {
-                            LaterLog.d("updateLaterItem error ${resource.message}")
-                        }
-                        is Resource.Loading -> {}
-                        is Resource.Cached -> {}
-                        else -> {}
-                    }
-                }
-            }
-
-            view.findViewById<ImageView>(com.example.common.R.id.item_share_website)?.setOnClickListener {}
-
-            view.findViewById<ImageView>(com.example.common.R.id.item_more_website)?.setOnClickListener {}
-
-            view.findViewById<ImageView>(com.example.common.R.id.item_favorite_image)?.setOnClickListener {
-                val laterItem = LaterViewItem.fromExitItem(laterItemListAdapter.dataList[position])
-                LaterLog.d("laterItem $laterItem")
-                viewModel.updateLaterItem(folderKey, laterItem.copy(isStar = !laterItem.isStar)).observe(viewLifecycleOwner) { resource ->
-                    when (resource) {
-                        is Resource.Success -> {
-                            LaterLog.d("updateLaterItem success")
-                            laterItemListAdapter.notifyItemChanged(position)
-                        }
-                        is Resource.Error -> {
-                            LaterLog.d("updateLaterItem error ${resource.message}")
-                        }
-                        is Resource.Loading -> {}
-                        is Resource.Cached -> {}
-                        else -> {}
-                    }
-                }
-            }
-
-            view.findViewById<ImageView>(com.example.common.R.id.item_share_image)?.setOnClickListener {}
-
-            view.findViewById<ImageView>(com.example.common.R.id.item_more_image)?.setOnClickListener {}
         }
 
         viewBinding.laterItemList.setOnItemLongClickListener { view, position ->

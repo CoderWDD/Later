@@ -25,7 +25,7 @@ import com.example.laterlist.alllater.AllLaterListFragment
 import com.example.common.callback.MenuItemDialogClickCallBack
 import com.example.laterlist.databinding.FragmentLaterListBinding
 import com.example.laterlist.tags.TagListFragment
-import com.example.laterlist.viewmodel.LaterListViewModel
+import com.example.common.viewmodel.LaterListViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.therouter.router.Route

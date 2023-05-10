@@ -1,16 +1,14 @@
-package com.example.laterlist.repository
+package com.example.common.repository
 
 import com.example.common.constants.BaseUrl
 import com.example.common.constants.FirebaseFieldsConstants
 import com.example.common.entity.LaterFolderEntity
 import com.example.common.entity.LaterTagEntity
 import com.example.common.entity.LaterViewItem
-import com.example.common.entity.TodoItem
 import com.example.common.extents.isToday
-import com.example.common.log.LaterLog
 import com.example.common.reporesource.NetworkBoundResource
 import com.example.common.reporesource.Resource
-import com.example.laterlist.repository.service.LaterListService
+import com.example.common.repository.service.LaterListService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
@@ -19,10 +17,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.concurrent.CountDownLatch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 

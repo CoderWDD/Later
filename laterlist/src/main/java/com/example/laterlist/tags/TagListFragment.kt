@@ -8,14 +8,12 @@ import com.example.common.custom.BaseFragment
 import com.example.common.dialogs.showDeleteDialog
 import com.example.common.log.LaterLog
 import com.example.common.recyclerview.RVProxy
-import com.example.common.recyclerview.proxy.FolderData
 import com.example.common.recyclerview.proxy.TagCardData
 import com.example.common.recyclerview.proxy.TagCardProxy
-import com.example.common.recyclerview.setOnItemClickListener
 import com.example.common.recyclerview.setOnItemLongClickListener
 import com.example.common.reporesource.Resource
 import com.example.laterlist.databinding.FragmentTagListBinding
-import com.example.laterlist.viewmodel.LaterListViewModel
+import com.example.common.viewmodel.LaterListViewModel
 import com.therouter.router.Route
 
 

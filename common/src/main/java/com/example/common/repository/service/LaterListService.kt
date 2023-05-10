@@ -1,4 +1,4 @@
-package com.example.laterlist.repository.service
+package com.example.common.repository.service
 
 import com.example.common.entity.LaterFolderEntity
 import com.example.common.entity.LaterTagEntity

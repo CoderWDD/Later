@@ -111,7 +111,7 @@
             android:paddingBottom="16dp"
             android:layout_weight="1">
 
-            <ImageView
+            <com.example.common.custom.customView.InterceptEventImageView
                 android:id="@+id/item_favorite_website"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -119,7 +119,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <ImageView
+            <com.example.common.custom.customView.InterceptEventImageView
                 android:id="@+id/item_share_website"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -128,7 +128,7 @@
                 app:layout_constraintEnd_toStartOf="@id/item_more_website"
                 app:layout_constraintStart_toEndOf="@id/item_favorite_website" />
 
-            <ImageView
+            <com.example.common.custom.customView.InterceptEventImageView
                 android:id="@+id/item_more_website"
                 android:layout_width="24dp"
                 android:layout_height="24dp"

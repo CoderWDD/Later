@@ -1,4 +1,4 @@
-package com.example.laterlist.viewmodel
+package com.example.common.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,13 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.common.entity.LaterFolderEntity
 import com.example.common.entity.LaterTagEntity
 import com.example.common.entity.LaterViewItem
-import com.example.common.log.LaterLog
-import com.example.laterlist.repository.LaterListRepository
+import com.example.common.repository.LaterListRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
 
 class LaterListViewModel: ViewModel() {
     private val laterListRepository: LaterListRepository by lazy { LaterListRepository(viewModelScope) }

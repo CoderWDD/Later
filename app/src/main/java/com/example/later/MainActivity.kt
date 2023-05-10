@@ -10,17 +10,15 @@ import com.example.common.custom.BaseActivity
 import com.example.common.datastore.settingDataStore
 import com.example.common.entity.ItemType
 import com.example.common.entity.LaterViewItem
-import com.example.common.extents.showLoadingView
 import com.example.common.log.LaterLog
 import com.example.common.utils.FragmentStackUtil
 import com.example.common.utils.TheRouterUtil
 import com.example.common.viewmodel.OpenAISettingViewModel
 import com.example.home.HomeFragment
 import com.example.later.databinding.ActivityMainBinding
-import com.example.laterlist.viewmodel.LaterListViewModel
+import com.example.common.viewmodel.LaterListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {

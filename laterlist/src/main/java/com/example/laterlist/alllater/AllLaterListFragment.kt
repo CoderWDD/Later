@@ -20,7 +20,7 @@ import com.example.common.reporesource.Resource
 import com.example.common.utils.FragmentStackUtil
 import com.example.laterlist.LaterItemListFragment
 import com.example.laterlist.R
-import com.example.laterlist.viewmodel.LaterListViewModel
+import com.example.common.viewmodel.LaterListViewModel
 import com.therouter.TheRouter
 import com.therouter.router.Route
 import com.example.common.dialogs.*

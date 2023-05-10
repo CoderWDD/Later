@@ -1,5 +1,6 @@
 package com.example.common.entity
 
+import java.io.Serializable
 import java.util.*
 
 enum class ItemType {
@@ -28,7 +29,7 @@ data class LaterViewItem @JvmOverloads constructor(
     var isStar: Boolean = false,
     val folder: String = "",
     val itemType: ItemType = ItemType.OTHER
-){
+): Serializable{
     fun toImageItem(): LaterViewImageItem {
         return LaterViewImageItem(
             key = key,

@@ -24,10 +24,19 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:singleLine="true"
+                android:maxLength="20"
                 android:ellipsize="marquee"
                 android:layout_gravity="center_horizontal"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/toolbar_webview"/>
+
+            <ImageView
+                android:id="@+id/toolbar_icon_star"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/favorite_inactive" />
 
         </androidx.appcompat.widget.Toolbar>
 

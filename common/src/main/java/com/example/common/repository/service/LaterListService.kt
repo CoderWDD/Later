@@ -39,5 +39,7 @@ interface LaterListService {
 
     fun deleteLaterViewItem(favoriteFolderPath: String, laterViewItem: LaterViewItem): Flow<Resource<String>>
 
+    fun getLaterViewItemListByTag(tag: String): MutableSharedFlow<Resource<List<LaterViewItem>>>
+
     fun onClear()
 }

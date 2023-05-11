@@ -7,7 +7,9 @@ object FirebaseFieldsConstants {
 
     const val USER_ID = "user_id"
 
-    const val LATER_VIEW_ITEM = "later_view_item"
+    const val LATER_VIEW_ITEM = "laterViewItem"
 
     const val TODO = "todo"
+
+    const val TAG_ITEM_LIST = "tag_item_list"
 }

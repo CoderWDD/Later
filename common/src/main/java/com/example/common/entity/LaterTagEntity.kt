@@ -8,5 +8,6 @@ data class LaterTagEntity @JvmOverloads constructor(
     val id: String = UUID.randomUUID().toString(),
     val createTime: Long = System.currentTimeMillis(),
     val updateTime: Long = System.currentTimeMillis(),
-    val name: String = "default tag"
+    val name: String = "default tag",
+    val laterViewItem: MutableMap<String, TagListItem> = mutableMapOf()
 )

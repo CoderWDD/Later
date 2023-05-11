@@ -52,9 +52,7 @@ class LaterListViewModel: ViewModel() {
 
     fun getListByFolder(folderKey: String) = laterListRepository.getLaterViewItemByFolder(folderKey).asLiveData()
 
-    fun getListByTag(){
-
-    }
+    fun getListByTag(tag: String) = laterListRepository.getLaterViewItemListByTag(tag = tag).asLiveData()
 
     fun deleteFavoriteFolder(folderKey: String) = laterListRepository.deleteFavoriteFolder(folderKey).asLiveData()
 

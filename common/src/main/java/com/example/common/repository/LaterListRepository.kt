@@ -5,6 +5,7 @@ import com.example.common.constants.FirebaseFieldsConstants
 import com.example.common.entity.LaterFolderEntity
 import com.example.common.entity.LaterTagEntity
 import com.example.common.entity.LaterViewItem
+import com.example.common.entity.TagListItem
 import com.example.common.extents.isToday
 import com.example.common.reporesource.NetworkBoundResource
 import com.example.common.reporesource.Resource
@@ -43,7 +44,7 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
             override suspend fun fetchFromNetwork(): Flow<Resource<String>> =
                 flow<Resource<String>> {
                     val result = suspendCoroutine<Resource<String>> { continuation ->
-                        favoriteFolderRef.child(laterFolderEntity.title).push().setValue(laterFolderEntity)
+                        favoriteFolderRef.child(laterFolderEntity.title).setValue(laterFolderEntity)
                             .addOnSuccessListener { continuation.resume(Resource.success(data = "Success")) }
                             .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
                             .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
@@ -422,8 +423,19 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
             override suspend fun fetchFromNetwork(): Flow<Resource<String>> =
                 flow<Resource<String>> {
                     val result = suspendCoroutine<Resource<String>> { continuation ->
-                        getFavoriteLaterViewItemReference(folderPath).push().setValue(laterViewItem)
-                            .addOnSuccessListener { continuation.resume(Resource.success(data = "Success")) }
+                        getFavoriteLaterViewItemReference(folderPath).child(laterViewItem.id).setValue(laterViewItem)
+                            .addOnSuccessListener {
+                                var cnt = 0
+                                laterViewItem.tag.forEach {tag ->
+                                    val tagListItem = TagListItem(itemId = laterViewItem.id, folderPath = laterViewItem.folder, tag = tag)
+                                    tagRef.child(tag).child(FirebaseFieldsConstants.LATER_VIEW_ITEM).child(laterViewItem.id).setValue(tagListItem).addOnSuccessListener {
+                                        cnt++
+                                        if (cnt == laterViewItem.tag.size) {
+                                            continuation.resume(Resource.success(data = "Success"))
+                                        }
+                                    }
+                                }
+                            }
                             .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
                             .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
                     }
@@ -509,6 +521,7 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
 
             override fun onCancelled(error: DatabaseError) {}
         }
+
         tagRef.addChildEventListener(childEventListener)
         return mutableSharedFlow
     }
@@ -526,10 +539,15 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
             override suspend fun fetchFromNetwork(): Flow<Resource<String>> =
                 flow<Resource<String>> {
                     val result = suspendCoroutine<Resource<String>> { continuation ->
-                        tagRef.child(tag).removeValue()
-                            .addOnSuccessListener { continuation.resume(Resource.success(data = "Success")) }
-                            .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
-                            .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
+                        val count = tagRef.child(tag).child(FirebaseFieldsConstants.LATER_VIEW_ITEM).get().result?.childrenCount
+                        if (count != null && count > 0) {
+                            continuation.resume(Resource.error(message = "Tag is not empty"))
+                        } else {
+                            tagRef.child(tag).removeValue()
+                                .addOnSuccessListener { continuation.resume(Resource.success(data = "Success")) }
+                                .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
+                                .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
+                        }
                     }
                     emit(result)
                 }
@@ -612,13 +630,65 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
                 flow<Resource<String>> {
                     val result = suspendCoroutine<Resource<String>> { continuation ->
                         getFavoriteLaterViewItemReference(favoriteFolderPath).child(laterViewItem.key).removeValue()
-                            .addOnSuccessListener { continuation.resume(Resource.success(data = "Success")) }
+                            .addOnSuccessListener {
+                                var cnt = 0
+                                laterViewItem.tag.forEach { tag ->
+                                    tagRef.child(tag).child(FirebaseFieldsConstants.LATER_VIEW_ITEM).child(laterViewItem.id).removeValue().addOnSuccessListener {
+                                        cnt++
+                                        if (cnt == laterViewItem.tag.size) {
+                                            continuation.resume(Resource.success(data = "Success"))
+                                        }
+                                    }
+                                }
+                            }
                             .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
                             .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
                     }
                     emit(result)
                 }
         }.asSharedFlow(coroutineScope = viewModelScope).catch { emit(Resource.error(message = it.message ?: "Unknown error")) }
+    }
+
+    override fun getLaterViewItemListByTag(tag: String): MutableSharedFlow<Resource<List<LaterViewItem>>> {
+        val mutableSharedFlow = object : NetworkBoundResource<List<LaterViewItem>>() {
+            override fun saveToCache(item: Resource<List<LaterViewItem>>) {}
+
+            override fun shouldFetch(data: List<LaterViewItem>?) = true
+
+            override fun loadFromCache(): Flow<List<LaterViewItem>> {
+                return flow { emit(emptyList()) }
+            }
+
+            override suspend fun fetchFromNetwork(): Flow<Resource<List<LaterViewItem>>> =
+                flow<Resource<List<LaterViewItem>>> {
+                    emit(Resource.loading(data = emptyList()))
+                }
+        }.asMutableSharedFlow(coroutineScope = viewModelScope)
+
+        val valueEventListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val itemList = mutableListOf<LaterViewItem>()
+                snapshot.children.forEach { dataSnapshot ->
+                    dataSnapshot.getValue(TagListItem::class.java)?.let {tagItem ->
+                        getFavoriteLaterViewItemReference(tagItem.folderPath).child(tagItem.itemId).get().addOnSuccessListener { laterViewItemSnapshot ->
+                            laterViewItemSnapshot.getValue(LaterViewItem::class.java)
+                                ?.let { laterViewItem ->
+                                    laterViewItem.key = laterViewItemSnapshot.key ?: ""
+                                    itemList.add(laterViewItem)
+                                    viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = itemList)) }
+                                }
+                        }
+                    }
+                }
+                viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = itemList)) }
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        }
+
+        tagRef.child(tag).child(FirebaseFieldsConstants.LATER_VIEW_ITEM).addValueEventListener(valueEventListener)
+
+        return mutableSharedFlow
     }
 
     private fun getFavoriteFolderReference() =

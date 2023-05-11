@@ -41,8 +41,11 @@ class LaterItemListFragment :
     @Autowired(name = "folderKey")
     lateinit var folderKey: String
 
-    @Autowired(name = "")
+    @Autowired(name = "type")
     lateinit var type: String
+
+    @Autowired(name = "laterTag")
+    lateinit var laterTag: String
 
     override fun onCreateView() {
         viewModel = ViewModelProvider(requireActivity())[LaterListViewModel::class.java]
@@ -99,6 +102,22 @@ class LaterItemListFragment :
             }
             LaterListType.FOLDER.name -> {
                 viewModel.getListByFolder(folderKey).observe(viewLifecycleOwner) { resource ->
+                    viewBinding.swipeRefreshLayout.isRefreshing = false
+                    when (resource) {
+                        is Resource.Success -> {
+                            setItemList(resource.data)
+                        }
+                        is Resource.Error -> {
+                            LaterLog.d("error ${resource.message}")
+                        }
+                        is Resource.Loading -> {}
+                        is Resource.Cached -> {}
+                        else -> {}
+                    }
+                }
+            }
+            LaterListType.TAG.name -> {
+                viewModel.getListByTag(laterTag).observe(viewLifecycleOwner) { resource ->
                     viewBinding.swipeRefreshLayout.isRefreshing = false
                     when (resource) {
                         is Resource.Success -> {

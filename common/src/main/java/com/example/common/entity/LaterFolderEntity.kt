@@ -10,4 +10,5 @@ data class LaterFolderEntity @JvmOverloads constructor(
     val createTime: Long = System.currentTimeMillis(),
     val updateTime: Long = System.currentTimeMillis(),
     var cnt: Int = 0,
+    val laterViewItem: MutableMap<String, LaterViewItem> = mutableMapOf()
 )

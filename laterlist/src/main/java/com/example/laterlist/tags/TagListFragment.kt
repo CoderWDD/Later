@@ -3,6 +3,7 @@ package com.example.laterlist.tags
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.common.adapter.RecyclerViewAdapter
+import com.example.common.constants.LaterListType
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
 import com.example.common.dialogs.showDeleteDialog
@@ -10,10 +11,14 @@ import com.example.common.log.LaterLog
 import com.example.common.recyclerview.RVProxy
 import com.example.common.recyclerview.proxy.TagCardData
 import com.example.common.recyclerview.proxy.TagCardProxy
+import com.example.common.recyclerview.setOnItemClickListener
 import com.example.common.recyclerview.setOnItemLongClickListener
 import com.example.common.reporesource.Resource
+import com.example.common.utils.FragmentStackUtil
 import com.example.laterlist.databinding.FragmentTagListBinding
 import com.example.common.viewmodel.LaterListViewModel
+import com.example.laterlist.LaterItemListFragment
+import com.therouter.TheRouter
 import com.therouter.router.Route
 
 
@@ -43,7 +48,7 @@ class TagListFragment : BaseFragment<FragmentTagListBinding>(FragmentTagListBind
             when (resource) {
                 is Resource.Success -> {
                     tagList.clear()
-                    resource.data.forEach { tag -> tagList.add(TagCardData(key = tag.key, icon = resources.getDrawable(com.example.laterlist.R.drawable.tag_icon), cnt = tag.cnt.toString(), title = tag.name)) }
+                    resource.data.forEach { tag -> tagList.add(TagCardData(key = tag.key, icon = resources.getDrawable(com.example.laterlist.R.drawable.tag_icon), cnt = tag.laterViewItem.size.toString(), title = tag.name)) }
                     tagListRecyclerViewAdapter.notifyDataSetChanged()
                 }
                 is Resource.Error -> {}
@@ -71,6 +76,17 @@ class TagListFragment : BaseFragment<FragmentTagListBinding>(FragmentTagListBind
                 // 删除收藏夹
                 viewModel.deleteTag(tag = tag.key)
             }, negativeListener = {})
+        }
+
+        viewBinding.tagRecyclerView.setOnItemClickListener { view, position ->
+            val laterItemListFragment = TheRouter.build(RoutePathConstant.LaterItemListFragment)
+                .withString("folderKey", "")
+                .withString("type", LaterListType.TAG.name)
+                .withString("laterTag", (tagList[position] as TagCardData).key)
+                .createFragment<LaterItemListFragment>()
+            if (laterItemListFragment != null) {
+                FragmentStackUtil.addFragment(laterItemListFragment)
+            }
         }
     }
 }

@@ -15,6 +15,7 @@ import com.example.common.dialogs.showDeleteDialog
 import com.example.common.entity.TodoItem
 import com.example.common.entity.TodoState
 import com.example.common.extents.hideLoadingView
+import com.example.common.extents.scheduleNotification
 import com.example.common.extents.showLoadingView
 import com.example.common.log.LaterLog
 import com.example.common.recyclerview.RVProxy
@@ -55,6 +56,8 @@ class CalenderFragment : BaseFragment<FragmentCalenderBinding>(FragmentCalenderB
                         when(resource){
                             is Resource.Success -> {
                                 requireActivity().hideLoadingView()
+                                // 加入到定时提醒通知中
+                                requireActivity().scheduleNotification(todoItem)
                             }
                             is Resource.Loading-> {
                                 // show the loading view

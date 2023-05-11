@@ -70,15 +70,23 @@ class AddTodoDialogFragment : BaseDialogFragment<FragmentAddTodoDialogBinding>(F
 
         viewBinding.todoDialogTextStartTime.setOnClickListener {
             // show time picker dialog
+
             val calendar = Calendar.getInstance()
             val hour = calendar.get(Calendar.HOUR_OF_DAY)
             val minute = calendar.get(Calendar.MINUTE)
 
             val timePickerDialog = TimePickerDialog(requireContext(), R.style.TodoTimePickerStyle, { _, selectedHour, selectedMinute ->
                 // Code to handle the selected time
-                val selectedTime = "$selectedHour:$selectedMinute"
-                startTime = (selectedHour * 60 * 60 * 1000 + selectedMinute * 60 * 1000).toLong()
-                viewBinding.todoDialogTextStartTime.text = selectedTime
+                calendar.apply {
+                    set(Calendar.HOUR_OF_DAY, selectedHour)
+                    set(Calendar.MINUTE, selectedMinute)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+
+                startTime = calendar.timeInMillis
+                val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                viewBinding.todoDialogTextStartTime.text = dateFormat.format(startTime)
             }, hour, minute, true)
             timePickerDialog.show()
         }
@@ -91,14 +99,19 @@ class AddTodoDialogFragment : BaseDialogFragment<FragmentAddTodoDialogBinding>(F
 
             val timePickerDialog = TimePickerDialog(requireContext(), R.style.TodoTimePickerStyle, { _, selectedHour, selectedMinute ->
                 // Code to handle the selected time
-                val selectedTime = "$selectedHour:$selectedMinute"
-                endTime = (selectedHour * 60 * 60 * 1000 + selectedMinute * 60 * 1000).toLong()
-                viewBinding.todoDialogTextEndTime.text = selectedTime
+                calendar.apply {
+                    set(Calendar.HOUR_OF_DAY, selectedHour)
+                    set(Calendar.MINUTE, selectedMinute)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+
+                endTime = calendar.timeInMillis
+                val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                viewBinding.todoDialogTextEndTime.text = dateFormat.format(endTime)
             }, hour, minute, true)
             timePickerDialog.show()
         }
-
-
 
         viewBinding.todoDialogButton.setOnClickListener {
             // check if the time is valid

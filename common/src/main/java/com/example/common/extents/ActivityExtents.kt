@@ -7,8 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.Toast
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.example.common.MyApplication
 import com.example.common.R
+import com.example.common.entity.TodoItem
+import com.example.common.workmanager.TodoItemNotificationWorker
+import java.util.concurrent.TimeUnit
 
 fun Activity.hideSystemStatusBar(){
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
@@ -37,4 +44,26 @@ fun Activity.hideLoadingView() {
     app.loadingView?.let {
         (findViewById<ViewGroup>(android.R.id.content)).removeView(it)
     }
+}
+
+fun Activity.scheduleNotification(todoItem: TodoItem) {
+    val reminderTime = todoItem.endTime - (30 * 60 * 1000) // 提前半小时
+
+    if (reminderTime <= System.currentTimeMillis()) {
+        return
+    }
+
+    val delay = reminderTime - System.currentTimeMillis()
+
+    val inputData = Data.Builder()
+        .putString("todoId", todoItem.id)
+        .putString("todoTitle", todoItem.title)
+        .build()
+
+    val workRequest: WorkRequest = OneTimeWorkRequestBuilder<TodoItemNotificationWorker>()
+        .setInputData(inputData)
+        .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+        .build()
+
+    WorkManager.getInstance(this).enqueue(workRequest)
 }

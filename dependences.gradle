@@ -33,6 +33,8 @@ ext{
 
     datastoreVersion = "1.0.0"
 
+    workVersion = "2.8.1"
+
     app = [
             kaptRoom: "androidx.room:room-compiler:$roomVersion",
             coreKtx : "androidx.core:core-ktx:$coreKtxVersion",
@@ -86,6 +88,8 @@ ext{
             kotlin_reflect: "org.jetbrains.kotlin:kotlin-reflect:$coreKtxVersion",
 
             datastore_preference: "androidx.datastore:datastore-preferences:$datastoreVersion",
+
+            work_manager: "androidx.work:work-runtime-ktx:$workVersion",
 
     ]
 }

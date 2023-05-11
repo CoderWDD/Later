@@ -8,6 +8,7 @@ import androidx.core.app.NotificationCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.common.R
+import com.example.common.entity.TodoState
 
 class TodoItemNotificationWorker(appContext: Context, workerParams: WorkerParameters) :
     Worker(appContext, workerParams) {
@@ -15,6 +16,11 @@ class TodoItemNotificationWorker(appContext: Context, workerParams: WorkerParame
     override fun doWork(): Result {
         val todoId = inputData.getString("todoId") ?: return Result.failure()
         val todoTitle = inputData.getString("todoTitle") ?: return Result.failure()
+        val todoState = inputData.getString("todoState") ?: return Result.failure()
+
+        if (todoState == TodoState.DONE.name) {
+            return Result.success()
+        }
 
         val channelId = "todo_reminder_channel"
         val notificationTitle = "即将到期的待办事项：$todoTitle"

@@ -8,13 +8,19 @@ import com.example.common.datastore.SettingDataStore
 import com.example.common.log.CallStackLogInterceptor
 import com.example.common.log.LaterLog
 import com.example.common.log.LaterLogcatInterceptor
+import com.example.common.repository.LaterErrorReportRepository
+import com.example.common.repository.service.LaterErrorReportService
 import com.example.common.room.ConversationDBManager
+import com.example.common.utils.DateUtil
+import com.google.firebase.auth.FirebaseAuth
 import com.therouter.TheRouter
 import java.io.PrintWriter
 import java.io.StringWriter
 
 class MyApplication: Application() {
     var loadingView: View? = null
+    var laterErrorReportService: LaterErrorReportService? = null
+
     companion object{
         lateinit var instance: MyApplication
         private lateinit var openAISettingData: SettingDataStore.SettingDataParameters
@@ -66,5 +72,12 @@ class MyApplication: Application() {
 
     private fun sendErrorReportToServer(errorReport: String) {
         // 在这里实现将错误报告发送到服务器的逻辑
+        FirebaseAuth.getInstance().currentUser?.let {
+            // 如果用户已经登录，将错误报告发送到服务器
+            if (laterErrorReportService == null) laterErrorReportService = LaterErrorReportRepository()
+            val time = System.currentTimeMillis()
+            val date = DateUtil.longToDateString(time, "yyyy-M-d")
+            laterErrorReportService!!.uploadError(error = errorReport, date = date)
+        }
     }
 }

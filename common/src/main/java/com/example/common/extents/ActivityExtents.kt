@@ -58,6 +58,7 @@ fun Activity.scheduleNotification(todoItem: TodoItem) {
     val inputData = Data.Builder()
         .putString("todoId", todoItem.id)
         .putString("todoTitle", todoItem.title)
+        .putString("todoState", todoItem.state.name)
         .build()
 
     val workRequest: WorkRequest = OneTimeWorkRequestBuilder<TodoItemNotificationWorker>()

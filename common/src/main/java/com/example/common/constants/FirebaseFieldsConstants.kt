@@ -12,4 +12,6 @@ object FirebaseFieldsConstants {
     const val TODO = "todo"
 
     const val TAG_ITEM_LIST = "tag_item_list"
+
+    const val ERROR = "error"
 }

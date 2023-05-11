@@ -23,6 +23,7 @@ import com.example.common.reporesource.Resource
 import com.example.common.utils.TheRouterUtil
 import com.example.laterlist.alllater.AllLaterListFragment
 import com.example.common.callback.MenuItemDialogClickCallBack
+import com.example.common.extents.showToast
 import com.example.laterlist.databinding.FragmentLaterListBinding
 import com.example.laterlist.tags.TagListFragment
 import com.example.common.viewmodel.LaterListViewModel
@@ -232,7 +233,11 @@ class LaterListFragment :
         createWebsiteDialog = CreateWebsiteFragment.newInstance(object :
             MenuItemDialogClickCallBack<LaterViewItem> {
             override fun onConfirmClickListener(content: LaterViewItem) {
-                // 执行创建文件夹的逻辑
+                if (!checkIfTheTagAndFolderAllExist()) {
+                    showToast("请先选择文件夹和标签")
+                    return
+                }
+                // 执行创建网页的逻辑
                 if (URLUtil.isValidUrl(content.contentUrl)) {
                     viewModel.createWebsite(content)
                 } else {
@@ -262,6 +267,10 @@ class LaterListFragment :
                 // 待加
             }
         })
+    }
+
+    private fun checkIfTheTagAndFolderAllExist(): Boolean {
+        return tagList.isNotEmpty() && folderList.isNotEmpty()
     }
 
     private fun createAndHandleFolder(folder: LaterFolderEntity) {

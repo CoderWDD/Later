@@ -14,6 +14,7 @@ import com.example.common.recyclerview.proxy.FolderData
 import com.example.common.recyclerview.setOnItemClickListener
 import com.example.laterlist.databinding.FragmentAllLaterListBinding
 import com.example.common.adapter.RecyclerViewAdapter
+import com.example.common.constants.LaterListType
 import com.example.common.log.LaterLog
 import com.example.common.recyclerview.setOnItemLongClickListener
 import com.example.common.reporesource.Resource
@@ -142,6 +143,7 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
             // 跳转到相应页面
             val laterItemListFragment = TheRouter.build(RoutePathConstant.LaterItemListFragment)
                 .withString("folderKey", (favoriteFolderList[position] as FolderData).key)
+                .withString("type", LaterListType.FOLDER.name)
                 .createFragment<LaterItemListFragment>()
             if (laterItemListFragment != null) {
                 FragmentStackUtil.addFragment(laterItemListFragment)
@@ -165,6 +167,7 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
             // 跳转到相应页面
             val laterItemListFragment = TheRouter.build(RoutePathConstant.LaterItemListFragment)
                 .withString("folderKey", (recycleFolderList[position] as FolderData).key)
+                .withString("type", LaterListType.FOLDER.name)
                 .createFragment<LaterItemListFragment>()
             if (laterItemListFragment != null) {
                 FragmentStackUtil.addFragment(laterItemListFragment)
@@ -202,7 +205,15 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
         viewBinding.categoryPlate.categoryFavorite.categoryIcon.setImageDrawable(resources.getDrawable(
             com.example.common.R.drawable.favorite_icon))
         viewBinding.categoryPlate.categoryFavorite.categoryText.text = "收藏"
-        viewBinding.categoryPlate.categoryFavorite.root.setOnClickListener {  }
+        viewBinding.categoryPlate.categoryFavorite.root.setOnClickListener {
+            val laterItemListFragment = TheRouter.build(RoutePathConstant.LaterItemListFragment)
+                .withString("folderKey", "")
+                .withString("type", LaterListType.FAVORITE.name)
+                .createFragment<LaterItemListFragment>()
+            if (laterItemListFragment != null) {
+                FragmentStackUtil.addFragment(laterItemListFragment)
+            }
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -210,6 +221,14 @@ class AllLaterListFragment : BaseFragment<FragmentAllLaterListBinding>(FragmentA
         viewBinding.categoryPlate.categoryToday.categoryCnt.text = size.toString()
         viewBinding.categoryPlate.categoryToday.categoryIcon.setImageDrawable(resources.getDrawable(com.example.common.R.drawable.today_icon))
         viewBinding.categoryPlate.categoryToday.categoryText.text = "今天"
-        viewBinding.categoryPlate.categoryToday.root.setOnClickListener {}
+        viewBinding.categoryPlate.categoryToday.root.setOnClickListener {
+            val laterItemListFragment = TheRouter.build(RoutePathConstant.LaterItemListFragment)
+                .withString("folderKey", "")
+                .withString("type", LaterListType.TODAY.name)
+                .createFragment<LaterItemListFragment>()
+            if (laterItemListFragment != null) {
+                FragmentStackUtil.addFragment(laterItemListFragment)
+            }
+        }
     }
 }

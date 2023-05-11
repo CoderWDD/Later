@@ -362,19 +362,23 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
         val childEventListener = object: ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 snapshot.getValue(LaterViewItem::class.java)?.let {
-                    favoriteLaterViewItemList.add(it)
+                    if (it.isStar) favoriteLaterViewItemList.add(it)
                     viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = favoriteLaterViewItemList)) }
                 }
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 snapshot.getValue(LaterViewItem::class.java)?.let {
-                    favoriteLaterViewItemList.indexOfFirst { laterViewItem -> laterViewItem.id == it.id }.let { index ->
-                        if (index != -1) {
-                            favoriteLaterViewItemList[index] = it
-                            viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = favoriteLaterViewItemList)) }
+                    it.key = snapshot.key!!
+                    if (it.isStar) favoriteLaterViewItemList.add(it)
+                    else {
+                        favoriteLaterViewItemList.indexOfFirst { laterViewItem -> laterViewItem.id == it.id }.let { index ->
+                            if (index != -1) {
+                                favoriteLaterViewItemList.removeAt(index)
+                            }
                         }
                     }
+                    viewModelScope.launch { mutableSharedFlow.emit(Resource.success(data = favoriteLaterViewItemList)) }
                 }
             }
 

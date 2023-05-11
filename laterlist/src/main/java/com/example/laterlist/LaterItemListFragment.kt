@@ -7,6 +7,7 @@ import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import com.example.common.WebViewFragment
 import com.example.common.adapter.RecyclerViewAdapter
+import com.example.common.constants.LaterListType
 import com.example.common.constants.RoutePathConstant
 import com.example.common.custom.BaseFragment
 import com.example.common.custom.customView.InterceptEventImageView
@@ -40,6 +41,9 @@ class LaterItemListFragment :
     @Autowired(name = "folderKey")
     lateinit var folderKey: String
 
+    @Autowired(name = "")
+    lateinit var type: String
+
     override fun onCreateView() {
         viewModel = ViewModelProvider(requireActivity())[LaterListViewModel::class.java]
         initRecyclerViewAdapter()
@@ -63,37 +67,74 @@ class LaterItemListFragment :
     }
 
     private fun getInitData() {
-        viewModel.getListByFolder(folderKey).observe(viewLifecycleOwner) { resource ->
-            viewBinding.swipeRefreshLayout.isRefreshing = false
-            when (resource) {
-                is Resource.Success -> {
-                    laterItemListAdapter.deleteAllData()
-                    resource.data.forEach {
-                        when (it.itemType){
-                            ItemType.IMAGE -> {
-                                laterItemListAdapter.addData(it.toImageItem())
-                            }
-                            ItemType.VIDEO -> {
-                                laterItemListAdapter.addData(it.toVideoItem())
-                            }
-                            ItemType.WEB_PAGE -> {
-                                laterItemListAdapter.addData(it.toWebPageItem())
-                            }
-                            ItemType.MUSIC -> {
-                                laterItemListAdapter.addData(it.toMusicItem())
-                            }
-                            ItemType.OTHER -> {
-                                laterItemListAdapter.addData(it.toOtherItem())
-                            }
+        when (type){
+            LaterListType.TODAY.name -> {
+                // get today list
+                viewModel.getTodayList().observe(viewLifecycleOwner) { resource ->
+                    viewBinding.swipeRefreshLayout.isRefreshing = false
+                    when (resource) {
+                        is Resource.Success -> {
+                            setItemList(resource.data)
                         }
+                        is Resource.Error -> {}
+                        is Resource.Loading -> {}
+                        is Resource.Cached -> {}
+                        else -> {}
                     }
                 }
-                is Resource.Error -> {
-                    LaterLog.d("error ${resource.message}")
+            }
+            LaterListType.FAVORITE.name -> {
+                // get favorite list
+                viewModel.getFavoriteList().observe(viewLifecycleOwner) { resource ->
+                    when (resource) {
+                        is Resource.Success -> {
+                            setItemList(resource.data)
+                        }
+                        is Resource.Error -> {}
+                        is Resource.Loading -> {}
+                        is Resource.Cached -> {}
+                        else -> {}
+                    }
                 }
-                is Resource.Loading -> {}
-                is Resource.Cached -> {}
-                else -> {}
+            }
+            LaterListType.FOLDER.name -> {
+                viewModel.getListByFolder(folderKey).observe(viewLifecycleOwner) { resource ->
+                    viewBinding.swipeRefreshLayout.isRefreshing = false
+                    when (resource) {
+                        is Resource.Success -> {
+                            setItemList(resource.data)
+                        }
+                        is Resource.Error -> {
+                            LaterLog.d("error ${resource.message}")
+                        }
+                        is Resource.Loading -> {}
+                        is Resource.Cached -> {}
+                        else -> {}
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setItemList(data: List<LaterViewItem>){
+        laterItemListAdapter.deleteAllData()
+        data.forEach {
+            when (it.itemType){
+                ItemType.IMAGE -> {
+                    laterItemListAdapter.addData(it.toImageItem())
+                }
+                ItemType.VIDEO -> {
+                    laterItemListAdapter.addData(it.toVideoItem())
+                }
+                ItemType.WEB_PAGE -> {
+                    laterItemListAdapter.addData(it.toWebPageItem())
+                }
+                ItemType.MUSIC -> {
+                    laterItemListAdapter.addData(it.toMusicItem())
+                }
+                ItemType.OTHER -> {
+                    laterItemListAdapter.addData(it.toOtherItem())
+                }
             }
         }
     }
@@ -118,12 +159,13 @@ class LaterItemListFragment :
         viewBinding.laterItemList.setOnItemClickListener { view, position ->
             // todo 根据item类型跳转到不同的页面
             val laterItem = LaterViewItem.fromExitItem(laterItemListAdapter.dataList[position])
+
             LaterLog.d("laterItem $laterItem", tag = "com/example/common/webview")
             if (laterItem.itemType == ItemType.WEB_PAGE) {
                 val laterItemListFragment = TheRouter.build(RoutePathConstant.WebViewFragment)
                     .withString("url", laterItem.contentUrl)
                     .withSerializable("laterItem", laterItem)
-                    .withString("folderKey", folderKey)
+                    .withString("folderKey", laterItem.folder)
                     .createFragment<WebViewFragment>()
                 laterItemListFragment?.let { FragmentStackUtil.addFragment(it) }
             }
@@ -132,7 +174,7 @@ class LaterItemListFragment :
         viewBinding.laterItemList.setOnItemLongClickListener { view, position ->
             showDeleteDialog(requireContext(), "是否删除", "确定删除该Item吗？", positiveText = "确定", negativeText = "取消", negativeListener = {}, positiveListener =  {
                 val laterItem = LaterViewItem.fromExitItem(laterItemListAdapter.dataList[position])
-                viewModel.deleteLaterItem(folderKey, laterItem)
+                viewModel.deleteLaterItem(laterItem.folder, laterItem)
             })
         }
     }

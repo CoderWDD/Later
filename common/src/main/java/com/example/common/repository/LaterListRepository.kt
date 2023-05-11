@@ -44,10 +44,22 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
             override suspend fun fetchFromNetwork(): Flow<Resource<String>> =
                 flow<Resource<String>> {
                     val result = suspendCoroutine<Resource<String>> { continuation ->
-                        favoriteFolderRef.child(laterFolderEntity.title).setValue(laterFolderEntity)
-                            .addOnSuccessListener { continuation.resume(Resource.success(data = "Success")) }
-                            .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
-                            .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
+                        favoriteFolderRef.child(laterFolderEntity.title).ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                if (snapshot.exists()) {
+                                    continuation.resume(Resource.error(message = "Folder already exists"))
+                                } else {
+                                    favoriteFolderRef.child(laterFolderEntity.title).setValue(laterFolderEntity)
+                                        .addOnSuccessListener { continuation.resume(Resource.success(data = "Success")) }
+                                        .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
+                                        .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                continuation.resume(Resource.error(message = error.message))
+                            }
+                        })
                     }
                     emit(result)
                 }
@@ -457,10 +469,23 @@ class LaterListRepository(private val viewModelScope: CoroutineScope) : LaterLis
             override suspend fun fetchFromNetwork(): Flow<Resource<String>> =
                 flow<Resource<String>> {
                     val result = suspendCoroutine<Resource<String>> { continuation ->
-                        tagRef.child(tag.name).setValue(tag)
-                            .addOnSuccessListener { continuation.resume(Resource.success(data = "Success")) }
-                            .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
-                            .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
+                        tagRef.child(tag.name).ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                // 如果 tag 已经存在，返回错误
+                                if (snapshot.exists()) {
+                                    continuation.resume(Resource.error(message = "Tag already exists"))
+                                } else {
+                                    tagRef.child(tag.name).setValue(tag)
+                                        .addOnSuccessListener { continuation.resume(Resource.success(data = "Success")) }
+                                        .addOnCanceledListener { continuation.resume(Resource.error(message = "Canceled")) }
+                                        .addOnFailureListener { continuation.resume(Resource.error(message = it.message ?: "Unknown error")) }
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                continuation.resume(Resource.error(message = error.message))
+                            }
+                        })
                     }
                     emit(result)
                 }

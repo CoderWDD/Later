@@ -43,11 +43,9 @@ class NotificationFragment : BaseFragment<FragmentNotificationBinding>(FragmentN
 
     private fun loadConversationList(){
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                val conversationListFromDB = viewModel.getConversationList()
-                conversationList.addAll(conversationListFromDB)
-                conversationRVAdapter.addDataList(conversationList)
-            }
+            val conversationListFromDB = viewModel.getConversationList()
+            conversationList.addAll(conversationListFromDB)
+            conversationRVAdapter.addDataList(conversationList)
         }
     }
 

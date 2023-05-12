@@ -1,10 +1,14 @@
 package com.example.laterlist
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.webkit.URLUtil
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +31,8 @@ import com.example.common.extents.showToast
 import com.example.laterlist.databinding.FragmentLaterListBinding
 import com.example.laterlist.tags.TagListFragment
 import com.example.common.viewmodel.LaterListViewModel
+import com.example.imagepicker.ImagePickerActivity
+import com.example.imagepicker.constants.ResultCode
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.therouter.router.Route
@@ -54,6 +60,8 @@ class LaterListFragment :
     private val folderList: MutableList<FolderData> = mutableListOf()
 
     private val tagList: MutableList<LaterTagEntity> = mutableListOf()
+
+    private lateinit var activityLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreateView() {
         viewModel = ViewModelProvider(requireActivity())[LaterListViewModel::class.java]
@@ -86,6 +94,7 @@ class LaterListFragment :
     private fun init() {
         // 初始化数据
         observeData()
+        initActivityLauncher()
         // 初始化 toolbar
         initToolbar()
         // 初始化 viewPager
@@ -94,6 +103,20 @@ class LaterListFragment :
         initMenuItemDialog()
         // 初始化 menuItem 的点击事件
         initMenuItemClick()
+    }
+
+    private fun initActivityLauncher(){
+        activityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == ResultCode.Image.OK) {
+                val data = result.data
+                val url = data?.getStringExtra("url")
+                if (url != null && URLUtil.isValidUrl(url)) {
+//                    viewModel.insertLaterItem(LaterViewItem(ItemType.Website, url))
+                } else {
+                    showToast("url is invalid")
+                }
+            }
+        }
     }
 
     private fun observeData(){
@@ -203,7 +226,7 @@ class LaterListFragment :
                     )
                 }
                 com.example.common.R.id.create_image -> {
-
+                    activityLauncher.launch(Intent(requireContext(), ImagePickerActivity::class.java))
                 }
                 com.example.common.R.id.create_video -> {
 

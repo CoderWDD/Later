@@ -35,6 +35,8 @@ ext{
 
     workVersion = "2.8.1"
 
+    recyclerViewVersion = "1.3.0"
+
     app = [
             kaptRoom: "androidx.room:room-compiler:$roomVersion",
             coreKtx : "androidx.core:core-ktx:$coreKtxVersion",
@@ -90,6 +92,8 @@ ext{
             datastore_preference: "androidx.datastore:datastore-preferences:$datastoreVersion",
 
             work_manager: "androidx.work:work-runtime-ktx:$workVersion",
+
+            recyclerView : "androidx.recyclerview:recyclerview:$recyclerViewVersion"
 
     ]
 }

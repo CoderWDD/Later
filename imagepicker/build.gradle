@@ -3,10 +3,11 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
 }
+
 def appDependence = rootProject.ext.app
 
 android {
-    namespace 'com.example.laterlist'
+    namespace 'com.example.imagepicker'
     compileSdk 33
 
     viewBinding{
@@ -14,10 +15,11 @@ android {
     }
 
     defaultConfig {
-        minSdk 26
+        minSdk 24
         targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -36,12 +38,6 @@ android {
 }
 
 dependencies {
-    implementation project(':common')
-    implementation project(':imagepicker')
-
-    kapt appDependence.kaptTheRouter
-    implementation appDependence.therouter
-    implementation appDependence.shimmer
 
     implementation appDependence.coreKtx
     implementation appDependence.appCompat
@@ -49,20 +45,11 @@ dependencies {
     testImplementation appDependence.junit
     implementation appDependence.constraintlayout
 
-    implementation appDependence.firebase_database
+    implementation appDependence.recyclerView
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation appDependence.glide
 
-    implementation appDependence.firebaseAuthKtx
-    implementation appDependence.firebaseFirestoreKtx
-    implementation appDependence.playServicesAuth
-    implementation appDependence.room
-    implementation appDependence.room_ktx
-    implementation appDependence.liveData
-    implementation appDependence.lifecycle
-    implementation appDependence.lifecycleViewModel
-    implementation appDependence.viewModel
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    implementation appDependence.swiperefreshlayout
 }

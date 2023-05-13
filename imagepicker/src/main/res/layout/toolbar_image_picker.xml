@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar_image_picker"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="?attr/colorSurface"
+    app:navigationIcon="@drawable/ic_arrow_back"
+    app:title="@string/image_picker_title"
+    app:titleTextColor="?attr/colorOnSurface">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_done"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:background="@drawable/button_inactive_bg"
+            android:text="@string/done"
+            android:layout_marginRight="8dp"
+            android:enabled="false"/>
+
+    </RelativeLayout>
+
+</androidx.appcompat.widget.Toolbar>

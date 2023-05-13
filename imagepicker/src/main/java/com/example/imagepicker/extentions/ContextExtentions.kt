@@ -1,16 +1,22 @@
 package com.example.imagepicker.extentions
 
+import android.content.ContentResolver
 import android.content.Context
+import android.database.Cursor
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.imagepicker.entity.Album
+import com.example.imagepicker.entity.AlbumItem
 import com.example.imagepicker.entity.Image
 import java.util.Arrays
 
 
-fun Context.getImagesFromMediaStore(pageSize: Int, pageNumber: Int, albumId: String? = null): List<Image> {
-    val images: MutableList<Image> = mutableListOf()
-
+fun Context.getImagesFromMediaStore(pageSize: Int, pageNumber: Int, albumId: String? = null): List<AlbumItem.Image> {
+    val images: MutableList<AlbumItem.Image> = mutableListOf()
     val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
     val projection = arrayOf(
         MediaStore.Images.Media._ID,
@@ -32,41 +38,41 @@ fun Context.getImagesFromMediaStore(pageSize: Int, pageNumber: Int, albumId: Str
         selectionArgs[selectionArgs.size - 1] = albumId
     }
 
-    var sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC"
-    val offset = pageNumber * pageSize
-    sortOrder += " LIMIT $pageSize OFFSET $offset"
+    val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC LIMIT $pageSize OFFSET ${pageNumber * pageSize}"
 
-    this.contentResolver.query(
-        uri,
-        projection,
-        selection,
-        selectionArgs,
-        sortOrder
-    ).use { cursor ->
-        if (cursor != null) {
-            val idColumn: Int = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-            val displayNameColumn: Int =
-                cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
-            val dateAddedColumn: Int =
-                cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
-            val dataColumn: Int = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-            while (cursor.moveToNext()) {
-                val id: Long = cursor.getLong(idColumn)
-                val displayName: String = cursor.getString(displayNameColumn)
-                val dateAdded: Long = cursor.getLong(dateAddedColumn)
-                val imagePath: String = cursor.getString(dataColumn)
-                images.add(Image(id, displayName, dateAdded, imagePath))
-            }
+    createCursor(
+        contentResolver = this.contentResolver,
+        collection = uri,
+        projection = projection,
+        whereCondition = selection,
+        selectionArgs = selectionArgs,
+        orderBy = MediaStore.Images.Media.DATE_ADDED,
+        orderAscending = false,
+        limit = pageSize,
+        offset = pageNumber * pageSize
+    )?.use { cursor ->
+        val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+        val displayNameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
+        val dateAddedColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
+        val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+
+        while (cursor.moveToNext()) {
+            val id = cursor.getLong(idColumn)
+            val displayName = cursor.getString(displayNameColumn)
+            val dateAdded = cursor.getLong(dateAddedColumn)
+            val data = cursor.getString(dataColumn)
+            val image = AlbumItem.Image(id = id.toString(), displayName = displayName, dateAdded = dateAdded, imagePath = data)
+            images.add(image)
+            Log.e("imagePicker", "getImagesForAlbum: ${image.imagePath}", )
         }
     }
-
     return images
 }
 
-fun Context.getAlbumsFromMediaStore(): List<Album> {
-    val albums = mutableListOf<Album>()
+fun Context.getAlbumsFromMediaStore(): List<AlbumItem.Title> {
+    val albums = mutableListOf<AlbumItem.Title>()
 
-    val albumsMap = mutableMapOf<String, Album>()
+    val albumsMap = mutableMapOf<String, AlbumItem.Title>()
 
     val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
@@ -84,7 +90,7 @@ fun Context.getAlbumsFromMediaStore(): List<Album> {
         while (cursor.moveToNext()) {
             val id = cursor.getString(idColumn)
             val displayName = cursor.getString(displayNameColumn)
-            val album = albumsMap.getOrDefault(id, Album(id, displayName, 0))
+            val album = albumsMap.getOrDefault(id, AlbumItem.Title(id = id, title = displayName, count = 0))
             album.count += 1
             albumsMap.putIfAbsent(id, album)
         }
@@ -95,8 +101,8 @@ fun Context.getAlbumsFromMediaStore(): List<Album> {
     return albums
 }
 
-fun Context.getImagesForAlbum(albumId: String): List<Image> {
-    val images = mutableListOf<Image>()
+fun Context.getImagesForAlbum(albumId: String): List<AlbumItem.Image> {
+    val images = mutableListOf<AlbumItem.Image>()
     val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
     val projection = arrayOf(
@@ -121,11 +127,65 @@ fun Context.getImagesForAlbum(albumId: String): List<Image> {
             val dateAdded = cursor.getLong(dateAddedColumn)
             val data = cursor.getString(dataColumn)
 
-            val image = Image(id, displayName, dateAdded, data)
+            val image = AlbumItem.Image(id = id.toString(), displayName = displayName, dateAdded = dateAdded, imagePath = data)
             images.add(image)
             Log.e("imagePicker", "getImagesForAlbum: ${image.imagePath}", )
         }
     }
 
     return images
+}
+
+
+private fun createCursor(
+    contentResolver: ContentResolver,
+    collection: Uri,
+    projection: Array<String>,
+    whereCondition: String,
+    selectionArgs: Array<String>,
+    orderBy: String,
+    orderAscending: Boolean,
+    limit: Int = 20,
+    offset: Int = 0
+): Cursor? = when {
+    Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+        val selection = createSelectionBundle(whereCondition, selectionArgs, orderBy, orderAscending, limit, offset)
+        contentResolver.query(collection, projection, selection, null)
+    }
+    else -> {
+        val orderDirection = if (orderAscending) "ASC" else "DESC"
+        var order = when (orderBy) {
+            "ALPHABET" -> "${MediaStore.Audio.Media.TITLE}, ${MediaStore.Audio.Media.ARTIST} $orderDirection"
+            else -> "${MediaStore.Audio.Media.DATE_ADDED} $orderDirection"
+        }
+        order += " LIMIT $limit OFFSET $offset"
+        contentResolver.query(collection, projection, whereCondition, selectionArgs, order)
+    }
+}
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun createSelectionBundle(
+    whereCondition: String,
+    selectionArgs: Array<String>,
+    orderBy: String,
+    orderAscending: Boolean,
+    limit: Int = 20,
+    offset: Int = 0
+): Bundle = Bundle().apply {
+    // Limit & Offset
+    putInt(ContentResolver.QUERY_ARG_LIMIT, limit)
+    putInt(ContentResolver.QUERY_ARG_OFFSET, offset)
+    // Sort function
+    when (orderBy) {
+        "ALPHABET" -> putStringArray(ContentResolver.QUERY_ARG_SORT_COLUMNS, arrayOf(MediaStore.Files.FileColumns.TITLE))
+        else -> putStringArray(ContentResolver.QUERY_ARG_SORT_COLUMNS, arrayOf(MediaStore.Files.FileColumns.DATE_ADDED))
+    }
+    // Sorting direction
+    val orderDirection =
+        if (orderAscending) ContentResolver.QUERY_SORT_DIRECTION_ASCENDING else ContentResolver.QUERY_SORT_DIRECTION_DESCENDING
+    putInt(ContentResolver.QUERY_ARG_SORT_DIRECTION, orderDirection)
+    // Selection
+    putString(ContentResolver.QUERY_ARG_SQL_SELECTION, whereCondition)
+    putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs)
 }

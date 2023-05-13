@@ -27,12 +27,15 @@ import com.example.common.reporesource.Resource
 import com.example.common.utils.TheRouterUtil
 import com.example.laterlist.alllater.AllLaterListFragment
 import com.example.common.callback.MenuItemDialogClickCallBack
+import com.example.common.extents.getParcelableArrayListFromData
 import com.example.common.extents.showToast
 import com.example.laterlist.databinding.FragmentLaterListBinding
 import com.example.laterlist.tags.TagListFragment
 import com.example.common.viewmodel.LaterListViewModel
 import com.example.imagepicker.ImagePickerActivity
 import com.example.imagepicker.constants.ResultCode
+import com.example.imagepicker.constants.ResultData
+import com.example.imagepicker.entity.AlbumItem
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.therouter.router.Route
@@ -109,12 +112,10 @@ class LaterListFragment :
         activityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == ResultCode.Image.OK) {
                 val data = result.data
-                val url = data?.getStringExtra("url")
-                if (url != null && URLUtil.isValidUrl(url)) {
-//                    viewModel.insertLaterItem(LaterViewItem(ItemType.Website, url))
-                } else {
-                    showToast("url is invalid")
-                }
+                val imagesSelected = data?.getParcelableArrayListFromData<AlbumItem.Image>(ResultData.SELECTED_IMAGES, AlbumItem.Image::class.java)
+                // 获取到了选择的图片列表，接下来就需要上传到对象存储中了
+
+                // 先判断是否有配置对象存储
             }
         }
     }

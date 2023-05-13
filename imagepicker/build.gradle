@@ -2,6 +2,7 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id("kotlin-parcelize")
 }
 
 def appDependence = rootProject.ext.app
@@ -46,6 +47,9 @@ dependencies {
     implementation appDependence.constraintlayout
 
     implementation appDependence.recyclerView
+
+    implementation appDependence.lifecycle
+    implementation appDependence.liveData
 
     implementation appDependence.glide
 

@@ -1,1 +1,5 @@
-<resources></resources>
+<resources>
+    <string name="image_picker_title">Select Images</string>
+    <string name="done">Done</string>
+    <string name="selected_count">0</string>
+</resources>
